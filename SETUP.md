@@ -55,6 +55,8 @@ Every template uses `{{PLACEHOLDER}}` markers. Search-and-replace in your editor
 - `{{ONE_PARAGRAPH_DESCRIPTION}}` — what the project is, in plain English
 - `{{PLATFORM_TARGETS}}` — macOS / Linux / Windows / web / etc.
 
+For a fully filled-in reference, see [`examples/widget-tracker/CONTEXT.md`](examples/widget-tracker/CONTEXT.md) — a fictional Go CLI project at a plausible mid-phase state. The matching `plan.md`, `SESSION-LOG.md`, and `phase-1-checklist.md` live alongside it. Read them when you want to see what "populated" looks like rather than what the template dictates.
+
 The other docs (`plan.md`, `implementation.md`, etc.) can stay mostly skeletal until you're ready to plan real work.
 
 ---
