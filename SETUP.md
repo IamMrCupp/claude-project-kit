@@ -24,14 +24,23 @@ Whatever you pick, the **repo stays the repo; the working folder stays separate*
 
 ---
 
-## 2. Copy the templates
+## 2. Run `bootstrap.sh`
+
+From the root of the project repo you're bootstrapping:
 
 ```bash
-mkdir -p "<working-folder>"
-cp <framework-dir>/templates/*.md "<working-folder>/"
+cd <project-repo>
+<framework-dir>/bootstrap.sh <working-folder>
 ```
 
-Rename `phase-N-checklist.md` → `phase-0-checklist.md` to start.
+That creates the working folder, copies the templates, renames `phase-N-checklist.md` → `phase-0-checklist.md`, and seeds the project's auto-memory at the Claude harness's expected path (`~/.claude/projects/<sanitized>/memory/`).
+
+Flags:
+- `--skip-memory` — skip the memory-seeding step (leaves `~/.claude/projects/…` alone)
+- `--force` — proceed even if the working folder is already non-empty
+- `-h` / `--help` — show usage
+
+Prefer to see what's happening step-by-step? See [Manual alternative](#manual-alternative) at the bottom of this doc.
 
 ---
 
@@ -50,28 +59,16 @@ The other docs (`plan.md`, `implementation.md`, etc.) can stay mostly skeletal u
 
 ---
 
-## 4. Seed auto-memory
+## 4. Tune your auto-memory
 
-Find the project's memory folder. When you launch `claude` in the repo for the first time, the harness creates:
+`bootstrap.sh` already dropped the starter memory files into your project's memory folder. Now edit them to match your actual rules and tooling:
 
-```
-~/.claude/projects/<sanitized-repo-path>/memory/
-```
-
-The sanitization rule: absolute path with `/` replaced by `-`, prefixed with `-`. For example `/Users/you/Code/acme/foo` → `-Users-you-Code-acme-foo`.
-
-Copy starter memory files:
-
-```bash
-PROJECT_MEMORY=~/.claude/projects/<sanitized-path>/memory
-mkdir -p "$PROJECT_MEMORY"
-cp <framework-dir>/memory-templates/*.md "$PROJECT_MEMORY/"
-```
-
-Then edit each one: delete what doesn't apply, tune what does. Especially:
-- `reference_ai_working_folder.md` — point it at the working folder you picked in step 1
+- `reference_ai_working_folder.md` — fill in `{{WORKING_FOLDER}}` and `{{PROJECT_NAME}}` so Claude knows where to look
 - `user_role.md` — your role and background *as it relates to this project* (Claude uses this to calibrate explanations)
-- `MEMORY.md` — keep the index in sync with whatever files you end up with
+- Prune feedback/project files that don't apply; tune the ones that do
+- Keep `MEMORY.md` in sync with whatever files you end up with
+
+If you ran bootstrap with `--skip-memory`, see the [Manual alternative](#manual-alternative) for how to seed it by hand.
 
 ---
 
@@ -112,6 +109,28 @@ Every working session should end with:
 4. Auto-memory refreshed — if a rule came up twice, save it as feedback
 
 The habit that makes this work: the **last thing you do** before quitting is update these docs. It takes two minutes and rescues the next session from "where was I?"
+
+---
+
+## Manual alternative
+
+If you can't run `bootstrap.sh` (no Bash available, restricted environment, or you just want to see what it does), perform the same work by hand.
+
+### Copy templates
+```bash
+mkdir -p "<working-folder>"
+cp <framework-dir>/templates/*.md "<working-folder>/"
+mv "<working-folder>/phase-N-checklist.md" "<working-folder>/phase-0-checklist.md"
+```
+
+### Seed auto-memory
+The harness expects memory at `~/.claude/projects/<sanitized-path>/memory/`. Sanitization rule: absolute repo path with `/` replaced by `-`, prefixed with `-`. Example: `/Users/you/Code/acme/foo` → `-Users-you-Code-acme-foo`.
+
+```bash
+PROJECT_MEMORY=~/.claude/projects/<sanitized-path>/memory
+mkdir -p "$PROJECT_MEMORY"
+cp <framework-dir>/memory-templates/*.md "$PROJECT_MEMORY/"
+```
 
 ---
 
