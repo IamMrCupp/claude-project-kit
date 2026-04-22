@@ -39,11 +39,11 @@ The working folder is project-specific knowledge ("what are we building, how far
 │   ├── acceptance-test-results.md
 │   └── research.md
 └── memory-templates/        ← starter auto-memory for a new project
-    ├── MEMORY.md
-    ├── user_role.md
-    ├── feedback_example.md
-    ├── project_example.md
-    └── reference_example.md
+    ├── MEMORY.md            ← index of memory files
+    ├── user_role.md         ← who you are, how to calibrate
+    ├── feedback_*.md        ← rules & preferences (commits, PRs, CI, etc.)
+    ├── project_*.md         ← project context
+    └── reference_*.md       ← external pointers (working folder, etc.)
 ```
 
 ## How to use for a new project
