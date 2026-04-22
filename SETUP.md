@@ -1,6 +1,6 @@
-# Setup — starting a new project with this framework
+# Setup — adopting this framework on a project
 
-Target: you have a new repo (or idea) and want Claude sessions productive from day one.
+Target: you have a repo (new, or existing and already in flight) and want Claude sessions productive from day one. The steps are identical either way — for an existing repo, `CONTEXT.md` should describe the *current* architecture, conventions, and in-flight work rather than a greenfield plan.
 
 ---
 

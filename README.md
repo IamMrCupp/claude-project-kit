@@ -49,12 +49,14 @@ The working folder is project-specific knowledge ("what are we building, how far
     └── reference_*.md       ← external pointers (working folder, etc.)
 ```
 
-## How to use for a new project
+## How to use (new or existing project)
+
+Works the same for greenfield repos and ones you're adopting it on mid-stream — the kit never modifies the target repo, it just creates an external working folder and seeds per-project auto-memory.
 
 1. Read [SETUP.md](SETUP.md) — it walks you through the full bootstrap in ~10 minutes.
 2. Pick a private working folder location (e.g. `~/Documents/Claude/Projects/<Project Name>/`).
 3. Copy templates, fill in placeholders (marked `{{LIKE_THIS}}`).
-4. Seed auto-memory with relevant starters from `memory-templates/` — edit to match the new project.
+4. Seed auto-memory with relevant starters from `memory-templates/` — edit to match the project.
 5. Open a Claude session and use a prompt from [PROMPTS.md](PROMPTS.md) to load project context before you start working.
 
 ## When to update this framework
