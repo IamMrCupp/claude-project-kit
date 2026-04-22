@@ -30,6 +30,7 @@ The working folder is project-specific knowledge ("what are we building, how far
 ├── CONVENTIONS.md           ← generic working rules (commits, PRs, etc.)
 ├── PROMPTS.md               ← ready-to-paste session-opening prompts
 ├── LICENSE
+├── bootstrap.sh             ← one-command setup (see SETUP.md step 2)
 ├── templates/               ← copy these into a new working folder
 │   ├── CONTEXT.md
 │   ├── SESSION-LOG.md
@@ -38,6 +39,8 @@ The working folder is project-specific knowledge ("what are we building, how far
 │   ├── phase-N-checklist.md
 │   ├── acceptance-test-results.md
 │   └── research.md
+├── examples/                ← filled-in reference — read, don't copy
+│   └── widget-tracker/      ← fictional Go CLI, mid-Phase-1 snapshot
 └── memory-templates/        ← starter auto-memory for a new project
     ├── MEMORY.md            ← index of memory files
     ├── user_role.md         ← who you are, how to calibrate
