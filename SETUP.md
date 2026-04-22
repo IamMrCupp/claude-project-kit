@@ -50,6 +50,7 @@ Every template uses `{{PLACEHOLDER}}` markers. Search-and-replace in your editor
 
 - `{{PROJECT_NAME}}` — human-friendly name
 - `{{REPO_SLUG}}` — e.g. `owner/repo`
+- `{{REPO_URL}}` — full URL, e.g. `https://github.com/owner/repo`
 - `{{REPO_PATH}}` — absolute local path
 - `{{WORKING_FOLDER}}` — path to this folder
 - `{{ONE_PARAGRAPH_DESCRIPTION}}` — what the project is, in plain English
