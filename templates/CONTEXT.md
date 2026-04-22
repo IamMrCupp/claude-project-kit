@@ -18,6 +18,7 @@ At the start of any new Claude session, say:
 
 - **GitHub / host:** {{REPO_URL}}
 - **Visibility:** {{public | private | internal}}
+- **Platform targets:** {{PLATFORM_TARGETS}}
 - **This folder:** Private AI working context — never commit to repo
 
 ---
