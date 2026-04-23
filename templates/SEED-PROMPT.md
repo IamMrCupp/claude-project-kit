@@ -46,6 +46,11 @@ Read in order:
      - Terraform / Terragrunt: `*.tf` (especially `providers.tf`, `versions.tf`, `main.tf`, `variables.tf`, `outputs.tf`), `.terraform.lock.hcl`, `*.tfvars.example`, `terragrunt.hcl`
      - Puppet: `metadata.json`, `Puppetfile`, `manifests/init.pp`, `environment.conf`, `hiera.yaml`
      - Ansible: `ansible.cfg`, `inventory*`, `playbook*.yml`, `roles/*/tasks/main.yml`, `roles/*/meta/main.yml`, `requirements.yml`, `group_vars/`, `host_vars/`
+     - Helm: `Chart.yaml`, `values.yaml` + `values-*.yaml` (treat env-specific values files as potentially secret-containing), `Chart.lock`, `templates/*.yaml`, `charts/` (subchart dir), `.helmignore`
+     - Kustomize: `kustomization.yaml` / `kustomization.yml` / `Kustomization`; conventional `base/` + `overlays/` directory layout; `patches/` subdirs
+     - Flux (GitOps): `flux-system/` directory (typically under `clusters/<env>/`); CRDs identified by `kind:` — `GitRepository`, `Kustomization`, `HelmRelease`, `HelmRepository`; `gotk-components.yaml` / `gotk-sync.yaml`; `.sops.yaml` if SOPS is in use
+     - ArgoCD (GitOps): CRDs identified by `apiVersion: argoproj.io/v1alpha1` + `kind: Application` / `ApplicationSet` / `AppProject`; conventional `argocd/` directory; `app-of-apps` pattern
+     - Raw Kubernetes manifests: `*.yaml` files with `apiVersion: v1|apps/v1|networking.k8s.io/v1|batch/v1|...` and `kind: Deployment|Service|Ingress|ConfigMap|Secret|StatefulSet|DaemonSet|Job|CronJob|...` — detect by content, not path
    - **Runtime / container / version pinning:** `Dockerfile`, `docker-compose.yml` / `compose.yml`, `.tool-versions` (asdf), `.nvmrc`, `.python-version`, `.ruby-version`, `.editorconfig`.
    - **Framework signals** (read only at top-of-tree; don't deep-scan): `app.py` / `wsgi.py` / `asgi.py` / `manage.py` / `settings.py` (Python web); `config/application.rb` / `bin/rails` (Rails); `next.config.*` / `vite.config.*` / `nuxt.config.*` / `webpack.config.*` / `rollup.config.*` (JS/TS frameworks).
    - If you see a manifest or config file you don't recognize, note it as a `[HUMAN-CONFIRM]` question rather than guessing.
@@ -55,7 +60,7 @@ Read in order:
 
 Do not read lockfiles in full (only enough to confirm ecosystem and note pinned major-version deps), `node_modules/`, `vendor/`, `.terraform/`, generated code, or files over ~1000 lines unless a specific field requires it.
 
-**Secrets guard — do NOT read contents of:** `*.tfvars` (unless explicitly `*.tfvars.example`), `terraform.tfstate` / `*.tfstate.backup`, `.env*`, files named `secrets*`, anything under `secrets/`, SSH / GPG private keys. Note their presence in your summary so the user can verify `.gitignore` coverage, but never read the contents — they commonly hold credentials.
+**Secrets guard — do NOT read contents of:** `*.tfvars` (unless explicitly `*.tfvars.example`), `terraform.tfstate` / `*.tfstate.backup`, `.env*`, files named `secrets*`, anything under `secrets/`, SSH / GPG private keys, Kubernetes `Secret` kind YAMLs (`kind: Secret` — the base64 `data` / `stringData` fields are *encoded*, not encrypted), SOPS-encrypted YAMLs (identifiable by a `sops:` metadata block — safe to note existence, do not attempt to decrypt). Note their presence in your summary so the user can verify `.gitignore` coverage, but never read the contents — they commonly hold credentials.
 
 ### Step 2 — classify every CONTEXT.md field
 
