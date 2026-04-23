@@ -69,12 +69,15 @@ Prefer to fill everything by hand? See [Manual alternative](#manual-alternative)
 
 ## 4. Tune your auto-memory
 
-`bootstrap.sh` already dropped the starter memory files into your project's memory folder. Now edit them to match your actual rules and tooling:
+`bootstrap.sh` already dropped the starter memory files into your project's memory folder and auto-filled the common placeholders (`{{WORKING_FOLDER}}`, `{{REPO_PATH}}`, `{{PROJECT_NAME}}`, and `{{REPO_SLUG}}` if your repo has a `git remote origin`). What's left is optional personalization:
 
-- `reference_ai_working_folder.md` — fill in `{{WORKING_FOLDER}}` and `{{PROJECT_NAME}}` so Claude knows where to look
 - `user_role.md` — your role and background *as it relates to this project* (Claude uses this to calibrate explanations)
+- `project_current.md` — if `bootstrap.sh` couldn't derive `{{REPO_SLUG}}` (e.g. no git remote yet), fill it manually
+- `reference_ai_working_folder.md` — review the `{{public/private}}` marker and decide visibility
 - Prune feedback/project files that don't apply; tune the ones that do
 - Keep `MEMORY.md` in sync with whatever files you end up with
+
+Pass `--project-name "<name>"` to `bootstrap.sh` if the working folder basename doesn't match the project name you want in memory.
 
 If you ran bootstrap with `--skip-memory`, see the [Manual alternative](#manual-alternative) for how to seed it by hand.
 
