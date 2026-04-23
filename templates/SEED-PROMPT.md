@@ -51,6 +51,12 @@ Read in order:
      - Flux (GitOps): `flux-system/` directory (typically under `clusters/<env>/`); CRDs identified by `kind:` — `GitRepository`, `Kustomization`, `HelmRelease`, `HelmRepository`; `gotk-components.yaml` / `gotk-sync.yaml`; `.sops.yaml` if SOPS is in use
      - ArgoCD (GitOps): CRDs identified by `apiVersion: argoproj.io/v1alpha1` + `kind: Application` / `ApplicationSet` / `AppProject`; conventional `argocd/` directory; `app-of-apps` pattern
      - Raw Kubernetes manifests: `*.yaml` files with `apiVersion: v1|apps/v1|networking.k8s.io/v1|batch/v1|...` and `kind: Deployment|Service|Ingress|ConfigMap|Secret|StatefulSet|DaemonSet|Job|CronJob|...` — detect by content, not path
+   - **Observability / monitoring stack:**
+     - Prometheus: `prometheus.yml` / `prometheus.yaml`, `alerts/*.yml` + `rules/*.yml` (PromQL recording / alerting rules), `alertmanager.yml` / `alertmanager.yaml`, `*.rules` files, `targets/*.json` (file SD)
+     - Grafana: `grafana.ini` / `custom.ini`, `provisioning/{datasources,dashboards,alerting,notifiers,plugins}/*.yaml`, `dashboards/*.json` (treat as large / often generated — skim for inventory, don't full-read each)
+     - Loki: `loki.yaml` / `loki-config.yaml`, `promtail.yaml` / `promtail-config.yaml` (log shipper), `loki-*-rules.yaml` (LogQL alerts)
+     - Alloy / Grafana Agent: `config.alloy`, `*.alloy`; legacy `agent.yaml` / `grafana-agent.yaml` / `grafana-agent.river`
+     - Adjacent observability tools: Tempo (`tempo.yaml`), Mimir (`mimir.yaml`), Pyroscope (`pyroscope.yaml`), OpenTelemetry Collector (`otel-*config.yaml`)
    - **Runtime / container / version pinning:** `Dockerfile`, `docker-compose.yml` / `compose.yml`, `.tool-versions` (asdf), `.nvmrc`, `.python-version`, `.ruby-version`, `.editorconfig`.
    - **Framework signals** (read only at top-of-tree; don't deep-scan): `app.py` / `wsgi.py` / `asgi.py` / `manage.py` / `settings.py` (Python web); `config/application.rb` / `bin/rails` (Rails); `next.config.*` / `vite.config.*` / `nuxt.config.*` / `webpack.config.*` / `rollup.config.*` (JS/TS frameworks).
    - If you see a manifest or config file you don't recognize, note it as a `[HUMAN-CONFIRM]` question rather than guessing.
