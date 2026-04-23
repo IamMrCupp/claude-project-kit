@@ -31,13 +31,42 @@ You are bootstrapping the working folder for the target repo you are currently r
 Read in order:
 
 1. `CONTEXT.md` in the working folder — the template you'll fill. Note its sections and placeholders.
-2. Target repo's `README.md` if it exists.
-3. Package manifests (whichever exist): `package.json`, `Cargo.toml`, `go.mod`, `pyproject.toml`, `pom.xml`, `build.gradle`, `Gemfile`, `requirements.txt`, `composer.json`.
-4. CI config: `.github/workflows/*.yml`, `.gitlab-ci.yml`, `.circleci/config.yml`, `Jenkinsfile`, `azure-pipelines.yml`.
-5. Top-level directory layout (one level) and `src/` / `lib/` / main source tree (one or two levels).
-6. Recent git activity: `git log --oneline -20`, `git branch -a`, `git remote -v`.
+2. Target repo's `README.md`, plus `CONTRIBUTING.md` / `ARCHITECTURE.md` if present at the root.
+3. **Language / framework / IaC signals** — read whichever of these exist at or near the repo root. The examples below are starting points, not exhaustive; recognize what's actually there and reason from it.
+   - **Manifests & lockfiles:**
+     - TypeScript / JavaScript: `package.json` plus any lockfile (`pnpm-lock.yaml`, `yarn.lock`, `package-lock.json`, `bun.lockb`), `tsconfig.json`, `deno.json`
+     - Python (incl. Flask / Django / FastAPI): `pyproject.toml`, `requirements*.txt`, `Pipfile`, `poetry.lock`, `uv.lock`, `setup.py`, `setup.cfg`, `tox.ini`
+     - Ruby (incl. Rails): `Gemfile`, `Gemfile.lock`, `*.gemspec`, `Rakefile`
+     - Go: `go.mod`, `go.sum`, `go.work`
+     - Rust: `Cargo.toml`, `Cargo.lock`
+     - C / C++: `CMakeLists.txt`, `Makefile`, `conanfile.*`, `vcpkg.json`, `meson.build`, `configure.ac`
+     - Java / Kotlin / Scala: `pom.xml`, `build.gradle(.kts)`, `settings.gradle(.kts)`, `build.sbt`
+     - PHP: `composer.json`
+   - **Infrastructure-as-code / config management:**
+     - Terraform / Terragrunt: `*.tf` (especially `providers.tf`, `versions.tf`, `main.tf`, `variables.tf`, `outputs.tf`), `.terraform.lock.hcl`, `*.tfvars.example`, `terragrunt.hcl`
+     - Puppet: `metadata.json`, `Puppetfile`, `manifests/init.pp`, `environment.conf`, `hiera.yaml`
+     - Ansible: `ansible.cfg`, `inventory*`, `playbook*.yml`, `roles/*/tasks/main.yml`, `roles/*/meta/main.yml`, `requirements.yml`, `group_vars/`, `host_vars/`
+     - Helm: `Chart.yaml`, `values.yaml` + `values-*.yaml` (treat env-specific values files as potentially secret-containing), `Chart.lock`, `templates/*.yaml`, `charts/` (subchart dir), `.helmignore`
+     - Kustomize: `kustomization.yaml` / `kustomization.yml` / `Kustomization`; conventional `base/` + `overlays/` directory layout; `patches/` subdirs
+     - Flux (GitOps): `flux-system/` directory (typically under `clusters/<env>/`); CRDs identified by `kind:` — `GitRepository`, `Kustomization`, `HelmRelease`, `HelmRepository`; `gotk-components.yaml` / `gotk-sync.yaml`; `.sops.yaml` if SOPS is in use
+     - ArgoCD (GitOps): CRDs identified by `apiVersion: argoproj.io/v1alpha1` + `kind: Application` / `ApplicationSet` / `AppProject`; conventional `argocd/` directory; `app-of-apps` pattern
+     - Raw Kubernetes manifests: `*.yaml` files with `apiVersion: v1|apps/v1|networking.k8s.io/v1|batch/v1|...` and `kind: Deployment|Service|Ingress|ConfigMap|Secret|StatefulSet|DaemonSet|Job|CronJob|...` — detect by content, not path
+   - **Observability / monitoring stack:**
+     - Prometheus: `prometheus.yml` / `prometheus.yaml`, `alerts/*.yml` + `rules/*.yml` (PromQL recording / alerting rules), `alertmanager.yml` / `alertmanager.yaml`, `*.rules` files, `targets/*.json` (file SD)
+     - Grafana: `grafana.ini` / `custom.ini`, `provisioning/{datasources,dashboards,alerting,notifiers,plugins}/*.yaml`, `dashboards/*.json` (treat as large / often generated — skim for inventory, don't full-read each)
+     - Loki: `loki.yaml` / `loki-config.yaml`, `promtail.yaml` / `promtail-config.yaml` (log shipper), `loki-*-rules.yaml` (LogQL alerts)
+     - Alloy / Grafana Agent: `config.alloy`, `*.alloy`; legacy `agent.yaml` / `grafana-agent.yaml` / `grafana-agent.river`
+     - Adjacent observability tools: Tempo (`tempo.yaml`), Mimir (`mimir.yaml`), Pyroscope (`pyroscope.yaml`), OpenTelemetry Collector (`otel-*config.yaml`)
+   - **Runtime / container / version pinning:** `Dockerfile`, `docker-compose.yml` / `compose.yml`, `.tool-versions` (asdf), `.nvmrc`, `.python-version`, `.ruby-version`, `.editorconfig`.
+   - **Framework signals** (read only at top-of-tree; don't deep-scan): `app.py` / `wsgi.py` / `asgi.py` / `manage.py` / `settings.py` (Python web); `config/application.rb` / `bin/rails` (Rails); `next.config.*` / `vite.config.*` / `nuxt.config.*` / `webpack.config.*` / `rollup.config.*` (JS/TS frameworks).
+   - If you see a manifest or config file you don't recognize, note it as a `[HUMAN-CONFIRM]` question rather than guessing.
+4. **CI config:** `.github/workflows/*.yml`, `.gitlab-ci.yml`, `.circleci/config.yml`, `Jenkinsfile`, `azure-pipelines.yml`.
+5. **Top-level directory layout** (one level deep) and main source tree (one or two levels — whatever the repo uses: `src/`, `lib/`, `pkg/`, `cmd/`, `internal/`, `app/`, `modules/`, `manifests/`, `roles/`, `environments/`, `terraform/`, `live/`, or the repo's own convention).
+6. **Recent git activity:** `git log --oneline -20`, `git branch -a`, `git remote -v`.
 
-Do not read lockfiles, node_modules, vendor directories, generated code, or anything >1000 lines unless a specific field requires it.
+Do not read lockfiles in full (only enough to confirm ecosystem and note pinned major-version deps), `node_modules/`, `vendor/`, `.terraform/`, generated code, or files over ~1000 lines unless a specific field requires it.
+
+**Secrets guard — do NOT read contents of:** `*.tfvars` (unless explicitly `*.tfvars.example`), `terraform.tfstate` / `*.tfstate.backup`, `.env*`, files named `secrets*`, anything under `secrets/`, SSH / GPG private keys, Kubernetes `Secret` kind YAMLs (`kind: Secret` — the base64 `data` / `stringData` fields are *encoded*, not encrypted), SOPS-encrypted YAMLs (identifiable by a `sops:` metadata block — safe to note existence, do not attempt to decrypt). Note their presence in your summary so the user can verify `.gitignore` coverage, but never read the contents — they commonly hold credentials.
 
 ### Step 2 — classify every CONTEXT.md field
 
