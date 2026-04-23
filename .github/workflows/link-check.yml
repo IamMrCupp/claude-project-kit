@@ -1,0 +1,28 @@
+name: markdown link check
+
+on:
+  pull_request:
+    paths:
+      - '**/*.md'
+      - '.github/workflows/link-check.yml'
+  push:
+    branches: [main]
+    paths:
+      - '**/*.md'
+      - '.github/workflows/link-check.yml'
+
+jobs:
+  lychee:
+    name: Check internal markdown links
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run lychee
+        uses: lycheeverse/lychee-action@v2
+        with:
+          # --offline: skip external HTTP checks (avoids flakiness); only
+          # validate relative-path links to files in the repo.
+          args: --no-progress --verbose --offline './**/*.md'
+          fail: true
