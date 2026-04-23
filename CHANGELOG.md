@@ -1,0 +1,69 @@
+# Changelog
+
+All notable changes to `claude-project-kit`. Format loosely follows [Keep a Changelog](https://keepachangelog.com/). No formal version tags yet — entries use merge-commit SHAs and dates as reference points.
+
+See [Upgrading an existing project](SETUP.md#upgrading-an-existing-project) for the general migration pattern. Each entry below has a **For existing adopters** section with specifics for that release.
+
+---
+
+## 2026-04-22 — Phase 2: zero manual-fill onboarding
+
+### Added
+- `templates/SEED-PROMPT.md` — one-shot project bootstrap instruction prompt. Claude deep-reads the target repo, classifies `CONTEXT.md` fields into derivable / `[CLAUDE-INFERRED]` / `[HUMAN-CONFIRM]` buckets, drafts `research.md` from code, summarizes, asks ≤5 targeted questions, and stops for user review. ([#7](https://github.com/IamMrCupp/claude-project-kit/pull/7))
+- `bootstrap.sh` — auto-substitutes four memory-template placeholders post-copy: `{{WORKING_FOLDER}}`, `{{REPO_PATH}}`, `{{PROJECT_NAME}}` (default = basename of working folder), `{{REPO_SLUG}}` (opportunistic from `git remote get-url origin`, graceful fallback if no remote). ([#8](https://github.com/IamMrCupp/claude-project-kit/pull/8))
+- `bootstrap.sh` — new `--project-name NAME` flag to override the auto-derived project name. ([#8](https://github.com/IamMrCupp/claude-project-kit/pull/8))
+
+### Changed
+- `bootstrap.sh` next-steps message leads with the seed-prompt invocation line (working-folder path pre-substituted). ([#7](https://github.com/IamMrCupp/claude-project-kit/pull/7))
+- `README.md` + `SETUP.md` — onboarding flow rewritten around the seed-prompt; manual placeholder fill-in demoted to the `Manual alternative` appendix. SETUP.md §4 reframed around memory auto-fill. ([#7](https://github.com/IamMrCupp/claude-project-kit/pull/7), [#8](https://github.com/IamMrCupp/claude-project-kit/pull/8))
+
+### For existing adopters
+- **To use the seed-prompt flow:** copy `templates/SEED-PROMPT.md` into your existing working folder:
+  ```bash
+  cp <kit-dir>/templates/SEED-PROMPT.md <your-working-folder>/
+  ```
+- **Stale placeholders won't auto-upgrade.** If your `reference_ai_working_folder.md` in auto-memory still has `{{PROJECT_NAME}}` / `{{WORKING_FOLDER}}` / `{{REPO_PATH}}` / `{{REPO_SLUG}}` placeholders from a pre-#8 bootstrap, fill them manually once — future bootstraps on *new* projects will auto-fill them.
+- The `--project-name` flag is opt-in and only affects new bootstraps; existing projects' behavior is unchanged.
+
+---
+
+## 2026-04-22 — CONVENTIONS: human-only commit attribution
+
+### Added
+- `CONVENTIONS.md` — explicit rule forbidding AI co-author trailers on commits (complements the existing "single line, signed off, no body" rule). ([#6](https://github.com/IamMrCupp/claude-project-kit/pull/6))
+- `memory-templates/feedback_no_ai_coauthor.md` — starter auto-memory file so new projects inherit the rule pre-seeded. ([#6](https://github.com/IamMrCupp/claude-project-kit/pull/6))
+
+### For existing adopters
+- Going forward, commit with `git commit -s -m "type(scope): description"` — single line, no HEREDOC body, no `Co-Authored-By` trailer.
+- Optionally copy `memory-templates/feedback_no_ai_coauthor.md` into your project's auto-memory to bind the rule at the memory layer.
+- **Do not rewrite already-merged history** to remove past trailers — destructive and visible to anyone with a clone.
+
+---
+
+## 2026-04-22 — Phase 1: polish + dogfood fixes
+
+### Added
+- `bootstrap.sh` — one-command onboarding helper. Creates the working folder, seeds auto-memory, prints next-steps. Flags: `--skip-memory`, `--force`, `-h`/`--help`. ([#2](https://github.com/IamMrCupp/claude-project-kit/pull/2))
+- `examples/widget-tracker/` — filled-in reference project (fictional Go CLI, mid-Phase-1 snapshot) with `CONTEXT.md`, `plan.md`, `phase-1-checklist.md`, `SESSION-LOG.md`. ([#3](https://github.com/IamMrCupp/claude-project-kit/pull/3))
+- `examples/README.md` — framing doc explaining the "read, don't copy" distinction between `templates/` and `examples/`. ([#3](https://github.com/IamMrCupp/claude-project-kit/pull/3))
+
+### Fixed
+- `README.md` memory-templates file list drift — replaced hard-coded `*_example.md` names with pattern-based listing that stays accurate as the starter set grows. ([#1](https://github.com/IamMrCupp/claude-project-kit/pull/1))
+- `{{PLATFORM_TARGETS}}` placeholder added to `templates/CONTEXT.md` — was referenced in `SETUP.md` but didn't exist in the template. ([#1](https://github.com/IamMrCupp/claude-project-kit/pull/1))
+- `{{REPO_URL}}` listed in `SETUP.md` step 3 fill-in — was in the template but missing from the fill-in instructions. ([#4](https://github.com/IamMrCupp/claude-project-kit/pull/4))
+- `SETUP.md` + `README.md` — clarified that the kit works for existing repos, not just greenfield. ([#5](https://github.com/IamMrCupp/claude-project-kit/pull/5))
+
+### For existing adopters
+- Copy `bootstrap.sh` from the new kit checkout if you want the scripted flow — your existing manual-setup still works.
+- New memory-templates files — copy any that apply into your project's auto-memory.
+- Re-read `SETUP.md`: numbering and content shifted (manual alternative is now an appendix; `bootstrap.sh` is the primary flow).
+
+---
+
+## Initial — 2026-04-21 (`13fd99d`)
+
+First commit. Seeded the kit with:
+
+- `README.md`, `SETUP.md`, `CONVENTIONS.md`, `PROMPTS.md`, `LICENSE`
+- `templates/` — `CONTEXT.md`, `SESSION-LOG.md`, `plan.md`, `implementation.md`, `phase-N-checklist.md`, `acceptance-test-results.md`, `research.md`
+- `memory-templates/` — `MEMORY.md`, `user_role.md`, feedback starters (commit format, docs in sync, merge strategy, PR test plans, PR check-off, push branches, watch CI in background), `project_current.md`, `reference_ai_working_folder.md`
