@@ -29,6 +29,7 @@ The working folder is project-specific knowledge ("what are we building, how far
 ├── SETUP.md                 ← step-by-step: starting a new project
 ├── CONVENTIONS.md           ← generic working rules (commits, PRs, etc.)
 ├── PROMPTS.md               ← ready-to-paste session-opening prompts
+├── CHANGELOG.md             ← what's landed; upgrade notes for existing adopters
 ├── LICENSE
 ├── bootstrap.sh             ← one-command setup (see SETUP.md step 2)
 ├── templates/               ← copied into a new working folder
