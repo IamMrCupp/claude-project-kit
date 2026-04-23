@@ -136,12 +136,20 @@ echo
 echo "Bootstrap complete."
 echo
 echo "Next steps:"
-echo "  1. cd $WORKING_FOLDER"
-echo "  2. Fill in {{PLACEHOLDERS}} — start with CONTEXT.md (see SETUP.md §3)"
+echo "  1. Open Claude Code in this repo (from $REPO_ROOT)."
+echo "  2. Paste this prompt:"
+echo
+echo "       Follow the instructions in $WORKING_FOLDER/SEED-PROMPT.md."
+echo
+echo "     Claude will deep-read the repo, fill the working-folder templates,"
+echo "     flag inferences with [CLAUDE-INFERRED] / [HUMAN-CONFIRM] markers,"
+echo "     and stop for your review before doing anything else."
 if [ "$SKIP_MEMORY" -eq 0 ]; then
-  echo "  3. Edit memory files at $MEMORY_DIR to match your preferences"
-  echo "     (especially reference_ai_working_folder.md — point it at the working folder)"
-  echo "  4. Open a Claude session and use a prompt from PROMPTS.md"
+  echo "  3. After review, tune memory at $MEMORY_DIR —"
+  echo "     especially reference_ai_working_folder.md."
 else
-  echo "  3. Open a Claude session and use a prompt from PROMPTS.md"
+  echo "  3. Memory was skipped (--skip-memory). See SETUP.md §Manual alternative"
+  echo "     if you want to seed it by hand later."
 fi
+echo
+echo "Prefer to fill the templates manually instead? See SETUP.md §3."
