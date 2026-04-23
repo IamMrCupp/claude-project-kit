@@ -44,21 +44,26 @@ Prefer to see what's happening step-by-step? See [Manual alternative](#manual-al
 
 ---
 
-## 3. Fill in placeholders
+## 3. Run the seed prompt
 
-Every template uses `{{PLACEHOLDER}}` markers. Search-and-replace in your editor, or edit by hand. Start with `CONTEXT.md` — it drives everything else. Minimum fill-in:
+`bootstrap.sh` dropped a `SEED-PROMPT.md` into your working folder alongside the other templates. Open Claude Code in your target repo and say:
 
-- `{{PROJECT_NAME}}` — human-friendly name
-- `{{REPO_SLUG}}` — e.g. `owner/repo`
-- `{{REPO_URL}}` — full URL, e.g. `https://github.com/owner/repo`
-- `{{REPO_PATH}}` — absolute local path
-- `{{WORKING_FOLDER}}` — path to this folder
-- `{{ONE_PARAGRAPH_DESCRIPTION}}` — what the project is, in plain English
-- `{{PLATFORM_TARGETS}}` — macOS / Linux / Windows / web / etc.
+> Follow the instructions in `<working-folder>/SEED-PROMPT.md`.
 
-For a fully filled-in reference, see [`examples/widget-tracker/CONTEXT.md`](examples/widget-tracker/CONTEXT.md) — a fictional Go CLI project at a plausible mid-phase state. The matching `plan.md`, `SESSION-LOG.md`, and `phase-1-checklist.md` live alongside it. Read them when you want to see what "populated" looks like rather than what the template dictates.
+Claude will:
 
-The other docs (`plan.md`, `implementation.md`, etc.) can stay mostly skeletal until you're ready to plan real work.
+- Read your target repo's README, package manifests, CI config, top-level source layout, and recent git activity.
+- Fill every field in `CONTEXT.md` that it can derive directly from the code or git state (project name, stack, CI platform, build commands, repo URL, etc.).
+- Mark fields it had to interpret with `[CLAUDE-INFERRED: <reasoning>]` — architecture summary, key dependencies — so you can confirm or correct in one pass.
+- Mark fields it can't derive with `[HUMAN-CONFIRM: <question>]` — project goals, stakeholders, phase status — things only you know.
+- Draft an initial `research.md` from what it read of the code.
+- **Stop**, summarize, and ask ≤5 targeted questions. It won't proceed past the draft pass without your confirmation.
+
+Answer the questions, sweep the `[CLAUDE-INFERRED]` / `[HUMAN-CONFIRM]` markers, and the working folder is ready.
+
+For a fully filled-in reference to compare against, see [`examples/widget-tracker/CONTEXT.md`](examples/widget-tracker/CONTEXT.md). The other docs (`plan.md`, `implementation.md`, etc.) can stay mostly skeletal until you're ready to plan real work.
+
+Prefer to fill everything by hand? See [Manual alternative](#manual-alternative) at the bottom.
 
 ---
 
@@ -117,7 +122,7 @@ The habit that makes this work: the **last thing you do** before quitting is upd
 
 ## Manual alternative
 
-If you can't run `bootstrap.sh` (no Bash available, restricted environment, or you just want to see what it does), perform the same work by hand.
+If you can't run `bootstrap.sh` (no Bash available, restricted environment, or you just want to see what it does) **or** you'd rather fill the templates by hand instead of running the seed prompt, perform the same work manually.
 
 ### Copy templates
 ```bash
@@ -134,6 +139,20 @@ PROJECT_MEMORY=~/.claude/projects/<sanitized-path>/memory
 mkdir -p "$PROJECT_MEMORY"
 cp <framework-dir>/memory-templates/*.md "$PROJECT_MEMORY/"
 ```
+
+### Fill placeholders by hand
+
+Every template uses `{{PLACEHOLDER}}` markers. Search-and-replace in your editor. Start with `CONTEXT.md` — it drives everything else. Minimum fill-in:
+
+- `{{PROJECT_NAME}}` — human-friendly name
+- `{{REPO_SLUG}}` — e.g. `owner/repo`
+- `{{REPO_URL}}` — full URL, e.g. `https://github.com/owner/repo`
+- `{{REPO_PATH}}` — absolute local path
+- `{{WORKING_FOLDER}}` — path to this folder
+- `{{ONE_PARAGRAPH_DESCRIPTION}}` — what the project is, in plain English
+- `{{PLATFORM_TARGETS}}` — macOS / Linux / Windows / web / etc.
+
+For a fully filled-in reference, see [`examples/widget-tracker/CONTEXT.md`](examples/widget-tracker/CONTEXT.md) — a fictional Go CLI project at a plausible mid-phase state.
 
 ---
 

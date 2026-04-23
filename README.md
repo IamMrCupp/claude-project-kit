@@ -31,7 +31,8 @@ The working folder is project-specific knowledge ("what are we building, how far
 ├── PROMPTS.md               ← ready-to-paste session-opening prompts
 ├── LICENSE
 ├── bootstrap.sh             ← one-command setup (see SETUP.md step 2)
-├── templates/               ← copy these into a new working folder
+├── templates/               ← copied into a new working folder
+│   ├── SEED-PROMPT.md       ← instructions for Claude to auto-fill the rest
 │   ├── CONTEXT.md
 │   ├── SESSION-LOG.md
 │   ├── plan.md
@@ -55,9 +56,9 @@ Works the same for greenfield repos and ones you're adopting it on mid-stream �
 
 1. Read [SETUP.md](SETUP.md) — it walks you through the full bootstrap in ~10 minutes.
 2. Pick a private working folder location (e.g. `~/Documents/Claude/Projects/<Project Name>/`).
-3. Copy templates, fill in placeholders (marked `{{LIKE_THIS}}`).
-4. Seed auto-memory with relevant starters from `memory-templates/` — edit to match the project.
-5. Open a Claude session and use a prompt from [PROMPTS.md](PROMPTS.md) to load project context before you start working.
+3. From your target repo root, run `bootstrap.sh <working-folder>` — it scaffolds the working folder and seeds auto-memory.
+4. Open Claude Code in the target repo and say *"Follow the instructions in `<working-folder>/SEED-PROMPT.md`."* Claude deep-reads your repo, fills the templates, flags anything it inferred or can't derive, and stops for your review.
+5. Answer Claude's questions, confirm the inferences, and start working. The normal per-session prompt lives in [PROMPTS.md](PROMPTS.md).
 
 ## When to update this framework
 
