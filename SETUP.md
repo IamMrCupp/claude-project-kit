@@ -159,6 +159,27 @@ For a fully filled-in reference, see [`examples/widget-tracker/CONTEXT.md`](exam
 
 ---
 
+## Upgrading an existing project
+
+`bootstrap.sh` is deliberately **write-once** — it won't touch a working folder or auto-memory dir that's already populated. When the kit evolves, existing adopters upgrade manually:
+
+1. Check [`CHANGELOG.md`](CHANGELOG.md) to see what's landed since your bootstrap SHA (or since the last time you upgraded). Each entry has a **For existing adopters** section with specifics.
+2. **New files in `templates/`** — copy into your working folder manually:
+   ```bash
+   cp <kit-dir>/templates/<NEW_FILE>.md <working-folder>/
+   ```
+3. **New files in `memory-templates/`** — copy into your auto-memory dir:
+   ```bash
+   cp <kit-dir>/memory-templates/<NEW_FILE>.md ~/.claude/projects/<sanitized-path>/memory/
+   ```
+4. **Changed prose in kit-level files** (e.g. `CONVENTIONS.md`, `SETUP.md`, `README.md`) — re-read them. Your local copies of working-folder templates and memory files are yours; they don't auto-upgrade.
+5. **New `bootstrap.sh` flags or behavior** — apply only to *new* projects you bootstrap going forward. Already-bootstrapped projects keep their current state.
+6. **Don't re-run `bootstrap.sh`** on a populated working folder — it errors by design. If you really need to re-seed, clear the auto-memory dir manually and pass `--force` to the working folder, but you'll lose local customizations.
+
+If a future change is *not* backwards-compatible (rare for a docs-only kit — only likely if a template structure fundamentally changes), the CHANGELOG entry will call that out explicitly.
+
+---
+
 ## Troubleshooting
 
 **Claude doesn't read the working folder automatically.** It has to be told each session. Either say it explicitly ("Read CONTEXT.md and SESSION-LOG.md…") or rely on the `reference_ai_working_folder.md` memory entry to remind it.
