@@ -30,6 +30,10 @@ Arguments:
 Options:
   --skip-memory      Skip copying memory-templates/ into the auto-memory
                      folder. Only the working folder will be seeded.
+  --project-name NAME
+                     Override the auto-derived project name used to fill
+                     {{PROJECT_NAME}} placeholders in seeded memory files.
+                     Defaults to the basename of <working-folder>.
   --force            Proceed even if the working folder already exists
                      and is non-empty. Does NOT override the auto-memory
                      safety check — existing memory files are never
@@ -41,6 +45,8 @@ Example:
   ~/Code/claude-project-kit/bootstrap.sh ~/Documents/Claude/Projects/my-new-project
 
 After running, edit the copied files (placeholders marked {{LIKE_THIS}}).
+Most common memory placeholders are auto-filled; any that couldn't be
+derived (e.g. {{REPO_SLUG}} when no git remote is set) stay as-is.
 See SETUP.md in the kit repo for the full walk-through.
 EOF
 }
@@ -48,11 +54,21 @@ EOF
 SKIP_MEMORY=0
 FORCE=0
 WORKING_FOLDER=""
+PROJECT_NAME=""
 
 while [ $# -gt 0 ]; do
   case "$1" in
     --skip-memory) SKIP_MEMORY=1; shift ;;
     --force) FORCE=1; shift ;;
+    --project-name)
+      if [ $# -lt 2 ]; then
+        echo "error: --project-name requires a value" >&2
+        usage >&2
+        exit 2
+      fi
+      PROJECT_NAME="$2"
+      shift 2
+      ;;
     -h|--help) usage; exit 0 ;;
     --*) echo "error: unknown option: $1" >&2; usage >&2; exit 2 ;;
     *)
@@ -93,10 +109,24 @@ REPO_ROOT="$(pwd)"
 SANITIZED="$(echo "$REPO_ROOT" | sed 's|/|-|g')"
 MEMORY_DIR="$HOME/.claude/projects/${SANITIZED}/memory"
 
+if [ -z "$PROJECT_NAME" ]; then
+  PROJECT_NAME="$(basename "$WORKING_FOLDER")"
+fi
+
+REPO_SLUG=""
+if REMOTE_URL="$(git -C "$REPO_ROOT" remote get-url origin 2>/dev/null)"; then
+  REPO_SLUG="$(printf '%s\n' "$REMOTE_URL" \
+    | sed -E 's|^https?://[^/]+/||; s|^git@[^:]+:||; s|\.git$||')"
+fi
+
 echo "Working folder: $WORKING_FOLDER"
 echo "Repo root:      $REPO_ROOT"
+echo "Project name:   $PROJECT_NAME"
 if [ "$SKIP_MEMORY" -eq 0 ]; then
   echo "Memory folder:  $MEMORY_DIR"
+  if [ -n "$REPO_SLUG" ]; then
+    echo "Repo slug:      $REPO_SLUG (from git remote origin)"
+  fi
 fi
 echo
 
@@ -130,6 +160,33 @@ if [ "$SKIP_MEMORY" -eq 0 ]; then
   mkdir -p "$MEMORY_DIR"
   cp "$KIT_ROOT/memory-templates/"*.md "$MEMORY_DIR/"
   echo "  ✓ Copied memory files to $MEMORY_DIR"
+
+  FILLED_FILES=0
+  for f in "$MEMORY_DIR"/*.md; do
+    tmp="$(mktemp)"
+    if [ -n "$REPO_SLUG" ]; then
+      sed -e "s|{{WORKING_FOLDER}}|$WORKING_FOLDER|g" \
+          -e "s|{{REPO_PATH}}|$REPO_ROOT|g" \
+          -e "s|{{PROJECT_NAME}}|$PROJECT_NAME|g" \
+          -e "s|{{REPO_SLUG}}|$REPO_SLUG|g" \
+          "$f" > "$tmp"
+    else
+      sed -e "s|{{WORKING_FOLDER}}|$WORKING_FOLDER|g" \
+          -e "s|{{REPO_PATH}}|$REPO_ROOT|g" \
+          -e "s|{{PROJECT_NAME}}|$PROJECT_NAME|g" \
+          "$f" > "$tmp"
+    fi
+    if ! cmp -s "$f" "$tmp"; then
+      mv "$tmp" "$f"
+      FILLED_FILES=$((FILLED_FILES + 1))
+    else
+      rm -f "$tmp"
+    fi
+  done
+  echo "  ✓ Filled placeholders in $FILLED_FILES memory files"
+  if [ -z "$REPO_SLUG" ]; then
+    echo "    (no git remote 'origin' found — {{REPO_SLUG}} left for manual fill)"
+  fi
 fi
 
 echo
@@ -145,8 +202,13 @@ echo "     Claude will deep-read the repo, fill the working-folder templates,"
 echo "     flag inferences with [CLAUDE-INFERRED] / [HUMAN-CONFIRM] markers,"
 echo "     and stop for your review before doing anything else."
 if [ "$SKIP_MEMORY" -eq 0 ]; then
-  echo "  3. After review, tune memory at $MEMORY_DIR —"
-  echo "     especially reference_ai_working_folder.md."
+  if [ -n "$REPO_SLUG" ]; then
+    echo "  3. (Optional) Review memory at $MEMORY_DIR —"
+    echo "     common placeholders pre-filled; tune feedback files to taste."
+  else
+    echo "  3. Review memory at $MEMORY_DIR —"
+    echo "     {{REPO_SLUG}} needs manual fill in project_current.md; others done."
+  fi
 else
   echo "  3. Memory was skipped (--skip-memory). See SETUP.md §Manual alternative"
   echo "     if you want to seed it by hand later."
