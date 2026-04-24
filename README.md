@@ -55,7 +55,8 @@ The working folder is project-specific knowledge ("what are we building, how far
     ├── user_role.md         ← who you are, how to calibrate
     ├── feedback_*.md        ← rules & preferences (commits, PRs, CI, etc.)
     ├── project_*.md         ← project context
-    └── reference_*.md       ← external pointers (working folder, etc.)
+    ├── reference_*.md       ← external pointers (working folder, etc.)
+    └── trackers/            ← per-tracker reference memory (github / jira / other)
 ```
 
 ## How to use (new or existing project)
@@ -64,7 +65,9 @@ Works the same for greenfield repos and ones you're adopting it on mid-stream �
 
 1. Read [SETUP.md](SETUP.md) — it walks you through the full bootstrap in ~10 minutes.
 2. Pick a private working folder location (e.g. `~/Documents/Claude/Projects/<Project Name>/`).
-3. From your target repo root, run `bootstrap.sh <working-folder>` — it scaffolds the working folder and seeds auto-memory.
+3. From your target repo root, run `bootstrap.sh` — either of:
+   - **Interactive (hand-held):** `bootstrap.sh` with no arguments prompts for working-folder path, project name, whether to seed auto-memory, and your issue tracker (GitHub Issues / JIRA / other / none). When JIRA is picked, it also prompts for the project key.
+   - **Non-interactive (scripted):** `bootstrap.sh <working-folder> [--tracker TYPE] [--jira-project KEY]` — see `bootstrap.sh -h` for the full flag list.
 4. Open Claude Code in the target repo and say *"Follow the instructions in `<working-folder>/SEED-PROMPT.md`."* Claude deep-reads your repo, fills the templates, flags anything it inferred or can't derive, and stops for your review.
 5. Answer Claude's questions, confirm the inferences, and start working. The normal per-session prompt lives in [PROMPTS.md](PROMPTS.md).
 
