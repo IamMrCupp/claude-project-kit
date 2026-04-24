@@ -6,6 +6,14 @@ See [Upgrading an existing project](SETUP.md#upgrading-an-existing-project) for 
 
 ---
 
+## [0.9.0](https://github.com/IamMrCupp/claude-project-kit/compare/v0.8.0...v0.9.0) (2026-04-24)
+
+
+### Features
+
+* **ci:** automate releases with release-please ([244f976](https://github.com/IamMrCupp/claude-project-kit/commit/244f97640163031b4f4429bf78ce04025f29daef))
+* **ci:** automate releases with release-please ([64f0b1a](https://github.com/IamMrCupp/claude-project-kit/commit/64f0b1a72b42cd49dc49c6ea77aaddc7747d0658))
+
 ## 2026-04-24 — Bats test suite for `bootstrap.sh`
 
 **Tag:** [v0.8.0](https://github.com/IamMrCupp/claude-project-kit/releases/tag/v0.8.0)
