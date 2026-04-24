@@ -6,6 +6,14 @@ See [Upgrading an existing project](SETUP.md#upgrading-an-existing-project) for 
 
 ---
 
+## [0.9.1](https://github.com/IamMrCupp/claude-project-kit/compare/v0.9.0...v0.9.1) (2026-04-24)
+
+
+### Documentation
+
+* add ko-fi and buymeacoffee funding links ([bc8b7c4](https://github.com/IamMrCupp/claude-project-kit/commit/bc8b7c41989d790b65d04b9669b77ba138471432))
+* add ko-fi and buymeacoffee funding links ([be15028](https://github.com/IamMrCupp/claude-project-kit/commit/be15028d250bad6498b81c31cf35257ece8944b4))
+
 ## [0.9.0](https://github.com/IamMrCupp/claude-project-kit/compare/v0.8.0...v0.9.0) (2026-04-24)
 
 
