@@ -46,7 +46,7 @@ cd <project-repo>
 cd <project-repo>
 <framework-dir>/bootstrap.sh
 ```
-Bootstrap prompts for the working-folder path, project name, whether to seed auto-memory, and your issue tracker (`github` / `jira` / `linear` / `gitlab` / `shortcut` / `other` / `none`, default `github`). For `jira` and `linear`, it also prompts for the project/team key. It then shows a summary and asks to confirm before any file writes. Scripted invocations (piped/redirected stdin) without a path argument still error rather than hanging.
+Bootstrap prompts for the working-folder path, project name, whether to seed auto-memory, your issue tracker (`github` / `jira` / `linear` / `gitlab` / `shortcut` / `other` / `none`, default `github`), and your primary CI/automation tool (`github-actions` / `gitlab-ci` / `jenkins` / `circleci` / `atlantis` / `ansible-cli` / `other` / `none`, default `none`). For `jira` and `linear`, it also prompts for the project/team key. It then shows a summary and asks to confirm before any file writes. Scripted invocations (piped/redirected stdin) without a path argument still error rather than hanging.
 
 Both modes create the working folder, copy the templates, rename `phase-N-checklist.md` → `phase-0-checklist.md`, and seed the project's auto-memory at the Claude harness's expected path (`~/.claude/projects/<sanitized>/memory/`). When an issue tracker is selected, a `reference_issue_tracker.md` file is seeded into auto-memory with tracker-specific guidance.
 
@@ -56,6 +56,7 @@ Flags:
 - `--tracker TYPE` — issue tracker: `github`, `jira`, `linear`, `gitlab`, `shortcut`, `other`, or `none`. Skipped if omitted in non-interactive mode.
 - `--jira-project KEY` — JIRA project key (e.g. `INFRA`). Implies `--tracker jira` if `--tracker` isn't also passed.
 - `--linear-team KEY` — Linear team key (e.g. `ENG`). Implies `--tracker linear` if `--tracker` isn't also passed.
+- `--ci TYPE` — primary CI/automation tool: `github-actions`, `gitlab-ci`, `jenkins`, `circleci`, `atlantis`, `ansible-cli`, `other`, or `none`. Skipped if omitted in non-interactive mode.
 - `--force` — proceed even if the working folder is already non-empty
 - `--dry-run` — print what would be created (paths, placeholder substitutions, tracker memory, MEMORY.md index line) and exit without writing anything. Safe to re-run.
 - `-h` / `--help` — show usage
