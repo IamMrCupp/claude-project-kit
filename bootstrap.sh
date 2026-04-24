@@ -49,6 +49,11 @@ Options:
                      --tracker jira if --tracker isn't also passed.
   --linear-team KEY  Set the Linear team key (e.g. ENG). Implies
                      --tracker linear if --tracker isn't also passed.
+  --ci TYPE          Primary CI/automation tool: github-actions,
+                     gitlab-ci, jenkins, circleci, atlantis, ansible-cli,
+                     other, or none. Seeds a tool-specific reference_ci.md
+                     into the project's auto-memory. If omitted in non-
+                     interactive mode, CI-reference setup is skipped.
   --force            Proceed even if the working folder already exists
                      and is non-empty. Does NOT override the auto-memory
                      safety check — existing memory files are never
@@ -83,6 +88,7 @@ PROJECT_NAME=""
 TRACKER=""
 JIRA_PROJECT_KEY=""
 LINEAR_TEAM_KEY=""
+CI_TOOL=""
 
 while [ $# -gt 0 ]; do
   case "$1" in
@@ -125,6 +131,15 @@ while [ $# -gt 0 ]; do
       LINEAR_TEAM_KEY="$2"
       shift 2
       ;;
+    --ci)
+      if [ $# -lt 2 ]; then
+        echo "error: --ci requires a value (github-actions|gitlab-ci|jenkins|circleci|atlantis|ansible-cli|other|none)" >&2
+        usage >&2
+        exit 2
+      fi
+      CI_TOOL="$2"
+      shift 2
+      ;;
     -h|--help) usage; exit 0 ;;
     --*) echo "error: unknown option: $1" >&2; usage >&2; exit 2 ;;
     *)
@@ -160,6 +175,11 @@ if [ "$TRACKER" = "linear" ] && [ -z "$LINEAR_TEAM_KEY" ] && [ ! -t 0 ]; then
   echo "error: --tracker linear requires --linear-team <KEY> in non-interactive mode" >&2
   exit 2
 fi
+
+case "$CI_TOOL" in
+  ""|github-actions|gitlab-ci|jenkins|circleci|atlantis|ansible-cli|other|none) ;;
+  *) echo "error: --ci must be one of: github-actions, gitlab-ci, jenkins, circleci, atlantis, ansible-cli, other, none (got: $CI_TOOL)" >&2; exit 2 ;;
+esac
 
 INTERACTIVE=0
 if [ -z "$WORKING_FOLDER" ]; then
@@ -248,6 +268,16 @@ if [ "$INTERACTIVE" -eq 1 ]; then
       fi
     fi
   fi
+
+  if [ "$SKIP_MEMORY" -eq 0 ] && [ -z "$CI_TOOL" ]; then
+    read -r -p "Primary CI/automation tool? [github-actions/gitlab-ci/jenkins/circleci/atlantis/ansible-cli/other/none, default none]: " INPUT
+    CI_TOOL="$(printf '%s' "$INPUT" | tr '[:upper:]' '[:lower:]')"
+    CI_TOOL="${CI_TOOL:-none}"
+    case "$CI_TOOL" in
+      github-actions|gitlab-ci|jenkins|circleci|atlantis|ansible-cli|other|none) ;;
+      *) echo "error: invalid CI tool: $CI_TOOL" >&2; exit 2 ;;
+    esac
+  fi
 fi
 
 REPO_SLUG=""
@@ -271,6 +301,9 @@ if [ "$SKIP_MEMORY" -eq 0 ]; then
       *)      echo "Issue tracker:  $TRACKER" ;;
     esac
   fi
+  if [ -n "$CI_TOOL" ] && [ "$CI_TOOL" != "none" ]; then
+    echo "CI / automation: $CI_TOOL"
+  fi
 fi
 echo
 
@@ -289,6 +322,10 @@ if [ "$DRY_RUN" -eq 1 ]; then
     echo "  + copy $KIT_ROOT/memory-templates/*.md"
     if [ -n "$TRACKER" ] && [ "$TRACKER" != "none" ]; then
       echo "  + copy memory-templates/trackers/$TRACKER.md → reference_issue_tracker.md"
+      echo "  + append index line to MEMORY.md"
+    fi
+    if [ -n "$CI_TOOL" ] && [ "$CI_TOOL" != "none" ]; then
+      echo "  + copy memory-templates/ci/$CI_TOOL.md → reference_ci.md"
       echo "  + append index line to MEMORY.md"
     fi
     echo "  + substitute placeholders:"
@@ -378,6 +415,28 @@ if [ "$SKIP_MEMORY" -eq 0 ]; then
     echo "  ✓ Seeded tracker memory ($TRACKER) → reference_issue_tracker.md"
   fi
 
+  if [ -n "$CI_TOOL" ] && [ "$CI_TOOL" != "none" ]; then
+    CI_SRC="$KIT_ROOT/memory-templates/ci/$CI_TOOL.md"
+    if [ ! -f "$CI_SRC" ]; then
+      echo "error: CI template not found: $CI_SRC" >&2
+      exit 1
+    fi
+    cp "$CI_SRC" "$MEMORY_DIR/reference_ci.md"
+    {
+      printf -- '- [CI / automation for %s](reference_ci.md) — ' "$PROJECT_NAME"
+      case "$CI_TOOL" in
+        github-actions) printf 'CI runs on GitHub Actions (`gh run` CLI)\n' ;;
+        gitlab-ci)      printf 'CI runs on GitLab CI/CD (`glab ci` CLI)\n' ;;
+        jenkins)        printf 'CI runs on Jenkins (host + job names documented in CONTEXT.md)\n' ;;
+        circleci)       printf 'CI runs on CircleCI (`circleci` CLI)\n' ;;
+        atlantis)       printf 'Terraform automation via Atlantis (PR-comment driven)\n' ;;
+        ansible-cli)    printf 'automation via local `ansible-playbook` runs\n' ;;
+        other)          printf 'CI/automation tool — fill in the placeholders\n' ;;
+      esac
+    } >> "$MEMORY_DIR/MEMORY.md"
+    echo "  ✓ Seeded CI memory ($CI_TOOL) → reference_ci.md"
+  fi
+
   FILLED_FILES=0
   for f in "$MEMORY_DIR"/*.md; do
     tmp="$(mktemp)"
@@ -433,6 +492,10 @@ if [ "$SKIP_MEMORY" -eq 0 ]; then
   if [ "$TRACKER" = "other" ]; then
     echo "     Also fill in the {{placeholders}} in reference_issue_tracker.md"
     echo "     — the 'other' tracker template needs your specifics."
+  fi
+  if [ "$CI_TOOL" = "other" ]; then
+    echo "     Also fill in the {{placeholders}} in reference_ci.md"
+    echo "     — the 'other' CI template needs your specifics."
   fi
 else
   echo "  3. Memory was skipped (--skip-memory). See SETUP.md §Manual alternative"
