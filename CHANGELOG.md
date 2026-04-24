@@ -6,6 +6,22 @@ See [Upgrading an existing project](SETUP.md#upgrading-an-existing-project) for 
 
 ---
 
+## 2026-04-23 — More tracker variants
+
+**Tag:** [v0.5.0](https://github.com/IamMrCupp/claude-project-kit/releases/tag/v0.5.0)
+
+### Added
+- `memory-templates/trackers/linear.md`, `gitlab.md`, `shortcut.md` — three new reference-memory variants. Complements the existing `github.md` / `jira.md` / `other.md`. ([#16](https://github.com/IamMrCupp/claude-project-kit/pull/16))
+- `bootstrap.sh` — `--tracker` now accepts `linear`, `gitlab`, `shortcut` in addition to the existing values. ([#16](https://github.com/IamMrCupp/claude-project-kit/pull/16))
+- `bootstrap.sh` — new `--linear-team KEY` flag (analogous to `--jira-project`). Implies `--tracker linear`. Required in non-interactive mode when tracker is Linear. ([#16](https://github.com/IamMrCupp/claude-project-kit/pull/16))
+- Interactive mode now lists all seven tracker options and prompts for the team key when Linear is selected. ([#16](https://github.com/IamMrCupp/claude-project-kit/pull/16))
+
+### For existing adopters
+- No breaking changes. Existing `--tracker github` / `--tracker jira` invocations behave identically.
+- To add tracker awareness to an already-bootstrapped project using one of the new trackers, copy `memory-templates/trackers/<TYPE>.md` from the kit into your project's auto-memory folder as `reference_issue_tracker.md` and fill in placeholders by hand.
+
+---
+
 ## 2026-04-23 — Issue tracker awareness
 
 **Tag:** [v0.4.0](https://github.com/IamMrCupp/claude-project-kit/releases/tag/v0.4.0)
