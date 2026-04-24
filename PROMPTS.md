@@ -74,6 +74,44 @@ confused. Don't make changes yet — align on direction first.
 
 ---
 
+## 3. Wrapping up a session
+
+Use this at the end of a session to apply the end-of-session hygiene from [SETUP.md §7](SETUP.md). It takes stock of what actually happened and drafts the updates for your review — it does **not** edit the working folder autonomously.
+
+```
+We're wrapping up this session. Help me apply the end-of-session hygiene.
+Do NOT edit any files yet — draft everything, show me, and wait for my
+confirmation before writing anything.
+
+1. Draft a SESSION-LOG.md entry for today:
+   - Date (YYYY-MM-DD)
+   - 1-line focus
+   - Branches touched / PRs opened, merged, or still open (with numbers)
+   - Decisions, rule changes, or gotchas worth recording for next session
+   - Open threads ("what we'd pick up next time")
+
+2. Suggest whether CONTEXT.md's "Current Phase Status" line needs a bump,
+   based on what changed this session. If so, propose the new wording.
+
+3. Scan the current phase-<N>-checklist.md:
+   - Flag items that landed this session but aren't yet ticked
+   - Flag ticked items missing a branch or PR number
+
+4. Flag any preference or rule that came up more than once this session —
+   those are candidates for a new feedback_*.md memory file. Draft the
+   feedback entry if applicable.
+
+Show me each of these as a separate section. I'll confirm each before
+anything is written.
+```
+
+**Notes:**
+- If `reference_ai_working_folder.md` is set up in auto-memory, Claude already knows where the working folder lives. Otherwise prefix with: *"Working folder is `<path>`."*
+- The "draft first, don't write" guard is load-bearing — session-end updates are easy to get wrong (overzealous status bumps, hallucinated PR numbers), and reviewing is faster than undoing.
+- For a bare-minimum wrap-up (no checklist or memory review), the one-liner *"Draft a SESSION-LOG.md entry for today and show it to me"* is usually enough.
+
+---
+
 ## When to write a new prompt
 
 Add one here whenever you find yourself typing similar setup instructions into a fresh session for the third time. A good prompt is:

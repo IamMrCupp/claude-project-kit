@@ -6,6 +6,21 @@ See [Upgrading an existing project](SETUP.md#upgrading-an-existing-project) for 
 
 ---
 
+## 2026-04-23 — End-of-session prompt and `--dry-run`
+
+**Tag:** [v0.6.0](https://github.com/IamMrCupp/claude-project-kit/releases/tag/v0.6.0)
+
+### Added
+- `PROMPTS.md` — new **Prompt 3: Wrapping up a session**. Scaffolds the end-of-session hygiene from SETUP.md §7: drafts a `SESSION-LOG.md` entry, suggests `CONTEXT.md` status-line updates, flags checklist items missing PR numbers, and surfaces memory candidates — all in draft form, waiting on confirmation before writing. ([#17](https://github.com/IamMrCupp/claude-project-kit/pull/17))
+- `bootstrap.sh --dry-run` — preview every action (paths, placeholder substitutions, tracker memory copy, MEMORY.md index append) and exit without writing anything. Safe to re-run. ([#17](https://github.com/IamMrCupp/claude-project-kit/pull/17))
+- `SETUP.md §7` — pointer to Prompt 3 for users who want a scaffolded wrap-up rather than doing the checklist by hand. ([#17](https://github.com/IamMrCupp/claude-project-kit/pull/17))
+
+### For existing adopters
+- No breaking changes. `--dry-run` is opt-in; existing invocations behave identically.
+- To use Prompt 3, pull the updated `PROMPTS.md` from the kit — the prompt is self-contained and doesn't require any memory or template changes in your project.
+
+---
+
 ## 2026-04-23 — More tracker variants
 
 **Tag:** [v0.5.0](https://github.com/IamMrCupp/claude-project-kit/releases/tag/v0.5.0)

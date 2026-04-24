@@ -57,6 +57,7 @@ Flags:
 - `--jira-project KEY` — JIRA project key (e.g. `INFRA`). Implies `--tracker jira` if `--tracker` isn't also passed.
 - `--linear-team KEY` — Linear team key (e.g. `ENG`). Implies `--tracker linear` if `--tracker` isn't also passed.
 - `--force` — proceed even if the working folder is already non-empty
+- `--dry-run` — print what would be created (paths, placeholder substitutions, tracker memory, MEMORY.md index line) and exit without writing anything. Safe to re-run.
 - `-h` / `--help` — show usage
 
 Prefer to see what's happening step-by-step? See [Manual alternative](#manual-alternative) at the bottom of this doc.
@@ -139,6 +140,8 @@ Every working session should end with:
 4. Auto-memory refreshed — if a rule came up twice, save it as feedback
 
 The habit that makes this work: the **last thing you do** before quitting is update these docs. It takes two minutes and rescues the next session from "where was I?"
+
+For a scaffolded version of this pass, paste **Prompt 3 ("Wrapping up a session")** from [PROMPTS.md](PROMPTS.md). It has Claude draft all four items and stop for your review before writing anything — easier than remembering each piece by hand.
 
 ---
 
