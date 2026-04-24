@@ -6,6 +6,25 @@ See [Upgrading an existing project](SETUP.md#upgrading-an-existing-project) for 
 
 ---
 
+## 2026-04-24 — CI/automation reference memory
+
+**Tag:** [v0.7.0](https://github.com/IamMrCupp/claude-project-kit/releases/tag/v0.7.0)
+
+### Added
+- `memory-templates/ci/` — seven reference-memory variants describing how Claude should interact with each CI/automation platform: `github-actions.md`, `gitlab-ci.md`, `jenkins.md`, `circleci.md`, `atlantis.md`, `ansible-cli.md`, `other.md`. Each documents the CLI of record, log-fetching patterns, and conventions specific to that tool (e.g. Atlantis's PR-comment model, Ansible's local operator discipline). ([#18](https://github.com/IamMrCupp/claude-project-kit/pull/18))
+- `bootstrap.sh --ci TYPE` — new flag. Seeds `reference_ci.md` into the project's auto-memory from the selected variant and appends an index line to `MEMORY.md`. ([#18](https://github.com/IamMrCupp/claude-project-kit/pull/18))
+- Interactive mode now prompts for CI/automation tool after the tracker prompt (default `none`). ([#18](https://github.com/IamMrCupp/claude-project-kit/pull/18))
+- `bootstrap.sh --dry-run` output includes the CI reference copy in the plan. ([#18](https://github.com/IamMrCupp/claude-project-kit/pull/18))
+
+### Changed
+- This release replaces the originally-planned CI *workflow* starters (ship `test.yml` / `lint.yml` scaffolds). Workflow starters fit too narrow a slice of real CI landscapes (Jenkins, CircleCI, Atlantis, Ansible CLI, etc. all bypassed) and duplicated thin scaffolds adopters already know how to write. Reference-memory variants scale across all of them and teach Claude *how to interact with* the chosen tool instead. ([#18](https://github.com/IamMrCupp/claude-project-kit/pull/18))
+
+### For existing adopters
+- No breaking changes. Non-interactive invocations without `--ci` behave identically — no CI reference file is seeded.
+- To add CI awareness to an already-bootstrapped project, copy `memory-templates/ci/<TYPE>.md` from the kit into your project's auto-memory folder as `reference_ci.md` and add a line referencing it in your `MEMORY.md`.
+
+---
+
 ## 2026-04-23 — End-of-session prompt and `--dry-run`
 
 **Tag:** [v0.6.0](https://github.com/IamMrCupp/claude-project-kit/releases/tag/v0.6.0)
