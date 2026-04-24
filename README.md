@@ -80,6 +80,15 @@ Treat this kit as a living template. If a pattern or rule proves useful on a rea
 
 The conventions and tooling notes are written assuming **Git + GitHub + GitHub Actions**. They translate cleanly to GitLab (MRs, `glab ci`, pipelines), Jenkins, Azure DevOps, etc. — adapt the specifics, keep the principles.
 
+## Support
+
+If this kit saved you time and you'd like to throw a coffee my way:
+
+- [ko-fi.com/iammrcupp](https://ko-fi.com/iammrcupp)
+- [buymeacoffee.com/iammrcupp](https://buymeacoffee.com/iammrcupp)
+
+No pressure — the kit's MIT-licensed and will stay that way regardless.
+
 ## License
 
 MIT — see [LICENSE](LICENSE). Use it, fork it, strip out what doesn't fit your context.
