@@ -17,15 +17,21 @@ KIT_ROOT="$SCRIPT_DIR"
 
 usage() {
   cat <<EOF
-Usage: bootstrap.sh [options] <working-folder>
+Usage: bootstrap.sh [options] [<working-folder>]
 
 Create a Claude working folder and seed auto-memory for the project
 whose repo you run this from. The current working directory is assumed
 to be the repo root.
 
+If <working-folder> is omitted and stdin is a terminal, bootstrap.sh
+prompts interactively for path, project name, and whether to seed
+auto-memory — intended for first-time users. Scripted invocations
+without a path argument still error (no hang waiting for input).
+
 Arguments:
   <working-folder>   Absolute path where the Claude working folder will
                      be created (e.g. ~/Documents/Claude/Projects/foo).
+                     Omit to run interactively.
 
 Options:
   --skip-memory      Skip copying memory-templates/ into the auto-memory
@@ -40,9 +46,14 @@ Options:
                      overwritten.
   -h, --help         Show this help and exit.
 
-Example:
+Examples:
+  # Non-interactive
   cd ~/Code/my-new-project
   ~/Code/claude-project-kit/bootstrap.sh ~/Documents/Claude/Projects/my-new-project
+
+  # Interactive
+  cd ~/Code/my-new-project
+  ~/Code/claude-project-kit/bootstrap.sh
 
 After running, edit the copied files (placeholders marked {{LIKE_THIS}}).
 Most common memory placeholders are auto-filled; any that couldn't be
@@ -84,10 +95,32 @@ while [ $# -gt 0 ]; do
   esac
 done
 
+INTERACTIVE=0
 if [ -z "$WORKING_FOLDER" ]; then
-  echo "error: missing <working-folder> argument" >&2
-  usage >&2
-  exit 2
+  if [ -t 0 ] && [ -t 1 ]; then
+    INTERACTIVE=1
+  else
+    echo "error: missing <working-folder> argument" >&2
+    usage >&2
+    exit 2
+  fi
+fi
+
+if [ "$INTERACTIVE" -eq 1 ]; then
+  REPO_BASENAME="$(basename "$(pwd)")"
+  DEFAULT_WF="$HOME/Documents/Claude/Projects/$REPO_BASENAME"
+
+  echo "bootstrap.sh — interactive mode"
+  echo "(Run with -h for flags and non-interactive usage.)"
+  echo
+  echo "Repo: $(pwd)"
+  echo
+  echo "Working-folder path. Examples:"
+  echo "  $DEFAULT_WF"
+  echo "  $HOME/claude-projects/$REPO_BASENAME"
+  echo "  (any absolute path outside the repo — see SETUP.md §1)"
+  read -r -p "Path [$DEFAULT_WF]: " INPUT
+  WORKING_FOLDER="${INPUT:-$DEFAULT_WF}"
 fi
 
 case "$WORKING_FOLDER" in
@@ -113,6 +146,18 @@ if [ -z "$PROJECT_NAME" ]; then
   PROJECT_NAME="$(basename "$WORKING_FOLDER")"
 fi
 
+if [ "$INTERACTIVE" -eq 1 ]; then
+  read -r -p "Project name [$PROJECT_NAME]: " INPUT
+  PROJECT_NAME="${INPUT:-$PROJECT_NAME}"
+
+  read -r -p "Seed auto-memory? [Y/n]: " INPUT
+  case "$(printf '%s' "$INPUT" | tr '[:upper:]' '[:lower:]')" in
+    ""|y|yes) ;;
+    n|no) SKIP_MEMORY=1 ;;
+    *) echo "error: invalid response: $INPUT" >&2; exit 2 ;;
+  esac
+fi
+
 REPO_SLUG=""
 if REMOTE_URL="$(git -C "$REPO_ROOT" remote get-url origin 2>/dev/null)"; then
   REPO_SLUG="$(printf '%s\n' "$REMOTE_URL" \
@@ -129,6 +174,15 @@ if [ "$SKIP_MEMORY" -eq 0 ]; then
   fi
 fi
 echo
+
+if [ "$INTERACTIVE" -eq 1 ]; then
+  read -r -p "Proceed? [Y/n]: " INPUT
+  case "$(printf '%s' "$INPUT" | tr '[:upper:]' '[:lower:]')" in
+    ""|y|yes) ;;
+    *) echo "Aborted."; exit 0 ;;
+  esac
+  echo
+fi
 
 if [ -e "$WORKING_FOLDER" ]; then
   if [ ! -d "$WORKING_FOLDER" ]; then
