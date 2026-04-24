@@ -40,12 +40,15 @@ Options:
                      Override the auto-derived project name used to fill
                      {{PROJECT_NAME}} placeholders in seeded memory files.
                      Defaults to the basename of <working-folder>.
-  --tracker TYPE     Issue tracker type: github, jira, other, or none.
-                     Seeds a tracker-specific reference_issue_tracker.md
-                     into the project's auto-memory. If omitted in non-
-                     interactive mode, tracker setup is skipped entirely.
+  --tracker TYPE     Issue tracker type: github, jira, linear, gitlab,
+                     shortcut, other, or none. Seeds a tracker-specific
+                     reference_issue_tracker.md into the project's
+                     auto-memory. If omitted in non-interactive mode,
+                     tracker setup is skipped entirely.
   --jira-project KEY Set the JIRA project key (e.g. INFRA). Implies
                      --tracker jira if --tracker isn't also passed.
+  --linear-team KEY  Set the Linear team key (e.g. ENG). Implies
+                     --tracker linear if --tracker isn't also passed.
   --force            Proceed even if the working folder already exists
                      and is non-empty. Does NOT override the auto-memory
                      safety check — existing memory files are never
@@ -74,6 +77,7 @@ WORKING_FOLDER=""
 PROJECT_NAME=""
 TRACKER=""
 JIRA_PROJECT_KEY=""
+LINEAR_TEAM_KEY=""
 
 while [ $# -gt 0 ]; do
   case "$1" in
@@ -106,6 +110,15 @@ while [ $# -gt 0 ]; do
       JIRA_PROJECT_KEY="$2"
       shift 2
       ;;
+    --linear-team)
+      if [ $# -lt 2 ]; then
+        echo "error: --linear-team requires a value" >&2
+        usage >&2
+        exit 2
+      fi
+      LINEAR_TEAM_KEY="$2"
+      shift 2
+      ;;
     -h|--help) usage; exit 0 ;;
     --*) echo "error: unknown option: $1" >&2; usage >&2; exit 2 ;;
     *)
@@ -124,14 +137,21 @@ done
 if [ -n "$JIRA_PROJECT_KEY" ] && [ -z "$TRACKER" ]; then
   TRACKER="jira"
 fi
+if [ -n "$LINEAR_TEAM_KEY" ] && [ -z "$TRACKER" ]; then
+  TRACKER="linear"
+fi
 
 case "$TRACKER" in
-  ""|github|jira|other|none) ;;
-  *) echo "error: --tracker must be one of: github, jira, other, none (got: $TRACKER)" >&2; exit 2 ;;
+  ""|github|jira|linear|gitlab|shortcut|other|none) ;;
+  *) echo "error: --tracker must be one of: github, jira, linear, gitlab, shortcut, other, none (got: $TRACKER)" >&2; exit 2 ;;
 esac
 
 if [ "$TRACKER" = "jira" ] && [ -z "$JIRA_PROJECT_KEY" ] && [ ! -t 0 ]; then
   echo "error: --tracker jira requires --jira-project <KEY> in non-interactive mode" >&2
+  exit 2
+fi
+if [ "$TRACKER" = "linear" ] && [ -z "$LINEAR_TEAM_KEY" ] && [ ! -t 0 ]; then
+  echo "error: --tracker linear requires --linear-team <KEY> in non-interactive mode" >&2
   exit 2
 fi
 
@@ -198,11 +218,11 @@ if [ "$INTERACTIVE" -eq 1 ]; then
   esac
 
   if [ "$SKIP_MEMORY" -eq 0 ] && [ -z "$TRACKER" ]; then
-    read -r -p "Issue tracker? [github/jira/other/none, default github]: " INPUT
+    read -r -p "Issue tracker? [github/jira/linear/gitlab/shortcut/other/none, default github]: " INPUT
     TRACKER="$(printf '%s' "$INPUT" | tr '[:upper:]' '[:lower:]')"
     TRACKER="${TRACKER:-github}"
     case "$TRACKER" in
-      github|jira|other|none) ;;
+      github|jira|linear|gitlab|shortcut|other|none) ;;
       *) echo "error: invalid tracker: $TRACKER" >&2; exit 2 ;;
     esac
 
@@ -210,6 +230,14 @@ if [ "$INTERACTIVE" -eq 1 ]; then
       read -r -p "JIRA project key (e.g. INFRA): " JIRA_PROJECT_KEY
       if [ -z "$JIRA_PROJECT_KEY" ]; then
         echo "error: JIRA project key is required when tracker is jira" >&2
+        exit 2
+      fi
+    fi
+
+    if [ "$TRACKER" = "linear" ] && [ -z "$LINEAR_TEAM_KEY" ]; then
+      read -r -p "Linear team key (e.g. ENG): " LINEAR_TEAM_KEY
+      if [ -z "$LINEAR_TEAM_KEY" ]; then
+        echo "error: Linear team key is required when tracker is linear" >&2
         exit 2
       fi
     fi
@@ -231,11 +259,11 @@ if [ "$SKIP_MEMORY" -eq 0 ]; then
     echo "Repo slug:      $REPO_SLUG (from git remote origin)"
   fi
   if [ -n "$TRACKER" ] && [ "$TRACKER" != "none" ]; then
-    if [ "$TRACKER" = "jira" ]; then
-      echo "Issue tracker:  jira (project: $JIRA_PROJECT_KEY)"
-    else
-      echo "Issue tracker:  $TRACKER"
-    fi
+    case "$TRACKER" in
+      jira)   echo "Issue tracker:  jira (project: $JIRA_PROJECT_KEY)" ;;
+      linear) echo "Issue tracker:  linear (team: $LINEAR_TEAM_KEY)" ;;
+      *)      echo "Issue tracker:  $TRACKER" ;;
+    esac
   fi
 fi
 echo
@@ -290,9 +318,12 @@ if [ "$SKIP_MEMORY" -eq 0 ]; then
     {
       printf -- '- [Issue tracker for %s](reference_issue_tracker.md) — ' "$PROJECT_NAME"
       case "$TRACKER" in
-        github) printf 'tickets live in GitHub Issues on this repo\n' ;;
-        jira)   printf 'tickets live in JIRA project `%s`\n' "$JIRA_PROJECT_KEY" ;;
-        other)  printf 'tickets live in an external system — fill in the placeholders\n' ;;
+        github)   printf 'tickets live in GitHub Issues on this repo\n' ;;
+        jira)     printf 'tickets live in JIRA project `%s`\n' "$JIRA_PROJECT_KEY" ;;
+        linear)   printf 'issues live in Linear team `%s`\n' "$LINEAR_TEAM_KEY" ;;
+        gitlab)   printf 'tickets live in GitLab Issues on this repo\n' ;;
+        shortcut) printf 'stories live in Shortcut (sc-NNN refs)\n' ;;
+        other)    printf 'tickets live in an external system — fill in the placeholders\n' ;;
       esac
     } >> "$MEMORY_DIR/MEMORY.md"
     echo "  ✓ Seeded tracker memory ($TRACKER) → reference_issue_tracker.md"
@@ -307,12 +338,14 @@ if [ "$SKIP_MEMORY" -eq 0 ]; then
           -e "s|{{PROJECT_NAME}}|$PROJECT_NAME|g" \
           -e "s|{{REPO_SLUG}}|$REPO_SLUG|g" \
           -e "s|{{JIRA_PROJECT_KEY}}|$JIRA_PROJECT_KEY|g" \
+          -e "s|{{LINEAR_TEAM_KEY}}|$LINEAR_TEAM_KEY|g" \
           "$f" > "$tmp"
     else
       sed -e "s|{{WORKING_FOLDER}}|$WORKING_FOLDER|g" \
           -e "s|{{REPO_PATH}}|$REPO_ROOT|g" \
           -e "s|{{PROJECT_NAME}}|$PROJECT_NAME|g" \
           -e "s|{{JIRA_PROJECT_KEY}}|$JIRA_PROJECT_KEY|g" \
+          -e "s|{{LINEAR_TEAM_KEY}}|$LINEAR_TEAM_KEY|g" \
           "$f" > "$tmp"
     fi
     if ! cmp -s "$f" "$tmp"; then
