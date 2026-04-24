@@ -1,0 +1,33 @@
+name: Bats
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    paths:
+      - 'bootstrap.sh'
+      - 'memory-templates/**'
+      - 'templates/**'
+      - 'tests/**'
+      - '.github/workflows/bats.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  bats:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install bats
+        run: sudo apt-get update && sudo apt-get install -y bats
+
+      - name: Configure git (required by bootstrap.sh + tests)
+        run: |
+          git config --global user.email "bats@example.invalid"
+          git config --global user.name "Bats Test Runner"
+          git config --global init.defaultBranch main
+
+      - name: Run bats suite
+        run: bats tests/

@@ -211,7 +211,7 @@ fi
 
 case "$WORKING_FOLDER" in
   "~") WORKING_FOLDER="$HOME" ;;
-  "~/"*) WORKING_FOLDER="$HOME/${WORKING_FOLDER#~/}" ;;
+  "~/"*) WORKING_FOLDER="$HOME/${WORKING_FOLDER#"~/"}" ;;
 esac
 
 case "$WORKING_FOLDER" in

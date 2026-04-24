@@ -6,6 +6,25 @@ See [Upgrading an existing project](SETUP.md#upgrading-an-existing-project) for 
 
 ---
 
+## 2026-04-24 — Bats test suite for `bootstrap.sh`
+
+**Tag:** [v0.8.0](https://github.com/IamMrCupp/claude-project-kit/releases/tag/v0.8.0)
+
+### Added
+- `tests/` — [Bats](https://bats-core.readthedocs.io/) test suite with 61 tests across five files: arg parsing, template + memory seeding, tracker variants, CI variants, `--dry-run` behavior. ([#19](https://github.com/IamMrCupp/claude-project-kit/pull/19))
+- `tests/helpers.bash` — sandboxed-setup helpers that override `HOME` and `cwd` per test so auto-memory writes stay isolated. ([#19](https://github.com/IamMrCupp/claude-project-kit/pull/19))
+- `tests/README.md` — how to run tests locally, what's covered, how to add new tests. ([#19](https://github.com/IamMrCupp/claude-project-kit/pull/19))
+- `.github/workflows/bats.yml` — CI workflow runs the suite on PRs that touch `bootstrap.sh`, `memory-templates/`, `templates/`, or `tests/`. ([#19](https://github.com/IamMrCupp/claude-project-kit/pull/19))
+
+### Fixed
+- `bootstrap.sh` — tilde expansion in the `~/path` working-folder argument was broken: bash's tilde expansion in parameter-expansion word context caused `${WORKING_FOLDER#~/}` to try stripping the expanded `$HOME/` prefix (which doesn't match `~/foo`), leaving the literal `~/` in the path. Fix: quote the pattern — `${WORKING_FOLDER#"~/"}`. Caught by the new test suite. ([#19](https://github.com/IamMrCupp/claude-project-kit/pull/19))
+
+### For existing adopters
+- No runtime changes apart from the tilde fix (which only improves broken behavior — no scripts should have relied on the buggy output).
+- Contributors to the kit itself: run `brew install bats-core` (macOS) or `apt install bats` (Debian/Ubuntu), then `bats tests/` from the kit root.
+
+---
+
 ## 2026-04-24 — CI/automation reference memory
 
 **Tag:** [v0.7.0](https://github.com/IamMrCupp/claude-project-kit/releases/tag/v0.7.0)
