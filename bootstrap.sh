@@ -53,6 +53,10 @@ Options:
                      and is non-empty. Does NOT override the auto-memory
                      safety check — existing memory files are never
                      overwritten.
+  --dry-run          Print what would be created (paths, placeholder
+                     substitutions, tracker memory, MEMORY.md index
+                     line) and exit without writing anything. Safe to
+                     run repeatedly to preview config before committing.
   -h, --help         Show this help and exit.
 
 Examples:
@@ -73,6 +77,7 @@ EOF
 
 SKIP_MEMORY=0
 FORCE=0
+DRY_RUN=0
 WORKING_FOLDER=""
 PROJECT_NAME=""
 TRACKER=""
@@ -83,6 +88,7 @@ while [ $# -gt 0 ]; do
   case "$1" in
     --skip-memory) SKIP_MEMORY=1; shift ;;
     --force) FORCE=1; shift ;;
+    --dry-run) DRY_RUN=1; shift ;;
     --project-name)
       if [ $# -lt 2 ]; then
         echo "error: --project-name requires a value" >&2
@@ -267,6 +273,49 @@ if [ "$SKIP_MEMORY" -eq 0 ]; then
   fi
 fi
 echo
+
+if [ "$DRY_RUN" -eq 1 ]; then
+  echo "=== DRY RUN — no files will be written ==="
+  echo
+  echo "Would create working folder: $WORKING_FOLDER"
+  echo "  + copy $KIT_ROOT/templates/*.md"
+  echo "  + rename phase-N-checklist.md → phase-0-checklist.md"
+  if [ -e "$WORKING_FOLDER" ] && [ -n "$(ls -A "$WORKING_FOLDER" 2>/dev/null)" ] && [ "$FORCE" -eq 0 ]; then
+    echo "  ! working folder already non-empty — real run would fail without --force"
+  fi
+  echo
+  if [ "$SKIP_MEMORY" -eq 0 ]; then
+    echo "Would create memory folder: $MEMORY_DIR"
+    echo "  + copy $KIT_ROOT/memory-templates/*.md"
+    if [ -n "$TRACKER" ] && [ "$TRACKER" != "none" ]; then
+      echo "  + copy memory-templates/trackers/$TRACKER.md → reference_issue_tracker.md"
+      echo "  + append index line to MEMORY.md"
+    fi
+    echo "  + substitute placeholders:"
+    echo "      {{WORKING_FOLDER}}    → $WORKING_FOLDER"
+    echo "      {{REPO_PATH}}         → $REPO_ROOT"
+    echo "      {{PROJECT_NAME}}      → $PROJECT_NAME"
+    if [ -n "$REPO_SLUG" ]; then
+      echo "      {{REPO_SLUG}}         → $REPO_SLUG"
+    else
+      echo "      {{REPO_SLUG}}         → (not set — no git remote 'origin')"
+    fi
+    if [ -n "$JIRA_PROJECT_KEY" ]; then
+      echo "      {{JIRA_PROJECT_KEY}}  → $JIRA_PROJECT_KEY"
+    fi
+    if [ -n "$LINEAR_TEAM_KEY" ]; then
+      echo "      {{LINEAR_TEAM_KEY}}   → $LINEAR_TEAM_KEY"
+    fi
+    if [ -d "$MEMORY_DIR" ] && [ -n "$(ls -A "$MEMORY_DIR" 2>/dev/null)" ]; then
+      echo "  ! memory folder already non-empty — real run would fail (never overwrites memory)"
+    fi
+  else
+    echo "Memory seeding skipped (--skip-memory)."
+  fi
+  echo
+  echo "No changes made. Re-run without --dry-run to apply."
+  exit 0
+fi
 
 if [ "$INTERACTIVE" -eq 1 ]; then
   read -r -p "Proceed? [Y/n]: " INPUT
