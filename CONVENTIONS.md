@@ -14,6 +14,7 @@ Project-agnostic habits that have proven out across real work. Start from these,
   - Example: `fix(auth): handle expired refresh tokens on retry`
   - Always `git commit -s -m "…"` with one `-m` — no body, no bullets. Context lives in the PR, not the commit.
   - **No AI co-author trailers.** Commits are attributed to the human committer only — tool assistance is a workflow detail, not an authorship claim. Don't append `Co-Authored-By: Claude …` (or any agent attribution) via a HEREDOC body. The single-line `-m` rule above makes this a non-issue if you stick to it.
+  - **Commit types drive releases.** `feat` → minor bump, `fix` → patch bump, `feat!:` or `BREAKING CHANGE:` → major bump. Other types (`docs`, `chore`, `test`, etc.) don't trigger a release unless paired with a `feat`/`fix`. See `release-please-config.json` for the full type → section mapping.
 - **Branches + PRs only** — no direct pushes to `main` / default branch. Enforce with branch protection when possible.
 - **Branch name first, then code.** Before writing code, propose the branch name (`feat/…`, `fix/…`, `ci/…`) and get a nod. Prevents "wait, this should have been two PRs" regret mid-session.
 - **Merge commit strategy** for PRs. Preserves the granular Conventional Commits that changelog tooling (git-cliff, release-please, etc.) consumes. Never squash or rebase-merge unless the project explicitly prefers one — decide once per repo.
