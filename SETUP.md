@@ -2,6 +2,13 @@
 
 Target: you have a repo (new, or existing and already in flight) and want Claude sessions productive from day one. The steps are identical either way — for an existing repo, `CONTEXT.md` should describe the *current* architecture, conventions, and in-flight work rather than a greenfield plan.
 
+> **Before you start — three locations get populated** (none is your repo):
+> - **Kit checkout** (wherever you cloned this repo) — templates and `bootstrap.sh`; you interact with it only when running the script or pulling updates.
+> - **Working folder** — you pick the path in step 1 below (several options listed); per-project context lives here.
+> - **Auto-memory** at `~/.claude/projects/<sanitized-path>/memory/` — fixed by the Claude harness, derived from your repo path; per-project preferences live here.
+>
+> Step 2's `bootstrap.sh` creates the working folder and seeds auto-memory in one pass.
+
 ---
 
 ## 1. Pick a working-folder location
