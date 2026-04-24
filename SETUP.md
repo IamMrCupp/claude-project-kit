@@ -33,17 +33,28 @@ Whatever you pick, the **repo stays the repo; the working folder stays separate*
 
 ## 2. Run `bootstrap.sh`
 
-From the root of the project repo you're bootstrapping:
+From the root of the project repo you're bootstrapping, run bootstrap in whichever mode fits:
 
+**Non-interactive (scripted):**
 ```bash
 cd <project-repo>
-<framework-dir>/bootstrap.sh <working-folder>
+<framework-dir>/bootstrap.sh <working-folder> [options]
 ```
 
-That creates the working folder, copies the templates, renames `phase-N-checklist.md` → `phase-0-checklist.md`, and seeds the project's auto-memory at the Claude harness's expected path (`~/.claude/projects/<sanitized>/memory/`).
+**Interactive (hand-held — omit the path argument):**
+```bash
+cd <project-repo>
+<framework-dir>/bootstrap.sh
+```
+Bootstrap prompts for the working-folder path, project name, whether to seed auto-memory, and your issue tracker (`github` / `jira` / `other` / `none`, default `github`). For JIRA, it also prompts for the project key. It then shows a summary and asks to confirm before any file writes. Scripted invocations (piped/redirected stdin) without a path argument still error rather than hanging.
+
+Both modes create the working folder, copy the templates, rename `phase-N-checklist.md` → `phase-0-checklist.md`, and seed the project's auto-memory at the Claude harness's expected path (`~/.claude/projects/<sanitized>/memory/`). When an issue tracker is selected, a `reference_issue_tracker.md` file is seeded into auto-memory with tracker-specific guidance.
 
 Flags:
 - `--skip-memory` — skip the memory-seeding step (leaves `~/.claude/projects/…` alone)
+- `--project-name NAME` — override the auto-derived project name
+- `--tracker TYPE` — issue tracker: `github`, `jira`, `other`, or `none`. Skipped if omitted in non-interactive mode.
+- `--jira-project KEY` — JIRA project key (e.g. `INFRA`). Implies `--tracker jira` if `--tracker` isn't also passed.
 - `--force` — proceed even if the working folder is already non-empty
 - `-h` / `--help` — show usage
 
