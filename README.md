@@ -2,6 +2,13 @@
 
 A reusable scaffold for starting new projects with Claude. Battle-tested on real projects and generalized so it works for personal code, open-source, or work projects.
 
+> **Heads up — Claude state for a bootstrapped project lives in three places, none of them your repo:**
+> 1. **Kit checkout** (wherever you cloned this repo) — templates, `bootstrap.sh`, docs.
+> 2. **Working folder** (you pick the path — [SETUP.md §1](SETUP.md#1-pick-a-working-folder-location) lists options) — per-project context.
+> 3. **Auto-memory** at `~/.claude/projects/<sanitized-path>/memory/` (fixed by the Claude harness) — per-project preferences.
+>
+> The kit never modifies your repo. All three locations above are private and local.
+
 ## Why this works
 
 The templates aren't the point — what they do *to* Claude is:
@@ -17,7 +24,7 @@ Net effect: prompts get more responsive and code output tightens up, because Cla
 Every project gets **two parallel sets of files**:
 
 1. **A private AI working folder** (outside the repo) — the canonical source of truth across sessions. Holds `CONTEXT.md`, `SESSION-LOG.md`, plan docs, phase checklists.
-2. **Auto-memory** at `~/.claude/projects/<hash>/memory/` — durable facts about *you* and *how you want to work*: feedback, preferences, references, project context. One file per fact, indexed by `MEMORY.md`.
+2. **Auto-memory** at `~/.claude/projects/<sanitized-path>/memory/` — durable facts about *you* and *how you want to work*: feedback, preferences, references, project context. One file per fact, indexed by `MEMORY.md`.
 
 The working folder is project-specific knowledge ("what are we building, how far are we, what landed last week"). Auto-memory is cross-session behavior ("always use merge commits", "I prefer terse responses"). Neither is committed to the repo.
 
