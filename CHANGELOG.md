@@ -6,6 +6,20 @@ See [Upgrading an existing project](SETUP.md#upgrading-an-existing-project) for 
 
 ---
 
+## 2026-04-23 — Issue tracker awareness
+
+**Tag:** [v0.4.0](https://github.com/IamMrCupp/claude-project-kit/releases/tag/v0.4.0)
+
+### Added
+- `bootstrap.sh` — new `--tracker TYPE` (`github` | `jira` | `other` | `none`) and `--jira-project KEY` flags. In interactive mode, bootstrap prompts for tracker type (default: `github`) and, when `jira` is selected, the JIRA project key. Non-interactive invocations without either flag behave as before — no tracker file seeded. ([#15](https://github.com/IamMrCupp/claude-project-kit/pull/15))
+- `memory-templates/trackers/` — three reference memory variants (`github.md`, `jira.md`, `other.md`). Bootstrap copies the selected variant into the project's auto-memory as `reference_issue_tracker.md`, substitutes `{{JIRA_PROJECT_KEY}}` when applicable, and appends an index line to `MEMORY.md`. ([#15](https://github.com/IamMrCupp/claude-project-kit/pull/15))
+
+### For existing adopters
+- No breaking changes. Non-interactive invocations without the new flags behave identically — no tracker file is seeded, no existing memory file is touched.
+- To add tracker awareness to an already-bootstrapped project: copy the appropriate `memory-templates/trackers/<TYPE>.md` from the kit into your project's auto-memory folder as `reference_issue_tracker.md`, fill in `{{JIRA_PROJECT_KEY}}` / `{{PROJECT_NAME}}` / `{{REPO_SLUG}}` by hand, and add a line referencing it in your `MEMORY.md`.
+
+---
+
 ## 2026-04-22 — Phase 2: zero manual-fill onboarding
 
 **Tag:** [v0.2.0](https://github.com/IamMrCupp/claude-project-kit/releases/tag/v0.2.0)
