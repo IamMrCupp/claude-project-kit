@@ -1,12 +1,14 @@
 # Changelog
 
-All notable changes to `claude-project-kit`. Format loosely follows [Keep a Changelog](https://keepachangelog.com/). No formal version tags yet — entries use merge-commit SHAs and dates as reference points.
+All notable changes to `claude-project-kit`. Format loosely follows [Keep a Changelog](https://keepachangelog.com/). Tagged releases are published on [GitHub Releases](https://github.com/IamMrCupp/claude-project-kit/releases); entries below include version tags where applicable.
 
 See [Upgrading an existing project](SETUP.md#upgrading-an-existing-project) for the general migration pattern. Each entry below has a **For existing adopters** section with specifics for that release.
 
 ---
 
 ## 2026-04-22 — Phase 2: zero manual-fill onboarding
+
+**Tag:** [v0.2.0](https://github.com/IamMrCupp/claude-project-kit/releases/tag/v0.2.0)
 
 ### Added
 - `templates/SEED-PROMPT.md` — one-shot project bootstrap instruction prompt. Claude deep-reads the target repo, classifies `CONTEXT.md` fields into derivable / `[CLAUDE-INFERRED]` / `[HUMAN-CONFIRM]` buckets, drafts `research.md` from code, summarizes, asks ≤5 targeted questions, and stops for user review. ([#7](https://github.com/IamMrCupp/claude-project-kit/pull/7))
@@ -29,6 +31,8 @@ See [Upgrading an existing project](SETUP.md#upgrading-an-existing-project) for 
 
 ## 2026-04-22 — CONVENTIONS: human-only commit attribution
 
+*Included in [v0.2.0](https://github.com/IamMrCupp/claude-project-kit/releases/tag/v0.2.0).*
+
 ### Added
 - `CONVENTIONS.md` — explicit rule forbidding AI co-author trailers on commits (complements the existing "single line, signed off, no body" rule). ([#6](https://github.com/IamMrCupp/claude-project-kit/pull/6))
 - `memory-templates/feedback_no_ai_coauthor.md` — starter auto-memory file so new projects inherit the rule pre-seeded. ([#6](https://github.com/IamMrCupp/claude-project-kit/pull/6))
@@ -41,6 +45,8 @@ See [Upgrading an existing project](SETUP.md#upgrading-an-existing-project) for 
 ---
 
 ## 2026-04-22 — Phase 1: polish + dogfood fixes
+
+**Tag:** [v0.1.0](https://github.com/IamMrCupp/claude-project-kit/releases/tag/v0.1.0)
 
 ### Added
 - `bootstrap.sh` — one-command onboarding helper. Creates the working folder, seeds auto-memory, prints next-steps. Flags: `--skip-memory`, `--force`, `-h`/`--help`. ([#2](https://github.com/IamMrCupp/claude-project-kit/pull/2))
