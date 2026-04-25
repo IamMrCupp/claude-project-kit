@@ -6,6 +6,39 @@ See [Upgrading an existing project](SETUP.md#upgrading-an-existing-project) for 
 
 ---
 
+## [0.10.0](https://github.com/IamMrCupp/claude-project-kit/compare/v0.9.1...v0.10.0) (2026-04-25)
+
+
+### Features
+
+* **bootstrap:** preview actual MEMORY.md index lines in --dry-run ([727cb7f](https://github.com/IamMrCupp/claude-project-kit/commit/727cb7fc145a2a6138d0524a06267b32d06bf1c6))
+* **bootstrap:** preview actual MEMORY.md index lines in --dry-run ([a54d618](https://github.com/IamMrCupp/claude-project-kit/commit/a54d6187b11726c8938ed01efe5ac395a1500838))
+* **prompts:** add Prompt 4 for resuming mid-PR ([9f2aabe](https://github.com/IamMrCupp/claude-project-kit/commit/9f2aabe7db79ed594a9dca42f64bb8602b3e11f1))
+* **prompts:** add Prompt 4 for resuming mid-PR ([592e2a1](https://github.com/IamMrCupp/claude-project-kit/commit/592e2a14043e86ad0b3457b38fc5c4b11d237d6b))
+
+
+### Bug Fixes
+
+* scope MEMORY.md links to files present in snapshot ([7cae2e3](https://github.com/IamMrCupp/claude-project-kit/commit/7cae2e3cca4d15b4f817159c141fd53cc1d25c05))
+
+
+### Documentation
+
+* add CONTRIBUTING.md ([0c2a713](https://github.com/IamMrCupp/claude-project-kit/commit/0c2a713e612af3a6b0f79a3a1005e6f5ee91bfdb))
+* add issue templates ([a5a2a14](https://github.com/IamMrCupp/claude-project-kit/commit/a5a2a1454dc8ca83d9f5f0e2408b0c7f52a3d09a))
+* add pull request template ([878551d](https://github.com/IamMrCupp/claude-project-kit/commit/878551d780c78ffa0058a2c57408d8386a8341a0))
+* add widget-tracker memory-example snapshot ([af69fe7](https://github.com/IamMrCupp/claude-project-kit/commit/af69fe7825555d053ea89f9bb5eac60e7f27a264))
+* add widget-tracker memory-example snapshot ([215101d](https://github.com/IamMrCupp/claude-project-kit/commit/215101dd91fec444a0564d78c6512978acc6f759))
+* contributor onboarding (CONTRIBUTING + PR/issue templates) ([3597003](https://github.com/IamMrCupp/claude-project-kit/commit/3597003936509a988d308a4ddbe8bf8235c9c6f3))
+* flag --tracker other / --ci other follow-up in SETUP ([2b5e963](https://github.com/IamMrCupp/claude-project-kit/commit/2b5e96315d8e494dbf6ec8e0da6060f49889048b))
+* flag --tracker other / --ci other follow-up in SETUP ([aa09381](https://github.com/IamMrCupp/claude-project-kit/commit/aa0938174ab5df27f8634fd613865c0ae99279f0))
+* link memory-example from examples README ([2176734](https://github.com/IamMrCupp/claude-project-kit/commit/2176734bfc6ac6d234907d95df3a2112b0800908))
+
+
+### Tests
+
+* **bootstrap:** verify --dry-run previews actual index lines ([df4a35c](https://github.com/IamMrCupp/claude-project-kit/commit/df4a35cd43853565783d1b968a0e60cf65cd37a3))
+
 ## [0.9.1](https://github.com/IamMrCupp/claude-project-kit/compare/v0.9.0...v0.9.1) (2026-04-24)
 
 
