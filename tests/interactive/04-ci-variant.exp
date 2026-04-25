@@ -1,0 +1,32 @@
+#!/usr/bin/env expect
+# Default github tracker; pick atlantis CI variant. Verifies the CI prompt +
+# CI memory seeding path, plus the post-run "Also fill in" reminder doesn't
+# fire (atlantis is a named variant, not 'other').
+
+source [file dirname [info script]]/helpers.exp
+
+spawn $::kit_root/bootstrap.sh
+
+expect "Path"
+send -- "$::test_wf\r"
+
+expect "Project name"
+send -- "\r"
+
+expect "Seed auto-memory"
+send -- "\r"
+
+expect "Issue tracker"
+send -- "\r"
+
+expect "CI/automation"
+send -- "atlantis\r"
+
+expect "Proceed"
+send -- "\r"
+
+expect "Seeded CI memory (atlantis)"
+expect eof
+
+catch wait result
+exit [lindex $result 3]

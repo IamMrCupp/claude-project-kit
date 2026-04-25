@@ -1,0 +1,34 @@
+#!/usr/bin/env expect
+# Accept defaults all the way through (custom path; defaults for everything
+# else). Verifies: tracker default = github, CI default = none, proceed = yes,
+# memory + tracker memory both seeded.
+
+source [file dirname [info script]]/helpers.exp
+
+spawn $::kit_root/bootstrap.sh
+
+expect "Path"
+send -- "$::test_wf\r"
+
+expect "Project name"
+send -- "\r"
+
+expect "Seed auto-memory"
+send -- "\r"
+
+expect "Issue tracker"
+send -- "\r"
+
+expect "CI/automation"
+send -- "\r"
+
+expect "Proceed"
+send -- "\r"
+
+expect "Copied template files"
+expect "Copied memory files"
+expect "Seeded tracker memory (github)"
+expect eof
+
+catch wait result
+exit [lindex $result 3]
