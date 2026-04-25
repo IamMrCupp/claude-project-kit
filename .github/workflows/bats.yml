@@ -20,8 +20,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Install bats
-        run: sudo apt-get update && sudo apt-get install -y bats
+      - name: Install bats + expect
+        run: sudo apt-get update && sudo apt-get install -y bats expect
 
       - name: Configure git (required by bootstrap.sh + tests)
         run: |
@@ -29,5 +29,8 @@ jobs:
           git config --global user.name "Bats Test Runner"
           git config --global init.defaultBranch main
 
-      - name: Run bats suite
+      - name: Run bats suite (non-interactive)
         run: bats tests/
+
+      - name: Run expect suite (interactive)
+        run: tests/interactive/run.sh

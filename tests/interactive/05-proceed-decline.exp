@@ -1,0 +1,46 @@
+#!/usr/bin/env expect
+# Walk through the prompts; answer "n" at the final Proceed prompt. Verifies
+# the abort path: "Aborted." prints, exit code is 0, no working folder is
+# created.
+
+source [file dirname [info script]]/helpers.exp
+
+spawn $::kit_root/bootstrap.sh
+
+expect "Path"
+send -- "$::test_wf\r"
+
+expect "Project name"
+send -- "\r"
+
+expect "Seed auto-memory"
+send -- "\r"
+
+expect "Issue tracker"
+send -- "\r"
+
+expect "CI/automation"
+send -- "\r"
+
+expect "Proceed"
+send -- "n\r"
+
+expect "Aborted"
+expect eof
+
+catch wait result
+set status [lindex $result 3]
+
+# Bootstrap should exit 0 on user-requested abort.
+if {$status != 0} {
+    puts stderr "expected exit 0 from user abort, got $status"
+    exit 1
+}
+
+# And no working folder should have been created.
+if {[file isdirectory $::test_wf]} {
+    puts stderr "FAIL: working folder $::test_wf exists after user-aborted run"
+    exit 1
+}
+
+exit 0

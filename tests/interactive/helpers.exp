@@ -1,0 +1,33 @@
+# Common setup for tests/interactive/*.exp — sourced at the top of each test.
+#
+# The runner (run.sh) sets these env vars per test:
+#   KIT_ROOT   — absolute path to the kit checkout
+#   TEST_REPO  — fake target repo (git init + origin remote already done)
+#   TEST_TMP   — sandbox temp root
+#   HOME       — sandboxed HOME (so memory writes stay inside TEST_TMP)
+#
+# Each test script should:
+#   1. Source this file.
+#   2. spawn $::kit_root/bootstrap.sh
+#   3. Drive the interactive prompts with expect/send.
+#   4. End with: expect eof; catch wait result; exit [lindex $result 3]
+
+set timeout 10
+
+# Default failure handler — fires on any expect that doesn't match its
+# patterns within $timeout. Prints what we DID see for debuggability.
+expect_after {
+    timeout {
+        puts stderr "TIMEOUT — last 1000 chars of output:"
+        puts stderr [string range $expect_out(buffer) end-1000 end]
+        exit 1
+    }
+}
+
+set ::kit_root  $env(KIT_ROOT)
+set ::test_repo $env(TEST_REPO)
+set ::test_tmp  $env(TEST_TMP)
+set ::test_wf   "$::test_tmp/wf"
+
+# Tests start with cwd = the fake repo.
+cd $::test_repo
