@@ -1,0 +1,33 @@
+#!/usr/bin/env expect
+# Pick jira tracker; provide JIRA project key INFRA. CI = default (none).
+
+source [file dirname [info script]]/helpers.exp
+
+spawn $::kit_root/bootstrap.sh
+
+expect "Path"
+send -- "$::test_wf\r"
+
+expect "Project name"
+send -- "\r"
+
+expect "Seed auto-memory"
+send -- "\r"
+
+expect "Issue tracker"
+send -- "jira\r"
+
+expect "JIRA project key"
+send -- "INFRA\r"
+
+expect "CI/automation"
+send -- "\r"
+
+expect "Proceed"
+send -- "\r"
+
+expect "Seeded tracker memory (jira)"
+expect eof
+
+catch wait result
+exit [lindex $result 3]
