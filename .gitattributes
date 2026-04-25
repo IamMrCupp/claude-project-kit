@@ -1,0 +1,6 @@
+# Make the GitHub language graph reflect the kit's actual content mix.
+# Without this, *.md is treated as linguist-documentation and excluded from
+# the language stats — and since the kit is ~90% markdown by content, the
+# default graph shows "Shell 100%", which misrepresents what's in here.
+
+*.md linguist-documentation=false linguist-detectable=true
