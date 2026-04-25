@@ -26,7 +26,7 @@ landed most recently, and any open threads. Then wait for my next instruction.
 **Notes:**
 - Replace `<working-folder>` with the actual path (e.g. `~/Documents/Claude/Projects/my-project/`)
 - **Once you've set up `memory-templates/reference_ai_working_folder.md` for the project**, the memory tells Claude where to look automatically — you can shorten the prompt to *"Load context and give me a 3-bullet summary of where we are."*
-- If you're resuming mid-PR, add a line: *"I also had a branch `<branch-name>` open — check its state before suggesting next steps."*
+- If you're resuming mid-PR, use [Prompt 4](#4-resuming-mid-pr) instead of this one — it loads the same context but adds a structured branch + PR + CI assessment.
 
 ---
 
@@ -109,6 +109,52 @@ anything is written.
 - If `reference_ai_working_folder.md` is set up in auto-memory, Claude already knows where the working folder lives. Otherwise prefix with: *"Working folder is `<path>`."*
 - The "draft first, don't write" guard is load-bearing — session-end updates are easy to get wrong (overzealous status bumps, hallucinated PR numbers), and reviewing is faster than undoing.
 - For a bare-minimum wrap-up (no checklist or memory review), the one-liner *"Draft a SESSION-LOG.md entry for today and show it to me"* is usually enough.
+
+---
+
+## 4. Resuming mid-PR
+
+Use this when a previous session ended with a branch in flight and you want to pick it up cleanly. Combines the working-folder context load (like Prompt 1) with a structured branch / PR / CI assessment so Claude has the full picture before proposing next steps.
+
+```
+I had a branch open from a previous session. Help me resume.
+
+## Before we work — load context
+
+1. Read `<working-folder>/CONTEXT.md`, `<working-folder>/SESSION-LOG.md`, and the
+   current phase checklist — same as Prompt 1.
+2. Note the most recent SESSION-LOG entry's "Open threads" / "Next steps"
+   section if there is one — that's likely what this branch is about.
+
+## Then assess the branch
+
+Run these and report:
+
+1. `git status` — anything uncommitted? Position relative to `origin/<branch>`?
+2. `git log --oneline origin/main..HEAD` — what commits are on this branch?
+3. `gh pr list --head <branch> --json number,state,title,body,statusCheckRollup`
+   — is there an open PR?
+4. If a PR exists, extract the test plan from the body. Note which checkboxes
+   are ticked, which aren't.
+5. Latest CI run for this branch — conclusion, and any failed check names.
+
+## Hand back
+
+A 5-bullet read:
+- What this branch is for (your inference + SESSION-LOG cross-reference)
+- What's been done (commits, ticked test-plan items)
+- What's left (untested test-plan items, unaddressed review comments,
+  CI failures)
+- The likely next concrete step
+- Any conflicts with `origin/main` since the branch was pushed
+
+Don't start coding — wait for me to confirm direction.
+```
+
+**Notes:**
+- Assumes the branch is already checked out. If you don't remember which branch, prefix with: *"My open branches: `git branch --no-merged origin/main`. Pick the right one with me first."*
+- For a branch that was never pushed, skip steps 3–5 — no PR or CI exists yet.
+- If `reference_ai_working_folder.md` is in auto-memory, the "load context" section can shrink to *"Load context (per memory)."*
 
 ---
 
