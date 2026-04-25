@@ -65,6 +65,31 @@ teardown() { bootstrap_teardown; }
   [[ "$output" == *"real run would fail (never overwrites memory)"* ]]
 }
 
+@test "--dry-run with --tracker shows the actual MEMORY.md index line" {
+  run "$BOOTSTRAP" --dry-run --tracker github "$TEST_WF"
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"append to MEMORY.md:"* ]]
+  [[ "$output" == *"[Issue tracker for"* ]]
+  [[ "$output" == *"reference_issue_tracker.md"* ]]
+  [[ "$output" == *"GitHub Issues on this repo"* ]]
+}
+
+@test "--dry-run with --tracker jira shows index line with project key" {
+  run "$BOOTSTRAP" --dry-run --tracker jira --jira-project INFRA "$TEST_WF"
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"JIRA project"* ]]
+  [[ "$output" == *"\`INFRA\`"* ]]
+}
+
+@test "--dry-run with --ci shows the actual MEMORY.md index line" {
+  run "$BOOTSTRAP" --dry-run --ci atlantis "$TEST_WF"
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"append to MEMORY.md:"* ]]
+  [[ "$output" == *"[CI / automation for"* ]]
+  [[ "$output" == *"reference_ci.md"* ]]
+  [[ "$output" == *"Atlantis"* ]]
+}
+
 @test "--dry-run with --skip-memory reports memory skipped" {
   run "$BOOTSTRAP" --dry-run --skip-memory "$TEST_WF"
   [ "$status" -eq 0 ]
