@@ -26,6 +26,20 @@ teardown() { bootstrap_teardown; }
   [ ! -f "$TEST_WF/phase-N-checklist.md" ]
 }
 
+@test "templates/.claude/ starters are copied to working folder" {
+  run "$BOOTSTRAP" "$TEST_WF"
+  [ "$status" -eq 0 ]
+  [ -d "$TEST_WF/.claude" ]
+  [ -d "$TEST_WF/.claude/agents" ]
+  [ -d "$TEST_WF/.claude/commands" ]
+  [ -f "$TEST_WF/.claude/agents/code-reviewer.md" ]
+  [ -f "$TEST_WF/.claude/agents/session-summarizer.md" ]
+  [ -f "$TEST_WF/.claude/commands/close-phase.md" ]
+  [ -f "$TEST_WF/.claude/commands/session-end.md" ]
+  [ -f "$TEST_WF/.claude/README.md" ]
+  [[ "$output" == *".claude/ starters"* ]]
+}
+
 @test "basic run seeds memory folder with all starter files" {
   run "$BOOTSTRAP" "$TEST_WF"
   [ "$status" -eq 0 ]

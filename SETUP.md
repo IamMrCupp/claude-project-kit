@@ -157,7 +157,10 @@ If you can't run `bootstrap.sh` (no Bash available, restricted environment, or y
 mkdir -p "<working-folder>"
 cp <framework-dir>/templates/*.md "<working-folder>/"
 mv "<working-folder>/phase-N-checklist.md" "<working-folder>/phase-0-checklist.md"
+[ -d "<framework-dir>/templates/.claude" ] && cp -R "<framework-dir>/templates/.claude" "<working-folder>/"
 ```
+
+The `.claude/` directory holds starter agents and slash commands that match the kit's session-end / phase-close conventions. They're staged in the working folder; copy into your target repo's `.claude/` if you want them active. See [`templates/.claude/README.md`](templates/.claude/README.md) for the four starters and how to activate them.
 
 ### Seed auto-memory
 The harness expects memory at `~/.claude/projects/<sanitized-path>/memory/`. Sanitization rule: absolute repo path with `/` replaced by `-`, prefixed with `-`. Example: `/Users/you/Code/acme/foo` → `-Users-you-Code-acme-foo`.
@@ -197,9 +200,13 @@ For a fully filled-in reference, see [`examples/widget-tracker/CONTEXT.md`](exam
    ```bash
    cp <kit-dir>/memory-templates/<NEW_FILE>.md ~/.claude/projects/<sanitized-path>/memory/
    ```
-4. **Changed prose in kit-level files** (e.g. `CONVENTIONS.md`, `SETUP.md`, `README.md`) — re-read them. Your local copies of working-folder templates and memory files are yours; they don't auto-upgrade.
-5. **New `bootstrap.sh` flags or behavior** — apply only to *new* projects you bootstrap going forward. Already-bootstrapped projects keep their current state.
-6. **Don't re-run `bootstrap.sh`** on a populated working folder — it errors by design. If you really need to re-seed, clear the auto-memory dir manually and pass `--force` to the working folder, but you'll lose local customizations.
+4. **New files in `templates/.claude/`** — copy into your working folder's `.claude/` (then re-copy into your target repo if you've activated those starters):
+   ```bash
+   cp -R <kit-dir>/templates/.claude/<NEW_FILE> <working-folder>/.claude/
+   ```
+5. **Changed prose in kit-level files** (e.g. `CONVENTIONS.md`, `SETUP.md`, `README.md`) — re-read them. Your local copies of working-folder templates and memory files are yours; they don't auto-upgrade.
+6. **New `bootstrap.sh` flags or behavior** — apply only to *new* projects you bootstrap going forward. Already-bootstrapped projects keep their current state.
+7. **Don't re-run `bootstrap.sh`** on a populated working folder — it errors by design. If you really need to re-seed, clear the auto-memory dir manually and pass `--force` to the working folder, but you'll lose local customizations.
 
 If a future change is *not* backwards-compatible (rare for a docs-only kit — only likely if a template structure fundamentally changes), the CHANGELOG entry will call that out explicitly.
 

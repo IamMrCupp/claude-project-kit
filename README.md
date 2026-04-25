@@ -47,7 +47,11 @@ The working folder is project-specific knowledge ("what are we building, how far
 │   ├── implementation.md
 │   ├── phase-N-checklist.md
 │   ├── acceptance-test-results.md
-│   └── research.md
+│   ├── research.md
+│   └── .claude/             ← starter agents + slash commands (staged in WF)
+│       ├── agents/          ← code-reviewer, session-summarizer
+│       ├── commands/        ← /close-phase, /session-end
+│       └── README.md        ← how to copy into your target repo
 ├── examples/                ← filled-in reference — read, don't copy
 │   └── widget-tracker/      ← fictional Go CLI, mid-Phase-1 snapshot
 └── memory-templates/        ← starter auto-memory for a new project
