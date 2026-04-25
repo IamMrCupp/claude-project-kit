@@ -80,6 +80,37 @@ See SETUP.md in the kit repo for the full walk-through.
 EOF
 }
 
+tracker_index_line() {
+  # args: tracker_type project_name [jira_key] [linear_key]
+  # emits the exact line that gets appended to MEMORY.md for this tracker.
+  local tracker="$1" project="$2" jira_key="${3:-}" linear_key="${4:-}"
+  printf -- '- [Issue tracker for %s](reference_issue_tracker.md) — ' "$project"
+  case "$tracker" in
+    github)   printf 'tickets live in GitHub Issues on this repo\n' ;;
+    jira)     printf 'tickets live in JIRA project `%s`\n' "$jira_key" ;;
+    linear)   printf 'issues live in Linear team `%s`\n' "$linear_key" ;;
+    gitlab)   printf 'tickets live in GitLab Issues on this repo\n' ;;
+    shortcut) printf 'stories live in Shortcut (sc-NNN refs)\n' ;;
+    other)    printf 'tickets live in an external system — fill in the placeholders\n' ;;
+  esac
+}
+
+ci_index_line() {
+  # args: ci_tool project_name
+  # emits the exact line that gets appended to MEMORY.md for this CI variant.
+  local ci="$1" project="$2"
+  printf -- '- [CI / automation for %s](reference_ci.md) — ' "$project"
+  case "$ci" in
+    github-actions) printf 'CI runs on GitHub Actions (`gh run` CLI)\n' ;;
+    gitlab-ci)      printf 'CI runs on GitLab CI/CD (`glab ci` CLI)\n' ;;
+    jenkins)        printf 'CI runs on Jenkins (host + job names documented in CONTEXT.md)\n' ;;
+    circleci)       printf 'CI runs on CircleCI (`circleci` CLI)\n' ;;
+    atlantis)       printf 'Terraform automation via Atlantis (PR-comment driven)\n' ;;
+    ansible-cli)    printf 'automation via local `ansible-playbook` runs\n' ;;
+    other)          printf 'CI/automation tool — fill in the placeholders\n' ;;
+  esac
+}
+
 SKIP_MEMORY=0
 FORCE=0
 DRY_RUN=0
@@ -322,11 +353,13 @@ if [ "$DRY_RUN" -eq 1 ]; then
     echo "  + copy $KIT_ROOT/memory-templates/*.md"
     if [ -n "$TRACKER" ] && [ "$TRACKER" != "none" ]; then
       echo "  + copy memory-templates/trackers/$TRACKER.md → reference_issue_tracker.md"
-      echo "  + append index line to MEMORY.md"
+      echo "  + append to MEMORY.md:"
+      echo "      $(tracker_index_line "$TRACKER" "$PROJECT_NAME" "$JIRA_PROJECT_KEY" "$LINEAR_TEAM_KEY")"
     fi
     if [ -n "$CI_TOOL" ] && [ "$CI_TOOL" != "none" ]; then
       echo "  + copy memory-templates/ci/$CI_TOOL.md → reference_ci.md"
-      echo "  + append index line to MEMORY.md"
+      echo "  + append to MEMORY.md:"
+      echo "      $(ci_index_line "$CI_TOOL" "$PROJECT_NAME")"
     fi
     echo "  + substitute placeholders:"
     echo "      {{WORKING_FOLDER}}    → $WORKING_FOLDER"
@@ -401,17 +434,7 @@ if [ "$SKIP_MEMORY" -eq 0 ]; then
       exit 1
     fi
     cp "$TRACKER_SRC" "$MEMORY_DIR/reference_issue_tracker.md"
-    {
-      printf -- '- [Issue tracker for %s](reference_issue_tracker.md) — ' "$PROJECT_NAME"
-      case "$TRACKER" in
-        github)   printf 'tickets live in GitHub Issues on this repo\n' ;;
-        jira)     printf 'tickets live in JIRA project `%s`\n' "$JIRA_PROJECT_KEY" ;;
-        linear)   printf 'issues live in Linear team `%s`\n' "$LINEAR_TEAM_KEY" ;;
-        gitlab)   printf 'tickets live in GitLab Issues on this repo\n' ;;
-        shortcut) printf 'stories live in Shortcut (sc-NNN refs)\n' ;;
-        other)    printf 'tickets live in an external system — fill in the placeholders\n' ;;
-      esac
-    } >> "$MEMORY_DIR/MEMORY.md"
+    tracker_index_line "$TRACKER" "$PROJECT_NAME" "$JIRA_PROJECT_KEY" "$LINEAR_TEAM_KEY" >> "$MEMORY_DIR/MEMORY.md"
     echo "  ✓ Seeded tracker memory ($TRACKER) → reference_issue_tracker.md"
   fi
 
@@ -422,18 +445,7 @@ if [ "$SKIP_MEMORY" -eq 0 ]; then
       exit 1
     fi
     cp "$CI_SRC" "$MEMORY_DIR/reference_ci.md"
-    {
-      printf -- '- [CI / automation for %s](reference_ci.md) — ' "$PROJECT_NAME"
-      case "$CI_TOOL" in
-        github-actions) printf 'CI runs on GitHub Actions (`gh run` CLI)\n' ;;
-        gitlab-ci)      printf 'CI runs on GitLab CI/CD (`glab ci` CLI)\n' ;;
-        jenkins)        printf 'CI runs on Jenkins (host + job names documented in CONTEXT.md)\n' ;;
-        circleci)       printf 'CI runs on CircleCI (`circleci` CLI)\n' ;;
-        atlantis)       printf 'Terraform automation via Atlantis (PR-comment driven)\n' ;;
-        ansible-cli)    printf 'automation via local `ansible-playbook` runs\n' ;;
-        other)          printf 'CI/automation tool — fill in the placeholders\n' ;;
-      esac
-    } >> "$MEMORY_DIR/MEMORY.md"
+    ci_index_line "$CI_TOOL" "$PROJECT_NAME" >> "$MEMORY_DIR/MEMORY.md"
     echo "  ✓ Seeded CI memory ($CI_TOOL) → reference_ci.md"
   fi
 
