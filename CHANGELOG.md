@@ -6,6 +6,26 @@ See [Upgrading an existing project](SETUP.md#upgrading-an-existing-project) for 
 
 ---
 
+## [0.10.1](https://github.com/IamMrCupp/claude-project-kit/compare/v0.10.0...v0.10.1) (2026-04-25)
+
+
+### Documentation
+
+* add SECURITY.md with disclosure policy ([6123e40](https://github.com/IamMrCupp/claude-project-kit/commit/6123e40f5dbf802485280496eec307bf315ffadf))
+* add SECURITY.md with disclosure policy ([9cc195d](https://github.com/IamMrCupp/claude-project-kit/commit/9cc195d635dfe9fc0ce4b32fe181cac5e1a7f4a2))
+* **tests:** document expect suite in tests/README.md ([41942c8](https://github.com/IamMrCupp/claude-project-kit/commit/41942c84e9e7e1bcb1b248f823e13201d24fc195))
+
+
+### Tests
+
+* interactive-mode coverage with expect-based suite ([9362f59](https://github.com/IamMrCupp/claude-project-kit/commit/9362f593e59c1bdac68638901b799ac2317feba9))
+* **interactive:** add expect-based interactive-mode test suite ([ec26823](https://github.com/IamMrCupp/claude-project-kit/commit/ec26823cc46d0947f829c91fbcad8ff6ebc59c65))
+
+
+### CI
+
+* run expect interactive suite alongside bats ([3d1e4b9](https://github.com/IamMrCupp/claude-project-kit/commit/3d1e4b9953ad855ed214452f4dc510331a0bad2a))
+
 ## [0.10.0](https://github.com/IamMrCupp/claude-project-kit/compare/v0.9.1...v0.10.0) (2026-04-25)
 
 
