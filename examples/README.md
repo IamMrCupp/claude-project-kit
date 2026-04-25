@@ -11,6 +11,7 @@ This folder answers that. Each subfolder is a fictional project at a realistic m
 ## What's here
 
 - `widget-tracker/` — a made-up small Go CLI. Mid-Phase 1: Phase 0 shipped, Phase 1 partially complete. Demonstrates populated `CONTEXT.md`, a multi-phase `plan.md`, a `phase-1-checklist.md` with mixed ✅ / ⏳ / [ ] states, and a `SESSION-LOG.md` with a few chronological entries.
+- `widget-tracker/memory-example/` — a snapshot of what auto-memory looks like for the same project mid-Phase 1. Shows the four files that change per project (`MEMORY.md` index, `reference_ai_working_folder.md`, `reference_issue_tracker.md`, `project_current.md`) with placeholders resolved. The other memory files in `memory-templates/` (the `feedback_*.md` rules and `user_role.md`) ship as-is — no per-project edits needed — and aren't reproduced here.
 
 ## How to use
 
