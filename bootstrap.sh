@@ -344,6 +344,9 @@ if [ "$DRY_RUN" -eq 1 ]; then
   echo "Would create working folder: $WORKING_FOLDER"
   echo "  + copy $KIT_ROOT/templates/*.md"
   echo "  + rename phase-N-checklist.md → phase-0-checklist.md"
+  if [ -d "$KIT_ROOT/templates/.claude" ]; then
+    echo "  + copy templates/.claude/ → $WORKING_FOLDER/.claude/ (starter agents + commands)"
+  fi
   if [ -e "$WORKING_FOLDER" ] && [ -n "$(ls -A "$WORKING_FOLDER" 2>/dev/null)" ] && [ "$FORCE" -eq 0 ]; then
     echo "  ! working folder already non-empty — real run would fail without --force"
   fi
@@ -421,6 +424,11 @@ cp "$KIT_ROOT/templates/"*.md "$WORKING_FOLDER/"
 mv "$WORKING_FOLDER/phase-N-checklist.md" "$WORKING_FOLDER/phase-0-checklist.md"
 echo "  ✓ Copied template files to $WORKING_FOLDER"
 echo "  ✓ Renamed phase-N-checklist.md → phase-0-checklist.md"
+
+if [ -d "$KIT_ROOT/templates/.claude" ]; then
+  cp -R "$KIT_ROOT/templates/.claude" "$WORKING_FOLDER/"
+  echo "  ✓ Copied .claude/ starters (agents + commands) to $WORKING_FOLDER/.claude/"
+fi
 
 if [ "$SKIP_MEMORY" -eq 0 ]; then
   mkdir -p "$MEMORY_DIR"
