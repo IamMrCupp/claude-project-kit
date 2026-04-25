@@ -6,6 +6,25 @@ See [Upgrading an existing project](SETUP.md#upgrading-an-existing-project) for 
 
 ---
 
+## [0.11.0](https://github.com/IamMrCupp/claude-project-kit/compare/v0.10.1...v0.11.0) (2026-04-25)
+
+
+### Features
+
+* add .claude/ starter agents and slash commands ([f355f03](https://github.com/IamMrCupp/claude-project-kit/commit/f355f0315f6f70dcf196beed8210a9600b832386))
+* **bootstrap:** copy templates/.claude/ to working folder ([7319e9f](https://github.com/IamMrCupp/claude-project-kit/commit/7319e9fe3424c0ad5d3724b71b0155a442d2157f))
+* **templates:** add .claude/ starter agents and commands ([b12908e](https://github.com/IamMrCupp/claude-project-kit/commit/b12908ec29a42aaa4848d25621b8431a6aacfdc2))
+
+
+### Documentation
+
+* document templates/.claude/ in README and SETUP ([4f60028](https://github.com/IamMrCupp/claude-project-kit/commit/4f60028ad85d71c3f717d4e683477d11e9a6f6c3))
+
+
+### Tests
+
+* **bootstrap:** verify .claude/ copy ([2100fb5](https://github.com/IamMrCupp/claude-project-kit/commit/2100fb52fd15569c671cd6f21d4f243b816c9dd8))
+
 ## [0.10.1](https://github.com/IamMrCupp/claude-project-kit/compare/v0.10.0...v0.10.1) (2026-04-25)
 
 
