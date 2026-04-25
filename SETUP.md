@@ -61,6 +61,8 @@ Flags:
 - `--dry-run` — print what would be created (paths, placeholder substitutions, tracker memory, MEMORY.md index line) and exit without writing anything. Safe to re-run.
 - `-h` / `--help` — show usage
 
+**On `--tracker other` and `--ci other`:** these are escape hatches for tools the kit doesn't have a named variant for. Picking either seeds a placeholder-rich memory file (`reference_issue_tracker.md` for trackers, `reference_ci.md` for CI) with `{{tracker URL pattern}}`, `{{ticket reference format}}`, `{{CI config location}}`, etc. that need manual fill-in before the memory is useful. The bootstrap end-of-run output flags this; if you're scanning flags to plan an invocation, plan for the follow-up edit.
+
 Prefer to see what's happening step-by-step? See [Manual alternative](#manual-alternative) at the bottom of this doc.
 
 ---
