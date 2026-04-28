@@ -6,6 +6,14 @@ See [Upgrading an existing project](SETUP.md#upgrading-an-existing-project) for 
 
 ---
 
+## [0.15.0](https://github.com/IamMrCupp/claude-project-kit/compare/v0.14.0...v0.15.0) (2026-04-28)
+
+
+### Features
+
+* **memory-templates:** add feedback_no_push_after_merge starter ([dc9a2e9](https://github.com/IamMrCupp/claude-project-kit/commit/dc9a2e96d122f8a8f9976d3faf0a7f12664fc5b6))
+* **memory-templates:** add feedback_no_push_after_merge starter ([bf646b8](https://github.com/IamMrCupp/claude-project-kit/commit/bf646b8b4461dbea769febe485bc9415c2140ff1))
+
 ## [0.14.0](https://github.com/IamMrCupp/claude-project-kit/compare/v0.13.1...v0.14.0) (2026-04-28)
 
 
