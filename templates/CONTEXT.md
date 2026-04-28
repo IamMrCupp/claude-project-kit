@@ -10,6 +10,8 @@
 At the start of any new Claude session, say:
 > "Read CONTEXT.md and SESSION-LOG.md in this folder before we start."
 
+> **Folder shape:** {{single-repo | per-repo subfolder of a workspace}}. If this folder is a per-repo subfolder of a workspace, also load `../workspace-CONTEXT.md` for cross-repo context and any active `../tickets/<KEY>-<slug>.md` files in scope for the session.
+
 ---
 
 ## Project Overview
@@ -20,6 +22,19 @@ At the start of any new Claude session, say:
 - **Visibility:** {{public | private | internal}}
 - **Platform targets:** {{PLATFORM_TARGETS}}
 - **This folder:** Private AI working context — never commit to repo
+
+---
+
+## Tracker Configuration
+
+The external tracker for this project, used when work is ticket-driven. See `CONVENTIONS.md` (kit-level — `## Ticket-driven workflows`) for the branch / PR / commit conventions to use against a tracker.
+
+- **Tracker type:** {{none | github | jira | linear | gitlab | shortcut | other}}
+- **Project / team key:** {{KEY — e.g. ACME, INFRA, ENG; leave blank if not applicable}}
+- **MCP availability:** {{installed | not installed | unknown}}
+- **Tracker link:** {{URL — leave blank if none}}
+
+If this folder lives in a workspace (multi-repo initiative), tracker config commonly lives at the workspace level (`../workspace-CONTEXT.md`) instead of duplicated here. Leave this section as-is or remove it as appropriate.
 
 ---
 
