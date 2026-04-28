@@ -59,6 +59,7 @@ Flags:
 - `--ci TYPE` — primary CI/automation tool: `github-actions`, `gitlab-ci`, `jenkins`, `circleci`, `atlantis`, `ansible-cli`, `other`, or `none`. Skipped if omitted in non-interactive mode.
 - `--force` — proceed even if the working folder is already non-empty
 - `--dry-run` — print what would be created (paths, placeholder substitutions, tracker memory, MEMORY.md index line) and exit without writing anything. Safe to re-run.
+- `--workspace` — treat `<working-folder>` as a workspace path (multi-repo mode). Bootstrap creates a per-repo subfolder for the current repo inside the workspace, and on first use also seeds `workspace-CONTEXT.md` and `tickets/`. See [Workspace mode](#workspace-mode-multi-repo-initiatives) below.
 - `-h` / `--help` — show usage
 
 **On `--tracker other` and `--ci other`:** these are escape hatches for tools the kit doesn't have a named variant for. Picking either seeds a placeholder-rich memory file (`reference_issue_tracker.md` for trackers, `reference_ci.md` for CI) with `{{tracker URL pattern}}`, `{{ticket reference format}}`, `{{CI config location}}`, etc. that need manual fill-in before the memory is useful. The bootstrap end-of-run output flags this; if you're scanning flags to plan an invocation, plan for the follow-up edit.
@@ -209,6 +210,101 @@ For a fully filled-in reference, see [`examples/widget-tracker/CONTEXT.md`](exam
 7. **Don't re-run `bootstrap.sh`** on a populated working folder — it errors by design. If you really need to re-seed, clear the auto-memory dir manually and pass `--force` to the working folder, but you'll lose local customizations.
 
 If a future change is *not* backwards-compatible (rare for a docs-only kit — only likely if a template structure fundamentally changes), the CHANGELOG entry will call that out explicitly.
+
+---
+
+## Workspace mode (multi-repo initiatives)
+
+When a single piece of work spans multiple repos (e.g. Terraform environment definitions in one repo and modules in another), use `--workspace` so bootstrap creates a workspace folder above per-repo subfolders. The model is documented in [ADR-0001](docs/adr/0001-multi-repo-folder-model.md); summary:
+
+```
+~/<projects-root>/<initiative>/
+├── workspace-CONTEXT.md      ← cross-repo overview
+├── tickets/                  ← per-ticket scratchpads
+│   ├── <KEY>-<slug>.md
+│   └── archive/
+├── <repo-a>/                 ← per-repo subfolder (today's working-folder shape)
+│   ├── CONTEXT.md, SESSION-LOG.md, plan.md, ...
+└── <repo-b>/
+    └── ...
+```
+
+### First repo in a new workspace
+
+```bash
+cd <repo-a>
+<framework-dir>/bootstrap.sh --workspace ~/Documents/Claude/Projects/<initiative>/ \
+  --tracker jira --jira-project <KEY> --ci <TOOL>
+```
+
+Bootstrap creates `<initiative>/`, drops `workspace-CONTEXT.md` and `tickets/archive/` at the workspace root, and creates `<initiative>/<repo-a>/` populated with the standard per-repo templates. Auto-memory still keys to the repo (`~/.claude/projects/<sanitized-repo-path>/memory/`) — workspace mode doesn't change memory pathing.
+
+### Adding more repos to an existing workspace
+
+```bash
+cd <repo-b>
+<framework-dir>/bootstrap.sh --workspace ~/Documents/Claude/Projects/<initiative>/
+```
+
+Bootstrap detects the existing workspace (via the presence of `workspace-CONTEXT.md`), preserves it, and adds `<initiative>/<repo-b>/` as a new per-repo subfolder. Repeat for each repo in the initiative.
+
+### What `--workspace` does NOT do (yet)
+
+- **Tracker config substitution into CONTEXT.md** — for now, fill the `## Tracker Configuration` section in `<initiative>/<repo-a>/CONTEXT.md` and `<initiative>/workspace-CONTEXT.md` by hand. Bootstrap-side substitution is on the Phase 4 backlog ([#61](https://github.com/IamMrCupp/claude-project-kit/issues/61) §C.1 / D.1).
+- **Terraform sibling-repo prompt** — bootstrap doesn't yet detect Terraform-shaped repos and prompt about sibling envs/modules. Coming in a follow-up; for now, you decide which repos belong in the workspace.
+- **Interactive workspace prompt** — `--workspace` requires the explicit flag. Interactive mode still defaults to single-repo. Use the flag-based form above for workspace bootstraps.
+
+---
+
+## Upgrading a single-repo working folder to a workspace
+
+If you bootstrapped a single-repo working folder (the default shape) and later realize the work is going to span multiple repos, you can convert that folder into a workspace by hand. Both shapes coexist — there's no requirement to migrate.
+
+Target shape per [ADR-0001](docs/adr/0001-multi-repo-folder-model.md):
+
+```
+~/<projects-root>/<initiative>/                ← was: ~/<projects-root>/<repo-a>/
+├── workspace-CONTEXT.md                       ← new file
+├── tickets/                                   ← new directory
+│   └── archive/
+└── <repo-a>/                                  ← your existing files move here
+    ├── CONTEXT.md
+    ├── SESSION-LOG.md
+    ├── plan.md
+    └── ...
+```
+
+### Steps
+
+```bash
+INITIATIVE=<initiative-name>                   # e.g. acme-platform
+PROJECTS_ROOT=~/Documents/Claude/Projects      # wherever you keep working folders
+REPO_A=<existing-folder-name>                  # the working folder you're upgrading
+
+# 1. Rename the existing folder to act as the workspace
+mv "$PROJECTS_ROOT/$REPO_A" "$PROJECTS_ROOT/$INITIATIVE"
+
+# 2. Create the per-repo subfolder and move per-repo docs into it
+cd "$PROJECTS_ROOT/$INITIATIVE"
+mkdir "$REPO_A"
+mv CONTEXT.md SESSION-LOG.md plan.md implementation.md research.md \
+   acceptance-test-results*.md phase-*.md SEED-PROMPT.md \
+   ".claude" "$REPO_A/" 2>/dev/null || true
+
+# 3. Create the workspace-level scaffolding
+touch workspace-CONTEXT.md
+mkdir -p tickets/archive
+```
+
+### Edits required after the move
+
+- **`workspace-CONTEXT.md`** — fill in the cross-repo overview: what initiative this is, why it exists, which repos belong to it. Link each repo's subfolder. Use [`templates/workspace/workspace-CONTEXT.md`](templates/workspace/workspace-CONTEXT.md) in the kit as a starting template.
+- **`<repo-a>/CONTEXT.md`** — under "How to load this context," update the path: was `<initiative>/CONTEXT.md`, now `<initiative>/<repo-a>/CONTEXT.md`.
+- **Auto-memory** (`~/.claude/projects/<sanitized-path>/memory/reference_ai_working_folder.md`) — update the working-folder path so Claude knows to read from `<initiative>/<repo-a>/` instead of the old single-repo location.
+
+### Adding more repos
+
+Once the workspace exists, additional repos bootstrap into it via `--workspace` (see [Workspace mode](#workspace-mode-multi-repo-initiatives) above).
 
 ---
 
