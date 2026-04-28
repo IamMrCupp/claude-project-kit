@@ -4,6 +4,8 @@ Chronological record of Claude working sessions. Each entry captures what was do
 
 **Append-only.** Never delete past entries. If something in an old entry turns out wrong, note the correction in the current session's entry rather than editing history.
 
+> **Workspace mode:** if this `SESSION-LOG.md` lives inside a workspace per-repo subfolder, the per-ticket scratchpads at `../tickets/<KEY>-<slug>.md` are the canonical record for ticket-specific decisions and acceptance criteria. SESSION-LOG entries summarize and cross-reference; tickets can be touched by multiple sessions and span repos.
+
 ---
 
 ## Entry format
@@ -14,6 +16,10 @@ Use this shape for every session entry. Keep prose tight — future-you will sca
 ## Session: {{YYYY-MM-DD}} — {{short focus phrase}}
 
 **Focus:** {{one sentence — what this session was about}}
+
+**Tickets touched** (workspace mode only — omit if single-repo):
+- [{{KEY}}](../tickets/{{KEY}}-{{slug}}.md) — {{what got done on it this session}}
+- …
 
 **Branches/PRs:**
 - `{{branch-name}}` → PR #{{N}} (merged / open / abandoned)
