@@ -1,0 +1,8 @@
+# Lychee ignore patterns. One regex per line; matches against URLs.
+
+# Skip {{PLACEHOLDER}} paths/URLs in templates — these resolve correctly
+# only after `bootstrap.sh` substitutes the placeholder values during
+# bootstrap, and after templates are deployed into a user's working
+# folder. Both raw and URL-encoded forms are covered.
+\{\{
+%7B%7B
