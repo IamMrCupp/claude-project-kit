@@ -35,14 +35,16 @@ Project-agnostic habits that have proven out across real work. Start from these,
 
 ## CI
 
-**Principle:** after a push on an iterating PR, fire off an async watcher so CI completion pings you — don't poll.
+**Principle:** after a push on an iterating PR, fire off an async watcher so CI completion pings you — don't poll, and don't move on until you've seen the result.
+
+**Hard rule:** a PR isn't ready, complete, or "open for review" until checks pass. If you push and report the PR back without first watching CI, you'll either claim success on a red check or force the reviewer to spot the failure for you. Both cost trust. The watcher is how you avoid this — spawn it the same turn as the push, surface failures the moment the watcher reports them, and re-watch after every fix push.
 
 **GitHub Actions + `gh` CLI:**
 ```bash
 RUN_ID=$(gh run list --branch <branch> --workflow "<name>" --limit 1 --json databaseId --jq '.[0].databaseId')
 gh run watch "$RUN_ID" --exit-status
 ```
-Run with `run_in_background: true` on the Bash tool. Sleep 3–5 s before grabbing the run ID so the new push has time to register. One watcher per push (pick the workflow you're iterating on, don't spam).
+Run with `run_in_background: true` on the Bash tool. Sleep 3–5 s before grabbing the run ID so the new push has time to register. One watcher per push (pick the workflow you're iterating on, don't spam) — or one per workflow if multiple are likely to fail independently (e.g. lint + test).
 
 **Other platforms:**
 - **GitLab CI:** `glab ci watch` on the pipeline for the latest commit
