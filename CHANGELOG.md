@@ -6,6 +6,24 @@ See [Upgrading an existing project](SETUP.md#upgrading-an-existing-project) for 
 
 ---
 
+## [0.14.0](https://github.com/IamMrCupp/claude-project-kit/compare/v0.13.1...v0.14.0) (2026-04-28)
+
+
+### Features
+
+* **bootstrap:** add --workspace flag for multi-repo initiatives ([#61](https://github.com/IamMrCupp/claude-project-kit/issues/61)) ([24c4463](https://github.com/IamMrCupp/claude-project-kit/commit/24c44636465f3a39b8f4a2f90c9441eea47b14af))
+* **bootstrap:** add --workspace flag for multi-repo initiatives ([#61](https://github.com/IamMrCupp/claude-project-kit/issues/61)) ([b6c7fb6](https://github.com/IamMrCupp/claude-project-kit/commit/b6c7fb66c4baff4b0fdb6b021e2b6ae2fc2f2780))
+
+
+### Documentation
+
+* **setup:** document --workspace flag and workspace migration ([55a263d](https://github.com/IamMrCupp/claude-project-kit/commit/55a263d91b3779419141988b076de13d44062d04))
+
+
+### Tests
+
+* **bootstrap:** cover --workspace flag mechanics ([ba075f7](https://github.com/IamMrCupp/claude-project-kit/commit/ba075f7a49a35cb3e63a1514ffc2656a6b72c28b))
+
 ## [0.13.1](https://github.com/IamMrCupp/claude-project-kit/compare/v0.13.0...v0.13.1) (2026-04-28)
 
 
