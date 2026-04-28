@@ -65,18 +65,28 @@ Options:
   -h, --help         Show this help and exit.
 
 Examples:
-  # Non-interactive
+  # Interactive (recommended for first-time use)
+  cd ~/Code/my-new-project
+  ~/Code/claude-project-kit/bootstrap.sh
+
+  # Non-interactive, minimal
   cd ~/Code/my-new-project
   ~/Code/claude-project-kit/bootstrap.sh ~/Documents/Claude/Projects/my-new-project
 
-  # Interactive
+  # Non-interactive, fully specified (typical real invocation)
   cd ~/Code/my-new-project
-  ~/Code/claude-project-kit/bootstrap.sh
+  ~/Code/claude-project-kit/bootstrap.sh ~/Documents/Claude/Projects/my-new-project \\
+    --tracker jira --jira-project INFRA \\
+    --ci github-actions
 
 After running, edit the copied files (placeholders marked {{LIKE_THIS}}).
 Most common memory placeholders are auto-filled; any that couldn't be
 derived (e.g. {{REPO_SLUG}} when no git remote is set) stay as-is.
-See SETUP.md in the kit repo for the full walk-through.
+
+See also:
+  SETUP.md      — full bootstrap walkthrough, upgrade flow, troubleshooting
+  FEATURES.md   — feature-by-feature reference with example invocations
+  CHANGELOG.md  — what's shipped, with notes for existing adopters
 EOF
 }
 
