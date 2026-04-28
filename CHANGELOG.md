@@ -6,6 +6,19 @@ See [Upgrading an existing project](SETUP.md#upgrading-an-existing-project) for 
 
 ---
 
+## [0.12.0](https://github.com/IamMrCupp/claude-project-kit/compare/v0.11.1...v0.12.0) (2026-04-28)
+
+
+### Features
+
+* **commands:** add /session-start and /refresh-context slash command starters ([b323622](https://github.com/IamMrCupp/claude-project-kit/commit/b3236229a6079554093d732935753453d4724685))
+* **commands:** add /session-start and /refresh-context slash command starters ([e1ff6ca](https://github.com/IamMrCupp/claude-project-kit/commit/e1ff6ca434f9b5123f64a3705788f4426f0148bd))
+
+
+### Documentation
+
+* **prompts:** add Prompt 5 for mid-session context refresh ([6b63656](https://github.com/IamMrCupp/claude-project-kit/commit/6b63656bfbd6884beeeb3f3439c44c25ca1dd699))
+
 ## [0.11.1](https://github.com/IamMrCupp/claude-project-kit/compare/v0.11.0...v0.11.1) (2026-04-28)
 
 
