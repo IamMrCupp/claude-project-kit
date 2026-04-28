@@ -136,6 +136,7 @@ Works the same for greenfield repos and ones you're adopting it on mid-stream �
 ├── SECURITY.md              ← reporting vulnerabilities
 ├── LICENSE
 ├── bootstrap.sh             ← one-command setup (see SETUP.md step 2)
+├── docs/adr/                ← Architecture Decision Records (see README inside)
 ├── templates/               ← copied into a new working folder
 │   ├── SEED-PROMPT.md       ← instructions for Claude to auto-fill the rest
 │   ├── CONTEXT.md
@@ -181,6 +182,7 @@ Works the same for greenfield repos and ones you're adopting it on mid-stream �
 | [CHANGELOG.md](CHANGELOG.md) | What's shipped, with **For existing adopters** notes per release |
 | [CONTRIBUTING.md](CONTRIBUTING.md) | Adding tracker / CI variants, running the Bats suite, PR shape |
 | [SECURITY.md](SECURITY.md) | Vulnerability reporting |
+| [docs/adr/](docs/adr/) | Architecture Decision Records — why the kit's structural decisions look the way they do |
 
 ## When to update this framework
 
