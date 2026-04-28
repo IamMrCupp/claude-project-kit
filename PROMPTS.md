@@ -158,6 +158,40 @@ Don't start coding — wait for me to confirm direction.
 
 ---
 
+## 5. Refreshing context mid-session
+
+Use this mid-session — typically after a `/close-phase` or `/session-end` writeback, or when a long session has drifted and you want to re-anchor on the working folder's current state. Different from Prompt 1 because the session is already going; this just re-reads the docs so subsequent prompts use the updated content.
+
+```
+Re-read my AI working folder so the rest of this session uses the latest state.
+
+## Files to reload
+
+1. `<working-folder>/CONTEXT.md` — project status, current phase, working rules
+2. `<working-folder>/SESSION-LOG.md` — focus on the most recent entry
+3. The current phase's checklist (`<working-folder>/phase-<N>-checklist.md`)
+
+## Hand back
+
+A short delta read (≤5 bullets):
+
+- Current phase / status per CONTEXT.md right now
+- Most recent SESSION-LOG entry — date, focus, what landed
+- Any unticked items in the current phase checklist
+- Open threads / next-steps from the latest log entry
+- One sentence on what shifted since you last had this context loaded, if anything obvious — otherwise "no obvious deltas"
+
+Then wait for my next instruction. Don't propose changes yet.
+```
+
+**Notes:**
+- Useful right after running `/close-phase` or `/session-end` — the writeback updates the docs, but the active session is still working from the pre-writeback version until told to reload.
+- The "what shifted" bullet is intentionally hedged with the fallback. Claude doesn't have perfect visibility into its own loaded context; honest framing beats false confidence.
+- For a cold session start, use Prompt 1 (or `/session-start` if installed) instead — this prompt assumes you're already mid-session.
+- If `reference_ai_working_folder.md` is in auto-memory, the path doesn't need to be in the prompt — Claude knows where to look.
+
+---
+
 ## When to write a new prompt
 
 Add one here whenever you find yourself typing similar setup instructions into a fresh session for the third time. A good prompt is:
