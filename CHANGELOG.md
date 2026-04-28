@@ -6,6 +6,14 @@ See [Upgrading an existing project](SETUP.md#upgrading-an-existing-project) for 
 
 ---
 
+## [0.16.0](https://github.com/IamMrCupp/claude-project-kit/compare/v0.15.0...v0.16.0) (2026-04-28)
+
+
+### Features
+
+* **memory-templates:** add four behavioral feedback starters ([d7f8d11](https://github.com/IamMrCupp/claude-project-kit/commit/d7f8d1150204ed15019599e2e7273b8cbc53f261))
+* **memory-templates:** promote four behavioral feedback starters ([f42975b](https://github.com/IamMrCupp/claude-project-kit/commit/f42975b9bea16c3167a27b50c2196ecc64c5be95))
+
 ## [0.15.0](https://github.com/IamMrCupp/claude-project-kit/compare/v0.14.0...v0.15.0) (2026-04-28)
 
 
