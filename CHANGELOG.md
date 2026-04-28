@@ -6,6 +6,18 @@ See [Upgrading an existing project](SETUP.md#upgrading-an-existing-project) for 
 
 ---
 
+## [0.13.0](https://github.com/IamMrCupp/claude-project-kit/compare/v0.12.1...v0.13.0) (2026-04-28)
+
+
+### Features
+
+* **templates:** add workspace + ticket templates (Phase 4 §C.1–C.3, [#61](https://github.com/IamMrCupp/claude-project-kit/issues/61)) ([2a15e84](https://github.com/IamMrCupp/claude-project-kit/commit/2a15e84db7f746eace3f99c42365adaa9a872ab3))
+
+
+### Bug Fixes
+
+* **link-check:** ignore {{PLACEHOLDER}} URLs and demote source-only link to code-style ([9f3cc11](https://github.com/IamMrCupp/claude-project-kit/commit/9f3cc11b77d89421419c255e02a728d38682d5e5))
+
 ## [0.12.1](https://github.com/IamMrCupp/claude-project-kit/compare/v0.12.0...v0.12.1) (2026-04-28)
 
 
