@@ -6,6 +6,13 @@ See [Upgrading an existing project](SETUP.md#upgrading-an-existing-project) for 
 
 ---
 
+## [0.13.1](https://github.com/IamMrCupp/claude-project-kit/compare/v0.13.0...v0.13.1) (2026-04-28)
+
+
+### Documentation
+
+* **conventions:** reframe CI principle as 'PR not done until green' ([dfd2d9d](https://github.com/IamMrCupp/claude-project-kit/commit/dfd2d9d525c15f5c8e69f60a015c34299a5eb10f))
+
 ## [0.13.0](https://github.com/IamMrCupp/claude-project-kit/compare/v0.12.1...v0.13.0) (2026-04-28)
 
 
