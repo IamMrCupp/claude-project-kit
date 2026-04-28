@@ -34,6 +34,14 @@ Arguments:
                      Omit to run interactively.
 
 Options:
+  --workspace        Treat <working-folder> as a workspace path (multi-repo
+                     mode) instead of a single-repo working folder. Bootstrap
+                     creates a per-repo subfolder for the current repo inside
+                     the workspace, and on first use also seeds the
+                     workspace's workspace-CONTEXT.md and tickets/ directory.
+                     Subsequent runs against an existing workspace add new
+                     repo subfolders without recreating workspace files.
+                     See ADR-0001 in the kit for the workspace folder model.
   --skip-memory      Skip copying memory-templates/ into the auto-memory
                      folder. Only the working folder will be seeded.
   --project-name NAME
@@ -78,6 +86,12 @@ Examples:
   ~/Code/claude-project-kit/bootstrap.sh ~/Documents/Claude/Projects/my-new-project \\
     --tracker jira --jira-project INFRA \\
     --ci github-actions
+
+  # Workspace mode (multi-repo initiative — adds this repo to the workspace)
+  cd ~/Code/my-terraform-modules
+  ~/Code/claude-project-kit/bootstrap.sh --workspace \\
+    ~/Documents/Claude/Projects/acme-platform/ \\
+    --tracker jira --jira-project ACME --ci atlantis
 
 After running, edit the copied files (placeholders marked {{LIKE_THIS}}).
 Most common memory placeholders are auto-filled; any that couldn't be
@@ -124,6 +138,7 @@ ci_index_line() {
 SKIP_MEMORY=0
 FORCE=0
 DRY_RUN=0
+WORKSPACE_MODE=0
 WORKING_FOLDER=""
 PROJECT_NAME=""
 TRACKER=""
@@ -136,6 +151,7 @@ while [ $# -gt 0 ]; do
     --skip-memory) SKIP_MEMORY=1; shift ;;
     --force) FORCE=1; shift ;;
     --dry-run) DRY_RUN=1; shift ;;
+    --workspace) WORKSPACE_MODE=1; shift ;;
     --project-name)
       if [ $# -lt 2 ]; then
         echo "error: --project-name requires a value" >&2
@@ -269,6 +285,14 @@ REPO_ROOT="$(pwd)"
 SANITIZED="$(echo "$REPO_ROOT" | sed 's|/|-|g')"
 MEMORY_DIR="$HOME/.claude/projects/${SANITIZED}/memory"
 
+WORKSPACE_DIR=""
+WORKSPACE_REPO_NAME=""
+if [ "$WORKSPACE_MODE" -eq 1 ]; then
+  WORKSPACE_DIR="$WORKING_FOLDER"
+  WORKSPACE_REPO_NAME="$(basename "$REPO_ROOT")"
+  WORKING_FOLDER="$WORKSPACE_DIR/$WORKSPACE_REPO_NAME"
+fi
+
 if [ -z "$PROJECT_NAME" ]; then
   PROJECT_NAME="$(basename "$WORKING_FOLDER")"
 fi
@@ -327,7 +351,12 @@ if REMOTE_URL="$(git -C "$REPO_ROOT" remote get-url origin 2>/dev/null)"; then
     | sed -E 's|^https?://[^/]+/||; s|^git@[^:]+:||; s|\.git$||')"
 fi
 
-echo "Working folder: $WORKING_FOLDER"
+if [ "$WORKSPACE_MODE" -eq 1 ]; then
+  echo "Workspace:      $WORKSPACE_DIR"
+  echo "Repo subfolder: $WORKSPACE_REPO_NAME (full path: $WORKING_FOLDER)"
+else
+  echo "Working folder: $WORKING_FOLDER"
+fi
 echo "Repo root:      $REPO_ROOT"
 echo "Project name:   $PROJECT_NAME"
 if [ "$SKIP_MEMORY" -eq 0 ]; then
@@ -351,6 +380,16 @@ echo
 if [ "$DRY_RUN" -eq 1 ]; then
   echo "=== DRY RUN — no files will be written ==="
   echo
+  if [ "$WORKSPACE_MODE" -eq 1 ]; then
+    echo "Workspace dir: $WORKSPACE_DIR"
+    if [ -f "$WORKSPACE_DIR/workspace-CONTEXT.md" ]; then
+      echo "  ✓ existing workspace (workspace-CONTEXT.md present) — no workspace-level changes"
+    else
+      echo "  + create workspace dir + tickets/archive/"
+      echo "  + copy $KIT_ROOT/templates/workspace/workspace-CONTEXT.md → workspace-CONTEXT.md"
+    fi
+    echo
+  fi
   echo "Would create working folder: $WORKING_FOLDER"
   echo "  + copy $KIT_ROOT/templates/*.md"
   echo "  + rename phase-N-checklist.md → phase-0-checklist.md"
@@ -430,6 +469,17 @@ if [ "$SKIP_MEMORY" -eq 0 ] && [ -d "$MEMORY_DIR" ]; then
 fi
 
 mkdir -p "$WORKING_FOLDER"
+
+if [ "$WORKSPACE_MODE" -eq 1 ]; then
+  mkdir -p "$WORKSPACE_DIR/tickets/archive"
+  if [ ! -f "$WORKSPACE_DIR/workspace-CONTEXT.md" ]; then
+    cp "$KIT_ROOT/templates/workspace/workspace-CONTEXT.md" "$WORKSPACE_DIR/"
+    echo "  ✓ Created workspace at $WORKSPACE_DIR (workspace-CONTEXT.md, tickets/archive/)"
+  else
+    echo "  ✓ Existing workspace at $WORKSPACE_DIR — adding repo subfolder $WORKSPACE_REPO_NAME"
+  fi
+fi
+
 cp "$KIT_ROOT/templates/"*.md "$WORKING_FOLDER/"
 mv "$WORKING_FOLDER/phase-N-checklist.md" "$WORKING_FOLDER/phase-0-checklist.md"
 echo "  ✓ Copied template files to $WORKING_FOLDER"
