@@ -6,6 +6,14 @@ See [Upgrading an existing project](SETUP.md#upgrading-an-existing-project) for 
 
 ---
 
+## [0.11.1](https://github.com/IamMrCupp/claude-project-kit/compare/v0.11.0...v0.11.1) (2026-04-28)
+
+
+### Documentation
+
+* add Features section to README, FEATURES.md reference, and polish bootstrap.sh -h ([a89e277](https://github.com/IamMrCupp/claude-project-kit/commit/a89e2774f806939976f8619d1ba28821cd9c117a))
+* add Features section to README, FEATURES.md reference, and polish bootstrap.sh -h ([8bc1a59](https://github.com/IamMrCupp/claude-project-kit/commit/8bc1a592123d62d7e752b0de393e76963815d24a))
+
 ## [0.11.0](https://github.com/IamMrCupp/claude-project-kit/compare/v0.10.1...v0.11.0) (2026-04-25)
 
 
