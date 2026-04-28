@@ -48,7 +48,7 @@ Multi-repo tickets accumulate work across repos. List branches and PRs here so t
 
 - **Sessions that touched this ticket:** {{list per-repo `SESSION-LOG.md` entries by date}}
 - **Related tickets:** {{KEY1 (dependency), KEY2 (follow-up)}}
-- **Workspace context:** [`../workspace-CONTEXT.md`](../workspace-CONTEXT.md)
+- **Workspace context:** `../workspace-CONTEXT.md` (sibling of the `tickets/` directory after deployment)
 
 ---
 
