@@ -149,10 +149,12 @@ These are **starters**. Edit the frontmatter (model, tool allowlist), customize 
 
 ## Starter slash commands
 
-Two slash commands stage in `<working-folder>/.claude/commands/`. Same activation pattern — copy `.claude/` into your target repo.
+Four slash commands stage in `<working-folder>/.claude/commands/`. Same activation pattern — copy `.claude/` into your target repo.
 
+- **`/session-start`** — packages Prompt 1 from `PROMPTS.md`. Loads `CONTEXT.md`, `SESSION-LOG.md`, and the current phase checklist; hands back a 3–5 bullet grounding summary. Use at the start of a fresh session.
+- **`/refresh-context`** — re-reads the working folder mid-session, after a `/close-phase` or `/session-end` writeback or when a long session has drifted. Hands back a delta read against the latest state.
 - **`/close-phase`** — runs the phase-close writeback (checklist tick, `plan.md` status bump, `CONTEXT.md` update, optional acceptance-results archive). Takes a phase number or infers from `CONTEXT.md`.
-- **`/session-end`** — packages Prompt 3 from `PROMPTS.md` as a slash command. Drafts the four end-of-session updates (SESSION-LOG entry, CONTEXT bump, checklist scan, memory candidates) and waits for confirmation before writing.
+- **`/session-end`** — packages Prompt 3 from `PROMPTS.md`. Drafts the four end-of-session updates (SESSION-LOG entry, CONTEXT bump, checklist scan, memory candidates) and waits for confirmation before writing.
 
 ---
 
