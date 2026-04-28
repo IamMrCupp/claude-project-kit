@@ -6,6 +6,17 @@ See [Upgrading an existing project](SETUP.md#upgrading-an-existing-project) for 
 
 ---
 
+## [0.12.1](https://github.com/IamMrCupp/claude-project-kit/compare/v0.12.0...v0.12.1) (2026-04-28)
+
+
+### Documentation
+
+* **adr:** add ADR-0001 multi-repo + ticket-driven folder model ([#61](https://github.com/IamMrCupp/claude-project-kit/issues/61)) ([7be788c](https://github.com/IamMrCupp/claude-project-kit/commit/7be788c312fbfcac9a1bab107d176cd8e2deb24b))
+* **adr:** add ADR-0001 multi-repo + ticket-driven folder model ([#61](https://github.com/IamMrCupp/claude-project-kit/issues/61)) ([0147bca](https://github.com/IamMrCupp/claude-project-kit/commit/0147bca4db0de1443358b1dd86c94807a51be967))
+* **adr:** set up docs/adr/ pattern and link from README ([efa94b3](https://github.com/IamMrCupp/claude-project-kit/commit/efa94b3ad6c340ae397a7c234617b15e512f2fa4))
+* **conventions:** add ticket-driven workflows section ([#61](https://github.com/IamMrCupp/claude-project-kit/issues/61)) ([9cc941f](https://github.com/IamMrCupp/claude-project-kit/commit/9cc941fc7b0e458bed7a1dfb97226307cca7fd51))
+* **conventions:** add ticket-driven workflows section ([#61](https://github.com/IamMrCupp/claude-project-kit/issues/61)) ([4920a33](https://github.com/IamMrCupp/claude-project-kit/commit/4920a33b9eca96ec6b2a1604268c6c7935755a86))
+
 ## [0.12.0](https://github.com/IamMrCupp/claude-project-kit/compare/v0.11.1...v0.12.0) (2026-04-28)
 
 
