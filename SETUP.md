@@ -160,7 +160,7 @@ mv "<working-folder>/phase-N-checklist.md" "<working-folder>/phase-0-checklist.m
 [ -d "<framework-dir>/templates/.claude" ] && cp -R "<framework-dir>/templates/.claude" "<working-folder>/"
 ```
 
-The `.claude/` directory holds starter agents and slash commands that match the kit's session-end / phase-close conventions. They're staged in the working folder; copy into your target repo's `.claude/` if you want them active. See [`templates/.claude/README.md`](templates/.claude/README.md) for the four starters and how to activate them.
+The `.claude/` directory holds starter agents and slash commands that match the kit's session-start, session-end, and phase-close conventions. They're staged in the working folder; copy into your target repo's `.claude/` if you want them active. See [`templates/.claude/README.md`](templates/.claude/README.md) for the full list (two agents + four slash commands) and how to activate them.
 
 ### Seed auto-memory
 The harness expects memory at `~/.claude/projects/<sanitized-path>/memory/`. Sanitization rule: absolute repo path with `/` replaced by `-`, prefixed with `-`. Example: `/Users/you/Code/acme/foo` → `-Users-you-Code-acme-foo`.

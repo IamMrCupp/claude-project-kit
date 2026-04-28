@@ -62,7 +62,7 @@ That kicks off interactive mode: it asks for the working-folder path, project na
 - **Phase-based planning docs** — `plan.md` + per-phase checklist + `implementation.md` give Claude scoped, numbered tasks instead of a wall of intent.
 - **SEED-PROMPT auto-fill** — point Claude at one file and it deep-reads your repo, fills `CONTEXT.md`, drafts `research.md`, flags inferences, and stops for your review.
 - **Starter agents** — `code-reviewer` (universal) and `session-summarizer` (kit-aware), staged in the working folder; copy into your repo to activate.
-- **Starter slash commands** — `/close-phase` (phase-close writeback) and `/session-end` (end-of-session log + memory pass).
+- **Starter slash commands** — `/session-start` (load working-folder context), `/refresh-context` (re-read mid-session), `/close-phase` (phase-close writeback), and `/session-end` (end-of-session log + memory pass).
 - **Worked example** — `examples/widget-tracker/` is a fictional Go CLI mid-Phase-1 with all docs filled in plausibly.
 - **Conventions baseline** — Conventional Commits, merge-only PRs, test-plan format, etc. Read once, drop or keep per project.
 - **No surprises** — MIT licensed, no telemetry, no network calls, kit never modifies your target repo.
@@ -71,7 +71,7 @@ See [FEATURES.md](FEATURES.md) for one-paragraph-per-feature detail with example
 
 ## What this is / isn't
 
-- **Is:** a workflow scaffold layered on top of Claude Code — templates, memory starters, conventions, two starter agents, two starter slash commands.
+- **Is:** a workflow scaffold layered on top of Claude Code — templates, memory starters, conventions, two starter agents, four starter slash commands.
 - **Isn't:** a Claude Code plugin, a replacement for `CLAUDE.md`, or a project tracker. It complements all three.
 
 ## Why this works
@@ -147,7 +147,7 @@ Works the same for greenfield repos and ones you're adopting it on mid-stream �
 │   ├── research.md
 │   └── .claude/             ← starter agents + slash commands (staged in WF)
 │       ├── agents/          ← code-reviewer, session-summarizer
-│       ├── commands/        ← /close-phase, /session-end
+│       ├── commands/        ← /session-start, /refresh-context, /close-phase, /session-end
 │       └── README.md        ← how to copy into your target repo
 ├── examples/                ← filled-in reference — read, don't copy
 │   └── widget-tracker/      ← fictional Go CLI, mid-Phase-1 snapshot
