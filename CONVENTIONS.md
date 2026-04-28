@@ -50,6 +50,23 @@ Run with `run_in_background: true` on the Bash tool. Sleep 3–5 s before grabbi
 - **Azure Pipelines:** `az pipelines runs show --id <N> --open` or poll the REST API
 - **Any platform:** if the CLI doesn't expose a blocking "wait for completion" command, a small shell loop polling the run's status endpoint every 15–30 s works and still feeds Claude's notification system when the script exits
 
+## Ticket-driven workflows
+
+When working against an external tracker (JIRA, GitHub Issues, Linear, etc.), the conventions above extend with a ticket key woven through branches, PR titles, commits, and PR bodies. Examples below use a JIRA-style key (`LX-1234`); substitute your tracker's format.
+
+### Branch / PR / commit conventions
+
+- **Branch:** `<type>/<KEY>-<short-slug>` — e.g. `feat/LX-1234-fix-lb-path-routing`. The same ticket key is reused across multiple repos when a single ticket drives work in both (e.g. a Terraform envs change + a modules change both against `LX-1234`). Multi-repo initiatives keep one key, not one per repo.
+- **PR title:** Conventional Commits with the key in parens — e.g. `feat(modules): add VPC module (LX-1234)`. **No `Closes` / `Fixes` keyword** unless your tracker has auto-transitions configured AND you want them; many orgs (including JIRA without explicit setup) don't, and the keyword does nothing useful in that case.
+- **PR body:** dedicated `## JIRA` (or `## Linear`, `## Issue`, etc.) section linking the ticket plus the usual Summary / Test plan sections. No transition magic — humans transition the ticket.
+- **Commits:** Conventional Commits with the key in the subject — e.g. `feat(modules): add VPC module — LX-1234`. The single-line `-m` rule from `## Git & commits` still applies; the key goes in the subject, not a body.
+- **Smart Commits** (`#time`, `#comment`, `#transition` for trackers that support them) — **opt-in per project**, not part of the default convention. If your team uses them, document the local conventions in `CONTEXT.md` so contributors don't accidentally trigger transitions.
+
+### What the kit does NOT do with trackers
+
+- **Never creates tracker projects, labels, workflows, or sprint scaffolding** on your behalf. JIRA projects, GitHub Project boards, Linear teams, etc. are owned by PMs and the business — bootstrap captures *references* to projects that already exist (project key, MCP availability, link), never creates them.
+- **Creating individual issues/tickets inside an existing project** is only on the table when you explicitly ask for it. The kit's own GitHub repo is the exception (a personal project), not the rule.
+
 ## Documentation (in the working folder)
 
 - **Keep planning docs in sync as work lands** — not only at phase boundaries.
