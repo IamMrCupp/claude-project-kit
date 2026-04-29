@@ -6,6 +6,13 @@ See [Upgrading an existing project](SETUP.md#upgrading-an-existing-project) for 
 
 ---
 
+## [0.16.1](https://github.com/IamMrCupp/claude-project-kit/compare/v0.16.0...v0.16.1) (2026-04-29)
+
+
+### Documentation
+
+* surface the auto-memory short-form session-start prompt ([c11130a](https://github.com/IamMrCupp/claude-project-kit/commit/c11130aecb7bb8b274a699356256429dca48d60f))
+
 ## [0.16.0](https://github.com/IamMrCupp/claude-project-kit/compare/v0.15.0...v0.16.0) (2026-04-28)
 
 
