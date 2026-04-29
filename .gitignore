@@ -2,3 +2,10 @@
 .vscode/
 .idea/
 *.swp
+
+# VHS-rendered demos — sources committed under demo/, renders hosted via
+# GitHub user-attachments and embedded by URL in README.md (see demo/README.md).
+demo/*.gif
+demo/*.mp4
+demo/*.webm
+demo/*.png
