@@ -103,7 +103,7 @@ Works the same for greenfield repos and ones you're adopting it on mid-stream �
    - **Interactive (hand-held):** `bootstrap.sh` with no arguments prompts for working-folder path, project name, whether to seed auto-memory, your issue tracker (GitHub Issues / JIRA / Linear / GitLab / Shortcut / other / none), and your primary CI/automation tool (GitHub Actions / GitLab CI / Jenkins / CircleCI / Atlantis / Ansible CLI / other / none). For JIRA and Linear, it also prompts for the project or team key.
    - **Non-interactive (scripted):** `bootstrap.sh <working-folder> [--tracker TYPE] [--jira-project KEY | --linear-team KEY] [--ci TYPE]` — see `bootstrap.sh -h` for the full flag list.
 4. Open Claude Code in the target repo and say *"Follow the instructions in `<working-folder>/SEED-PROMPT.md`."* Claude deep-reads your repo, fills the templates, flags anything it inferred or can't derive, and stops for your review.
-5. Answer Claude's questions, confirm the inferences, and start working. The normal per-session prompt lives in [PROMPTS.md](PROMPTS.md).
+5. Answer Claude's questions, confirm the inferences, and start working. From the next session onward (once `reference_ai_working_folder.md` is in auto-memory, which bootstrap seeds for you), the daily-use prompt is just *"Load context and give me a 3-bullet summary of where we are."* — full prompt library, including the verbose first-session form and mid-PR resume, in [PROMPTS.md](PROMPTS.md).
 
 ## The lifecycle
 

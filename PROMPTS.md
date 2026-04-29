@@ -8,6 +8,20 @@ Ready-to-paste prompts for starting Claude sessions in common scenarios. Copy th
 
 Use this when opening a fresh Claude session in a repo you've already bootstrapped with the kit's templates and memory starters. The prompt points Claude at your persistent working folder so it picks up project state from where the last session left off.
 
+### Short form — recommended for daily use
+
+Once `reference_ai_working_folder.md` is in your project's auto-memory (the kit seeds it during bootstrap), the prompt collapses to one line:
+
+```
+Load context and give me a 3-bullet summary of where we are.
+```
+
+The memory tells Claude where the working folder lives, so you don't need to repeat the path. **This is the steady-state prompt** — paste it in, get your grounding summary, start working.
+
+### Verbose form — first session, or no auto-memory yet
+
+Use this if it's your very first session in a project, the auto-memory reference isn't set up yet, or you want Claude to see the full instructions explicitly:
+
 ```
 Before we start, read these files in my AI working folder, in order:
 
@@ -24,9 +38,9 @@ landed most recently, and any open threads. Then wait for my next instruction.
 ```
 
 **Notes:**
-- Replace `<working-folder>` with the actual path (e.g. `~/Documents/Claude/Projects/my-project/`)
-- **Once you've set up `memory-templates/reference_ai_working_folder.md` for the project**, the memory tells Claude where to look automatically — you can shorten the prompt to *"Load context and give me a 3-bullet summary of where we are."*
-- If you're resuming mid-PR, use [Prompt 4](#4-resuming-mid-pr) instead of this one — it loads the same context but adds a structured branch + PR + CI assessment.
+- Replace `<working-folder>` with the actual path (e.g. `~/Documents/Claude/Projects/my-project/`).
+- If you're resuming mid-PR, use [Prompt 4](#4-resuming-mid-pr) instead of either form above — it loads the same context but adds a structured branch + PR + CI assessment.
+- The `/session-start` slash command (in `templates/.claude/commands/`) runs the verbose flow as a one-step invocation. Copy it into your repo's `.claude/commands/` to enable.
 
 ---
 
