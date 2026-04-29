@@ -117,13 +117,13 @@ For work projects especially, vet each rule against your employer's policies bef
 
 ## 6. First session
 
-Open Claude in the repo and paste **Prompt 1 ("Starting work on a project that uses this kit")** from [PROMPTS.md](PROMPTS.md). That prompt tells Claude to read your working folder's `CONTEXT.md` + `SESSION-LOG.md` + current phase checklist, then hand back a short summary — so you start every session grounded in real project state.
+Open Claude in the repo and paste the **verbose form of Prompt 1 ("Starting work on a project that uses this kit")** from [PROMPTS.md](PROMPTS.md). It tells Claude to read your working folder's `CONTEXT.md` + `SESSION-LOG.md` + current phase checklist, then hand back a short summary — so you start every session grounded in real project state.
 
-For quick reference, the bare minimum version is:
+After your first session, your auto-memory has `reference_ai_working_folder.md` (seeded by bootstrap), which means Claude already knows where the working folder lives. From then on, your **daily-use prompt** collapses to one line:
 
-> Read `CONTEXT.md` and `SESSION-LOG.md` in `<working-folder>` before we start.
+> Load context and give me a 3-bullet summary of where we are.
 
-…but the full PROMPTS.md version handles edge cases (what to summarize, when to wait, not editing the working folder) and scales to more scenarios as you find them.
+That's the steady-state prompt for every subsequent session — short, paste-able, and discoverable in [PROMPTS.md §1](PROMPTS.md). The verbose form is still there for edge cases (no auto-memory yet, switching machines, debugging an unexpected response).
 
 From there, the normal flow:
 
