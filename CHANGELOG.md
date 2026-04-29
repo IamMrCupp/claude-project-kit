@@ -6,6 +6,15 @@ See [Upgrading an existing project](SETUP.md#upgrading-an-existing-project) for 
 
 ---
 
+## [0.16.2](https://github.com/IamMrCupp/claude-project-kit/compare/v0.16.1...v0.16.2) (2026-04-29)
+
+
+### Documentation
+
+* **demo:** add VHS bootstrap walkthrough source ([23a81fe](https://github.com/IamMrCupp/claude-project-kit/commit/23a81fe7243e664afc1225c46159a90e477de370))
+* **demo:** add VHS bootstrap walkthrough source ([#87](https://github.com/IamMrCupp/claude-project-kit/issues/87)) ([ceeb051](https://github.com/IamMrCupp/claude-project-kit/commit/ceeb05130a45e64c5c4a6b49b27f53dd78cc7af7))
+* **readme:** embed bootstrap demo GIF ([#87](https://github.com/IamMrCupp/claude-project-kit/issues/87)) ([54083f2](https://github.com/IamMrCupp/claude-project-kit/commit/54083f226031cdb29209f583088ed1374a6759f5))
+
 ## [0.16.1](https://github.com/IamMrCupp/claude-project-kit/compare/v0.16.0...v0.16.1) (2026-04-29)
 
 
