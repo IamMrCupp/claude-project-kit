@@ -68,15 +68,17 @@ That kicks off interactive mode: it asks for the working-folder path, project na
 ## Features
 
 - **Idempotent bootstrap** — write-once by default, with `--dry-run` (preview), `--force` (override the empty-folder check), and `--skip-memory` (working folder only).
-- **Issue tracker awareness** — `--tracker {github,jira,linear,gitlab,shortcut,other,none}` seeds tracker-specific memory. JIRA and Linear take a project / team key.
+- **Workspace mode** — `--workspace <path>` sets up a multi-repo initiative folder (workspace-CONTEXT.md + per-repo subfolders + shared `tickets/`). Detects Terraform / Terragrunt repos and prompts about sibling envs/modules repos.
+- **Issue tracker awareness** — `--tracker {github,jira,linear,gitlab,shortcut,other,none}` seeds tracker-specific memory AND fills `{{TRACKER_TYPE}}` / `{{TRACKER_KEY}}` in `CONTEXT.md`. JIRA and Linear take a project / team key.
+- **Per-ticket scratchpads** — `/pull-ticket <KEY>` slash command + `pull-ticket.sh` helper script fetch ticket data via tracker MCPs / CLIs and seed `tickets/<KEY>-<slug>.md`. **Read-only** against the tracker — never creates, edits, transitions, or comments.
 - **CI awareness** — `--ci {github-actions,gitlab-ci,jenkins,circleci,atlantis,ansible-cli,other,none}` seeds CI-specific memory.
 - **Auto-memory seeding** — starter memory files for role, conventions, project context, and external references, with placeholder substitution from your repo (`{{PROJECT_NAME}}`, `{{REPO_SLUG}}`, etc.).
 - **Phase-based planning docs** — `plan.md` + per-phase checklist + `implementation.md` give Claude scoped, numbered tasks instead of a wall of intent.
 - **SEED-PROMPT auto-fill** — point Claude at one file and it deep-reads your repo, fills `CONTEXT.md`, drafts `research.md`, flags inferences, and stops for your review.
 - **Starter agents** — `code-reviewer` (universal) and `session-summarizer` (kit-aware), staged in the working folder; copy into your repo to activate.
-- **Starter slash commands** — `/session-start` (load working-folder context), `/refresh-context` (re-read mid-session), `/close-phase` (phase-close writeback), and `/session-end` (end-of-session log + memory pass).
+- **Starter slash commands** — `/session-start`, `/refresh-context`, `/close-phase`, `/session-end`, `/pull-ticket`.
 - **Worked example** — `examples/widget-tracker/` is a fictional Go CLI mid-Phase-1 with all docs filled in plausibly.
-- **Conventions baseline** — Conventional Commits, merge-only PRs, test-plan format, etc. Read once, drop or keep per project.
+- **Conventions baseline** — Conventional Commits, merge-only PRs, ticket-driven branch / PR / commit shape, test-plan format, etc. Read once, drop or keep per project.
 - **No surprises** — MIT licensed, no telemetry, no network calls, kit never modifies your target repo.
 
 See [FEATURES.md](FEATURES.md) for one-paragraph-per-feature detail with example invocations.
@@ -148,6 +150,7 @@ Works the same for greenfield repos and ones you're adopting it on mid-stream �
 ├── SECURITY.md              ← reporting vulnerabilities
 ├── LICENSE
 ├── bootstrap.sh             ← one-command setup (see SETUP.md step 2)
+├── pull-ticket.sh           ← terminal-driven /pull-ticket equivalent (read-only)
 ├── docs/adr/                ← Architecture Decision Records (see README inside)
 ├── templates/               ← copied into a new working folder
 │   ├── SEED-PROMPT.md       ← instructions for Claude to auto-fill the rest
@@ -158,9 +161,12 @@ Works the same for greenfield repos and ones you're adopting it on mid-stream �
 │   ├── phase-N-checklist.md
 │   ├── acceptance-test-results.md
 │   ├── research.md
+│   ├── workspace/           ← workspace-mode-only templates
+│   │   ├── workspace-CONTEXT.md   ← cross-repo overview (--workspace)
+│   │   └── ticket.md              ← per-ticket scratchpad shape
 │   └── .claude/             ← starter agents + slash commands (staged in WF)
 │       ├── agents/          ← code-reviewer, session-summarizer
-│       ├── commands/        ← /session-start, /refresh-context, /close-phase, /session-end
+│       ├── commands/        ← /session-start, /refresh-context, /close-phase, /session-end, /pull-ticket
 │       └── README.md        ← how to copy into your target repo
 ├── examples/                ← filled-in reference — read, don't copy
 │   └── widget-tracker/      ← fictional Go CLI, mid-Phase-1 snapshot
