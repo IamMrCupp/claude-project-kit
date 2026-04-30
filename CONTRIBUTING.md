@@ -34,6 +34,20 @@ Same shape as tracker, but in `memory-templates/ci/` and `tests/bootstrap_ci.bat
 
 Edit the relevant `.md` file. The `link-check.yml` workflow runs `lychee --offline` on docs PRs — broken relative links will fail CI.
 
+### Slash commands or agents
+
+The canonical sources for the kit's slash commands and agents live under `templates/.claude/commands/` and `templates/.claude/agents/` — that's what `bootstrap.sh` copies into newly-bootstrapped projects.
+
+The kit also dogfoods these files: identical copies live at `.claude/commands/` and `.claude/agents/` in the repo root so contributors can use `/session-start`, `/close-phase`, etc. while working on the kit itself. The two trees must stay byte-identical.
+
+If you edit anything under `templates/.claude/commands/` or `templates/.claude/agents/`, run:
+
+```bash
+scripts/sync-claude-dogfood.sh
+```
+
+…to update the dogfood copies. The `tests/dogfood_claude_in_sync.bats` test enforces this in CI — it'll fail with a sync hint if the trees diverge.
+
 ---
 
 ## Branch naming
