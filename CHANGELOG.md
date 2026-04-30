@@ -6,6 +6,14 @@ See [Upgrading an existing project](SETUP.md#upgrading-an-existing-project) for 
 
 ---
 
+## [0.20.2](https://github.com/IamMrCupp/claude-project-kit/compare/v0.20.1...v0.20.2) (2026-04-30)
+
+
+### Documentation
+
+* clarify additionalDirectories setup is per-machine ([71b25e5](https://github.com/IamMrCupp/claude-project-kit/commit/71b25e511bd96f73b2400d916b68c1cd307a367e))
+* clarify additionalDirectories setup is per-machine ([20c6959](https://github.com/IamMrCupp/claude-project-kit/commit/20c6959b4e687768281567305e43283138874910))
+
 ## [0.20.1](https://github.com/IamMrCupp/claude-project-kit/compare/v0.20.0...v0.20.1) (2026-04-30)
 
 
