@@ -6,6 +6,14 @@ See [Upgrading an existing project](SETUP.md#upgrading-an-existing-project) for 
 
 ---
 
+## [0.20.3](https://github.com/IamMrCupp/claude-project-kit/compare/v0.20.2...v0.20.3) (2026-04-30)
+
+
+### Bug Fixes
+
+* **bootstrap:** surface per-repo bootstrap requirement in workspace mode ([d3b6431](https://github.com/IamMrCupp/claude-project-kit/commit/d3b6431e285d44d848212630a37b83a7be00412c))
+* **bootstrap:** surface per-repo bootstrap requirement in workspace mode ([fa5cf8a](https://github.com/IamMrCupp/claude-project-kit/commit/fa5cf8a785bba05f21883cabc0b1d4e5ba7b9a36))
+
 ## [0.20.2](https://github.com/IamMrCupp/claude-project-kit/compare/v0.20.1...v0.20.2) (2026-04-30)
 
 
