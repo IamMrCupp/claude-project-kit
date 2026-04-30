@@ -1,6 +1,11 @@
 # Make the GitHub language graph reflect the kit's actual content mix.
-# Without this, *.md is treated as linguist-documentation and excluded from
-# the language stats — and since the kit is ~90% markdown by content, the
-# default graph shows "Shell 100%", which misrepresents what's in here.
+# Without these overrides, Linguist hides markdown (documentation), YAML/JSON
+# (data), and unknown extensions like .tape (VHS) — leaving "Shell 100%",
+# which misrepresents a repo that is ~90% markdown.
 
-*.md linguist-documentation=false linguist-detectable=true
+*.md   linguist-documentation=false linguist-detectable=true
+*.yml  linguist-detectable=true
+*.json linguist-detectable=true
+*.tape linguist-detectable=true linguist-language=VHS
+*.exp  linguist-detectable=true linguist-language=Expect
+*.bats linguist-detectable=true linguist-language=Shell
