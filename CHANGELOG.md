@@ -6,6 +6,15 @@ See [Upgrading an existing project](SETUP.md#upgrading-an-existing-project) for 
 
 ---
 
+## [0.16.3](https://github.com/IamMrCupp/claude-project-kit/compare/v0.16.2...v0.16.3) (2026-04-30)
+
+
+### Documentation
+
+* **demo:** add VHS second-session walkthrough — daily-use demo ([1030296](https://github.com/IamMrCupp/claude-project-kit/commit/1030296c087c5f0bbeb2a6c77a38e74cc9fd4166))
+* **demo:** add VHS second-session walkthrough source ([#87](https://github.com/IamMrCupp/claude-project-kit/issues/87)) ([b4d9e4f](https://github.com/IamMrCupp/claude-project-kit/commit/b4d9e4f67652ea57a8f81093224d968149da4cce))
+* **readme:** embed second-session demo GIF ([#87](https://github.com/IamMrCupp/claude-project-kit/issues/87)) ([5dc5f0a](https://github.com/IamMrCupp/claude-project-kit/commit/5dc5f0a7134865aba0060c604f7ada2e7fe354f5))
+
 ## [0.16.2](https://github.com/IamMrCupp/claude-project-kit/compare/v0.16.1...v0.16.2) (2026-04-29)
 
 
