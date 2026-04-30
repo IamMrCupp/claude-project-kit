@@ -6,6 +6,16 @@ See [Upgrading an existing project](SETUP.md#upgrading-an-existing-project) for 
 
 ---
 
+## [0.19.1](https://github.com/IamMrCupp/claude-project-kit/compare/v0.19.0...v0.19.1) (2026-04-30)
+
+
+### Documentation
+
+* **features:** add workspace mode, per-ticket scratchpads, and tracker config sections (Phase 4 F.5) ([99c9f66](https://github.com/IamMrCupp/claude-project-kit/commit/99c9f666dc4d339076b16b02ba2ec18d0bbcb9ae))
+* **readme:** surface workspace mode and /pull-ticket in features list (Phase 4 F.1) ([45b7c34](https://github.com/IamMrCupp/claude-project-kit/commit/45b7c345b556b7b71c157374d40ce0b0916ef299))
+* **setup:** document pull-ticket flow, prune stale --workspace caveats (Phase 4 F.2) ([9bd4402](https://github.com/IamMrCupp/claude-project-kit/commit/9bd44023faeeb8c05a1ee8df6dfc1a59a9762925))
+* surface Phase 4 features (workspace, tickets, /pull-ticket) in README/SETUP/FEATURES ([bfea4a8](https://github.com/IamMrCupp/claude-project-kit/commit/bfea4a8b511f06ef55dcb7622bbeb73bf6fa874c))
+
 ## [0.19.0](https://github.com/IamMrCupp/claude-project-kit/compare/v0.18.0...v0.19.0) (2026-04-30)
 
 
