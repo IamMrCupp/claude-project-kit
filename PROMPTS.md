@@ -206,6 +206,57 @@ Then wait for my next instruction. Don't propose changes yet.
 
 ---
 
+## 6. Pulling a ticket into a per-ticket scratchpad
+
+Use this when starting work on a tracker ticket (JIRA, GitHub Issues, Linear, etc.) and you want a local working scratchpad seeded from the tracker — summary, AC, status. Read-only — pulls from the tracker, never pushes back. The scratchpad lives at `tickets/<KEY>-<slug>.md` and accumulates working notes, branches, and PRs as work happens; the tracker stays the source of truth.
+
+```
+Pull ticket <KEY> from the tracker.
+
+## Step 1 — read tracker config
+
+Read `<working-folder>/CONTEXT.md`. Find the **Tracker Configuration** section.
+If `<working-folder>/../workspace-CONTEXT.md` exists, read that too — workspace-level
+tracker config takes precedence in workspace mode.
+
+Stop and ask before proceeding if:
+- Tracker type is `none` or `other`
+- MCP availability is `not installed` or `unknown`
+- The ticket key doesn't match the project key
+
+## Step 2 — fetch the ticket
+
+Use the tracker MCP that matches the configured type (JIRA / GitHub Issues / Linear /
+GitLab / Shortcut). Read-only — get / view / search only. Never create, edit,
+transition, or comment.
+
+## Step 3 — write tickets/<KEY>-<slug>.md
+
+Use the kit's `templates/workspace/ticket.md` shape. Fill key, title, tracker URL,
+status, summary, and acceptance criteria. Leave working notes, branches, decisions
+empty for now. Slug is the title lowercased and dashed (max ~40 chars).
+
+If a file with the `<KEY>-` prefix already exists in `tickets/` or
+`tickets/archive/`, stop and ask before overwriting.
+
+## Step 4 — update workspace-CONTEXT.md (workspace mode only)
+
+Append the ticket to the **Active:** sub-section under `## Tickets` and bump
+the **Last updated:** date.
+
+## Step 5 — hand back
+
+Print the file path, the first three lines (key + title, tracker link, status), and
+remind me the tracker is the source of truth. Don't propose a branch — wait.
+```
+
+**Notes:**
+- The `/pull-ticket <KEY>` slash command (in `templates/.claude/commands/`) runs this flow as a one-step invocation. Copy it into your repo's `.claude/commands/` to enable.
+- For terminal-driven use without Claude, the `pull-ticket.sh <KEY>` helper script does the same thing (uses `gh` / `jira` / `glab` CLIs when available, writes a stub for tracker types without a CLI fallback).
+- This is read/reference only. The kit never creates, edits, transitions, or comments on tracker resources — see ADR-0001 D3 and CONVENTIONS.md "Ticket-driven workflows → What the kit does NOT do with trackers".
+
+---
+
 ## When to write a new prompt
 
 Add one here whenever you find yourself typing similar setup instructions into a fresh session for the third time. A good prompt is:
