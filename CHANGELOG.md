@@ -6,6 +6,15 @@ See [Upgrading an existing project](SETUP.md#upgrading-an-existing-project) for 
 
 ---
 
+## [0.17.0](https://github.com/IamMrCupp/claude-project-kit/compare/v0.16.3...v0.17.0) (2026-04-30)
+
+
+### Features
+
+* **bootstrap:** assert kit never creates tracker resources (Phase 4 D.2) ([fe6f8c8](https://github.com/IamMrCupp/claude-project-kit/commit/fe6f8c86ab9d9f55d97e3c0da9075eff72205190))
+* **bootstrap:** fill tracker config and detect Terraform sibling repos (Phase 4 D.1, D.3, D.5) ([fe76d04](https://github.com/IamMrCupp/claude-project-kit/commit/fe76d04be6bd80c72aea5ea95ebcff661e91380b))
+* **bootstrap:** tracker config + Terraform detection (Phase 4 §D) ([374ebc4](https://github.com/IamMrCupp/claude-project-kit/commit/374ebc4857f86d6bf76e67c75c643896de358662))
+
 ## [0.16.3](https://github.com/IamMrCupp/claude-project-kit/compare/v0.16.2...v0.16.3) (2026-04-30)
 
 
