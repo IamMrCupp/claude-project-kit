@@ -6,6 +6,20 @@ See [Upgrading an existing project](SETUP.md#upgrading-an-existing-project) for 
 
 ---
 
+## [0.19.0](https://github.com/IamMrCupp/claude-project-kit/compare/v0.18.0...v0.19.0) (2026-04-30)
+
+
+### Features
+
+* **pull-ticket:** /pull-ticket command + helper script + Prompt 6 (Phase 4 §E + C.5) ([ef069d7](https://github.com/IamMrCupp/claude-project-kit/commit/ef069d77ad845df1b587bc3690d88aff3d068dc4))
+* **pull-ticket:** add /pull-ticket slash command for ticket scratchpads (Phase 4 E.1-E.3, C.5) ([2b902e5](https://github.com/IamMrCupp/claude-project-kit/commit/2b902e5d7c66067db6227731cb29983e932792f0))
+* **pull-ticket:** add pull-ticket.sh helper script with bats coverage ([247f7a1](https://github.com/IamMrCupp/claude-project-kit/commit/247f7a1cf31e84748cf6b2b2424882f1f1099805))
+
+
+### Documentation
+
+* **prompts:** add Prompt 6 for pulling tracker tickets ([3319ff7](https://github.com/IamMrCupp/claude-project-kit/commit/3319ff76ad90ab4f81a35fb84d9b8a9c584dd407))
+
 ## [0.18.0](https://github.com/IamMrCupp/claude-project-kit/compare/v0.17.0...v0.18.0) (2026-04-30)
 
 
