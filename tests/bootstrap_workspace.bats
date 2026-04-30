@@ -177,6 +177,42 @@ teardown() { bootstrap_teardown; }
   grep -q '^- \*\*Project / team key:\*\* ACME$' "$WS/$REPO_NAME/CONTEXT.md"
 }
 
+@test "--workspace first-repo run prints per-repo bootstrap guidance" {
+  WS="$TEST_TMP/acme-platform"
+  run "$BOOTSTRAP" --workspace "$WS" --skip-memory
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"Workspace mode — per-repo bootstrap required"* ]]
+  [[ "$output" == *"Every additional repo"* ]]
+  [[ "$output" == *"bootstrap.sh --workspace $WS"* ]]
+  [[ "$output" == *"reference_ai_working_folder.md"* ]]
+}
+
+@test "--workspace second-repo run prints per-repo guidance with reuse framing" {
+  WS="$TEST_TMP/acme-platform"
+
+  # First run — establishes workspace
+  run "$BOOTSTRAP" --workspace "$WS" --skip-memory
+  [ "$status" -eq 0 ]
+
+  # Sibling repo
+  REPO2="$TEST_TMP/repo2"
+  mkdir -p "$REPO2"
+  git -C "$REPO2" init -q
+  cd "$REPO2"
+
+  run "$BOOTSTRAP" --workspace "$WS" --skip-memory
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"Workspace mode — per-repo bootstrap required"* ]]
+  [[ "$output" == *"Repeat for any other sibling repos"* ]]
+  [[ "$output" != *"Every additional repo"* ]]
+}
+
+@test "single-repo bootstrap does NOT print workspace per-repo guidance" {
+  run "$BOOTSTRAP" "$TEST_WF" --skip-memory
+  [ "$status" -eq 0 ]
+  [[ "$output" != *"Workspace mode — per-repo bootstrap required"* ]]
+}
+
 @test "--workspace re-run against existing workspace does not re-substitute tracker config" {
   WS="$TEST_TMP/acme-platform"
 
