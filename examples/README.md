@@ -10,8 +10,9 @@ This folder answers that. Each subfolder is a fictional project at a realistic m
 
 ## What's here
 
-- `widget-tracker/` — a made-up small Go CLI. Mid-Phase 1: Phase 0 shipped, Phase 1 partially complete. Demonstrates populated `CONTEXT.md`, a multi-phase `plan.md`, a `phase-1-checklist.md` with mixed ✅ / ⏳ / [ ] states, and a `SESSION-LOG.md` with a few chronological entries.
+- `widget-tracker/` — a made-up small Go CLI. Mid-Phase 1: Phase 0 shipped, Phase 1 partially complete. Demonstrates populated `CONTEXT.md`, a multi-phase `plan.md`, a `phase-1-checklist.md` with mixed ✅ / ⏳ / [ ] states, and a `SESSION-LOG.md` with a few chronological entries. **Single-repo working folder.**
 - `widget-tracker/memory-example/` — a snapshot of what auto-memory looks like for the same project mid-Phase 1. Shows the four files that change per project (`MEMORY.md` index, `reference_ai_working_folder.md`, `reference_issue_tracker.md`, `project_current.md`) with placeholders resolved. The other memory files in `memory-templates/` (the `feedback_*.md` rules and `user_role.md`) ship as-is — no per-project edits needed — and aren't reproduced here.
+- `acme-platform/` — a fictional **multi-repo workspace** for an AWS Terraform initiative. Two repos (`terraform-modules`, `terraform-envs`) under one workspace, JIRA-driven via the `ACME` project. Demonstrates `workspace-CONTEXT.md` (cross-repo overview + shared tracker config), per-repo `CONTEXT.md` + `SESSION-LOG.md`, an active per-ticket scratchpad ([ACME-1234](acme-platform/tickets/ACME-1234-fix-lb-routing.md)) showing branches/PRs across both repos, and an archived ticket ([ACME-1100](acme-platform/tickets/archive/ACME-1100-add-vpc-module.md)) showing the lifecycle when a ticket closes. Phase docs (`plan.md`, phase checklists) are intentionally omitted here — see `widget-tracker/` for those.
 
 ## How to use
 
