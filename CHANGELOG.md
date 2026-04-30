@@ -6,6 +6,14 @@ See [Upgrading an existing project](SETUP.md#upgrading-an-existing-project) for 
 
 ---
 
+## [0.18.0](https://github.com/IamMrCupp/claude-project-kit/compare/v0.17.0...v0.18.0) (2026-04-30)
+
+
+### Features
+
+* **seed-prompt:** handle tracker config, workspace mode, and Terraform signals (Phase 4 C.4) ([4819eb0](https://github.com/IamMrCupp/claude-project-kit/commit/4819eb0be06afd3ba5c70d26ae5e45cf172c4577))
+* **seed-prompt:** tracker config + workspace + Terraform signals (Phase 4 §C.4) ([9decc72](https://github.com/IamMrCupp/claude-project-kit/commit/9decc7285bd4716d39182f9d95bbfc33d8ad7494))
+
 ## [0.17.0](https://github.com/IamMrCupp/claude-project-kit/compare/v0.16.3...v0.17.0) (2026-04-30)
 
 
