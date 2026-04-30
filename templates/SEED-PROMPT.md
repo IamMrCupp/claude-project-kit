@@ -30,9 +30,10 @@ You are bootstrapping the working folder for the target repo you are currently r
 
 Read in order:
 
-1. `CONTEXT.md` in the working folder — the template you'll fill. Note its sections and placeholders.
-2. Target repo's `README.md`, plus `CONTRIBUTING.md` / `ARCHITECTURE.md` if present at the root.
-3. **Language / framework / IaC signals** — read whichever of these exist at or near the repo root. The examples below are starting points, not exhaustive; recognize what's actually there and reason from it.
+1. `CONTEXT.md` in the working folder — the template you'll fill. Note its sections and placeholders. **Also check whether the Tracker Configuration section is pre-filled** — bootstrap.sh may have substituted `{{TRACKER_TYPE}}` and `{{TRACKER_KEY}}` from `--tracker` / `--jira-project` / `--linear-team` flags. If MCP availability and tracker link are still placeholders, those are yours to fill (see Step 2).
+2. **Folder shape detection.** Check whether `../workspace-CONTEXT.md` exists relative to the working folder. If yes, you are in a *workspace-mode* per-repo subfolder — also read `../workspace-CONTEXT.md` for cross-repo context, plus any active `../tickets/<KEY>-<slug>.md` files (skim filenames, full-read only ones explicitly in scope for this session). If no, you are in a *single-repo* working folder. The "Folder shape" line near the top of CONTEXT.md is derivable from this check.
+3. Target repo's `README.md`, plus `CONTRIBUTING.md` / `ARCHITECTURE.md` if present at the root.
+4. **Language / framework / IaC signals** — read whichever of these exist at or near the repo root. The examples below are starting points, not exhaustive; recognize what's actually there and reason from it.
    - **Manifests & lockfiles:**
      - TypeScript / JavaScript: `package.json` plus any lockfile (`pnpm-lock.yaml`, `yarn.lock`, `package-lock.json`, `bun.lockb`), `tsconfig.json`, `deno.json`
      - Python (incl. Flask / Django / FastAPI): `pyproject.toml`, `requirements*.txt`, `Pipfile`, `poetry.lock`, `uv.lock`, `setup.py`, `setup.cfg`, `tox.ini`
@@ -60,9 +61,9 @@ Read in order:
    - **Runtime / container / version pinning:** `Dockerfile`, `docker-compose.yml` / `compose.yml`, `.tool-versions` (asdf), `.nvmrc`, `.python-version`, `.ruby-version`, `.editorconfig`.
    - **Framework signals** (read only at top-of-tree; don't deep-scan): `app.py` / `wsgi.py` / `asgi.py` / `manage.py` / `settings.py` (Python web); `config/application.rb` / `bin/rails` (Rails); `next.config.*` / `vite.config.*` / `nuxt.config.*` / `webpack.config.*` / `rollup.config.*` (JS/TS frameworks).
    - If you see a manifest or config file you don't recognize, note it as a `[HUMAN-CONFIRM]` question rather than guessing.
-4. **CI config:** `.github/workflows/*.yml`, `.gitlab-ci.yml`, `.circleci/config.yml`, `Jenkinsfile`, `azure-pipelines.yml`.
-5. **Top-level directory layout** (one level deep) and main source tree (one or two levels — whatever the repo uses: `src/`, `lib/`, `pkg/`, `cmd/`, `internal/`, `app/`, `modules/`, `manifests/`, `roles/`, `environments/`, `terraform/`, `live/`, or the repo's own convention).
-6. **Recent git activity:** `git log --oneline -20`, `git branch -a`, `git remote -v`.
+5. **CI config:** `.github/workflows/*.yml`, `.gitlab-ci.yml`, `.circleci/config.yml`, `Jenkinsfile`, `azure-pipelines.yml`.
+6. **Top-level directory layout** (one level deep) and main source tree (one or two levels — whatever the repo uses: `src/`, `lib/`, `pkg/`, `cmd/`, `internal/`, `app/`, `modules/`, `manifests/`, `roles/`, `environments/`, `terraform/`, `live/`, or the repo's own convention).
+7. **Recent git activity:** `git log --oneline -20`, `git branch -a`, `git remote -v`. **Tracker-key signal:** if commit subjects or branch names contain a JIRA-style key pattern (`[A-Z]+-\d+`, e.g. `ACME-1234`, `INFRA-42`), the project is ticket-driven even if `Tracker Configuration` shows `none` — flag this for the user (see Step 2).
 
 Do not read lockfiles in full (only enough to confirm ecosystem and note pinned major-version deps), `node_modules/`, `vendor/`, `.terraform/`, generated code, or files over ~1000 lines unless a specific field requires it.
 
@@ -81,6 +82,8 @@ Every field falls into exactly one of three buckets. Fill accordingly:
 - Branch naming pattern (from `git branch -a`)
 - Merge strategy (from merge-commit shape in recent history)
 - Platform targets if declared in config (e.g. `engines` in package.json, `targets` in Cargo.toml)
+- **Folder shape** (single-repo vs per-repo subfolder of a workspace) — from the existence of `../workspace-CONTEXT.md`
+- **Tracker Configuration → Tracker type and Project / team key** if bootstrap.sh substituted them already (look for non-placeholder values like `jira` / `ACME`); leave them as-is when correct
 
 **Inferable — fill with `[CLAUDE-INFERRED: <one-line reasoning>]`.** Fields that follow from code but require interpretation:
 
@@ -89,6 +92,7 @@ Every field falls into exactly one of three buckets. Fill accordingly:
 - Key dependencies worth calling out
 - Whether repo is library vs. application vs. service
 - Test strategy inferred from `tests/` or `spec/` layout
+- **Tracker link** — derive when possible (e.g. for `tracker type = github`, the link is `<REPO_URL>/issues`; for GitLab, `<REPO_URL>/-/issues`). For JIRA / Linear / Shortcut you usually can't derive the workspace URL from code — leave as `[HUMAN-CONFIRM]`.
 
 **Non-derivable — replace the placeholder with `[HUMAN-CONFIRM: <targeted question>]`.** Fields the code cannot tell you:
 
@@ -97,6 +101,9 @@ Every field falls into exactly one of three buckets. Fill accordingly:
 - Current phase status
 - Open questions, risks, known incidents
 - Recent decisions not visible in commits
+- **Tracker Configuration → MCP availability** — whether the relevant tracker MCP (JIRA, GitHub Issues, Linear, etc.) is installed in the user's Claude environment. Ask: "Is the {{TRACKER_TYPE}} MCP installed and authenticated for this project?"
+- **Tracker Configuration → Tracker type / project key** when bootstrap shows `none` BUT git history contains JIRA-style ticket keys (`[A-Z]+-\d+`) — the project IS ticket-driven and the user likely skipped the `--tracker` flag. Ask: "Commits reference what looks like ticket keys (e.g. `ACME-1234`) — what tracker is this and what's the project key?"
+- **Sibling-repo presence** — if Terraform / Terragrunt signals are present AND you're in single-repo mode (no `../workspace-CONTEXT.md`), this may indicate a sibling envs/modules repo for the same initiative. Ask: "Is there a sibling envs/modules repo for this initiative? If yes, consider re-running bootstrap with `--workspace`."
 
 If a `{{PLACEHOLDER}}` maps cleanly to a derivable fact, fill it. Otherwise replace with a `[HUMAN-CONFIRM]` marker carrying a specific question — not a generic "what is this?"
 
@@ -126,6 +133,10 @@ Output a summary in this exact shape:
 
 ```
 ## Seed-prompt summary
+
+**Folder shape:** <single-repo | per-repo subfolder of workspace at ../workspace-CONTEXT.md>
+
+**Tracker:** <type + key from CONTEXT.md Tracker Configuration; note if pre-filled by bootstrap or set by you; flag if git history shows ticket keys but tracker is "none">
 
 **Filled directly** (derivable):
 - <bullet per field, one line each>
