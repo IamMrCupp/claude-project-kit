@@ -237,7 +237,12 @@ Five slash commands stage in `<working-folder>/.claude/commands/`. Same activati
 
 ## Worked example
 
-`examples/widget-tracker/` is a fictional Go CLI mid-Phase-1, with `CONTEXT.md`, `plan.md`, `phase-0-checklist.md`, `phase-1-checklist.md`, `SESSION-LOG.md`, and `implementation.md` filled in plausibly. Use it as a reference when you're not sure what a finished template should look like — read it, don't copy it.
+Two filled-in reference examples in `examples/`:
+
+- **`widget-tracker/`** — a fictional Go CLI mid-Phase 1 (single-repo working folder). `CONTEXT.md`, `plan.md`, `phase-0-checklist.md`, `phase-1-checklist.md`, `SESSION-LOG.md`, `implementation.md`, plus a `memory-example/` snapshot. Best reference for phase-driven solo work.
+- **`acme-platform/`** — a fictional AWS Terraform multi-repo workspace driven by JIRA tickets. `workspace-CONTEXT.md` + per-repo subfolders (`terraform-modules/`, `terraform-envs/`) with their own `CONTEXT.md` / `SESSION-LOG.md`, an active ticket scratchpad ([ACME-1234](examples/acme-platform/tickets/ACME-1234-fix-lb-routing.md)) showing branches/PRs across both repos, and an archived ticket ([ACME-1100](examples/acme-platform/tickets/archive/ACME-1100-add-vpc-module.md)). Best reference for ticket-driven multi-repo work.
+
+Read, don't copy.
 
 ---
 
