@@ -6,6 +6,14 @@ See [Upgrading an existing project](SETUP.md#upgrading-an-existing-project) for 
 
 ---
 
+## [0.20.0](https://github.com/IamMrCupp/claude-project-kit/compare/v0.19.2...v0.20.0) (2026-04-30)
+
+
+### Features
+
+* dogfood the kit's slash commands and agents in .claude/ with sync test ([fed3268](https://github.com/IamMrCupp/claude-project-kit/commit/fed3268fca9bbe986b4e345d432a3571455c6479))
+* dogfood the kit's slash commands and agents in .claude/ with sync test ([ace5b53](https://github.com/IamMrCupp/claude-project-kit/commit/ace5b537ffe5feea6eccaacb231301ebc688568a))
+
 ## [0.19.2](https://github.com/IamMrCupp/claude-project-kit/compare/v0.19.1...v0.19.2) (2026-04-30)
 
 
