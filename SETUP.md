@@ -231,6 +231,8 @@ If a future change is *not* backwards-compatible (rare for a docs-only kit — o
 
 ## Workspace mode (multi-repo initiatives)
 
+> **Run `bootstrap.sh --workspace` once from EACH repo's root.** Both the per-repo subfolder and auto-memory are keyed to each repo's path (auto-memory at `~/.claude/projects/<sanitized-repo-path>/memory/`), so every repo participating in the workspace needs its own bootstrap. The first run creates the workspace folder + `workspace-CONTEXT.md`; subsequent runs add new per-repo subfolders without recreating workspace-level files. Skip this step on a sibling repo and `/session-start` will fail there — the repo won't have `reference_ai_working_folder.md` in auto-memory.
+
 When a single piece of work spans multiple repos (e.g. Terraform environment definitions in one repo and modules in another), use `--workspace` so bootstrap creates a workspace folder above per-repo subfolders. The model is documented in [ADR-0001](docs/adr/0001-multi-repo-folder-model.md); summary:
 
 ```
