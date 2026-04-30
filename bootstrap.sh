@@ -616,11 +616,13 @@ fi
 
 mkdir -p "$WORKING_FOLDER"
 
+WORKSPACE_FIRST_REPO=0
 if [ "$WORKSPACE_MODE" -eq 1 ]; then
   mkdir -p "$WORKSPACE_DIR/tickets/archive"
   if [ ! -f "$WORKSPACE_DIR/workspace-CONTEXT.md" ]; then
     cp "$KIT_ROOT/templates/workspace/workspace-CONTEXT.md" "$WORKSPACE_DIR/"
     echo "  ✓ Created workspace at $WORKSPACE_DIR (workspace-CONTEXT.md, tickets/archive/)"
+    WORKSPACE_FIRST_REPO=1
   else
     echo "  ✓ Existing workspace at $WORKSPACE_DIR — adding repo subfolder $WORKSPACE_REPO_NAME"
   fi
@@ -713,6 +715,27 @@ if [ "$SKIP_MEMORY" -eq 0 ]; then
 else
   echo "  3. Memory was skipped (--skip-memory). See SETUP.md §Manual alternative"
   echo "     if you want to seed it by hand later."
+fi
+
+if [ "$WORKSPACE_MODE" -eq 1 ]; then
+  echo
+  echo "  ⚠ Workspace mode — per-repo bootstrap required:"
+  echo
+  echo "    The per-repo subfolder and auto-memory are keyed to each repo's"
+  echo "    path, so this run only set them up for $REPO_ROOT."
+  if [ "$WORKSPACE_FIRST_REPO" -eq 1 ]; then
+    echo "    Every additional repo participating in this workspace needs its"
+    echo "    own bootstrap. For each sibling repo:"
+  else
+    echo "    Repeat for any other sibling repos that haven't been added yet:"
+  fi
+  echo
+  echo "        cd <sibling-repo>"
+  echo "        $SCRIPT_DIR/bootstrap.sh --workspace $WORKSPACE_DIR"
+  echo
+  echo "    Without that step, /session-start and other kit commands will fail"
+  echo "    in the sibling repo because reference_ai_working_folder.md won't"
+  echo "    be in its auto-memory. See SETUP.md §Workspace mode."
 fi
 echo
 echo "Prefer to fill the templates manually instead? See SETUP.md §3."
