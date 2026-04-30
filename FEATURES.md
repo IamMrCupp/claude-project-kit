@@ -178,6 +178,8 @@ Anything that can't be derived stays as `{{PLACEHOLDER}}` so it's grep-able. The
 
 The memory files are **starters**, not commandments. Prune what doesn't apply, add your own, keep `MEMORY.md` (the index) in sync. The harness loads `MEMORY.md` into context every session, so it stays small (under ~150 lines is a reasonable target).
 
+When the kit ships new starter rules, `scripts/sync-memory.sh <memory-dir>` copies any missing templates into an existing auto-memory dir without overwriting customized files. Skips `MEMORY.md`, `project_current.md`, and `user_role.md` (user-curated). See [SETUP.md §Upgrading an existing project](SETUP.md#upgrading-an-existing-project).
+
 ---
 
 ## Phase-based planning docs

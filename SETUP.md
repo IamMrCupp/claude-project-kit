@@ -213,7 +213,11 @@ For fully filled-in references, see [`examples/widget-tracker/CONTEXT.md`](examp
    ```bash
    cp <kit-dir>/templates/<NEW_FILE>.md <working-folder>/
    ```
-3. **New files in `memory-templates/`** — copy into your auto-memory dir:
+3. **New files in `memory-templates/`** — easiest path is the sync helper, which copies any missing templates into your auto-memory without overwriting existing files:
+   ```bash
+   <kit-dir>/scripts/sync-memory.sh ~/.claude/projects/<sanitized-path>/memory
+   ```
+   Pass `--dry-run` first to preview. The helper skips `MEMORY.md`, `project_current.md`, and `user_role.md` (user-curated) and prints suggested `MEMORY.md` index lines for the new entries — paste the ones you want into your `MEMORY.md` by hand. To copy a single template by hand instead:
    ```bash
    cp <kit-dir>/memory-templates/<NEW_FILE>.md ~/.claude/projects/<sanitized-path>/memory/
    ```
