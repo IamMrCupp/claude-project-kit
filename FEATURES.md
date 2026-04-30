@@ -263,7 +263,7 @@ Every step has a manual alternative — see [SETUP.md §Manual alternative](SETU
 ## What the kit does NOT do
 
 - **Doesn't modify your target repo.** Templates land in the working folder; memory lands in the harness path. Your repo stays clean.
-- **Doesn't write to `~/.claude/settings.json`.** That file is global, cross-project; the kit shouldn't silently mutate it. To stop the per-read permission prompts on the working folder, add its parent directory to `permissions.additionalDirectories` once by hand — see [SETUP.md §1](SETUP.md#1-pick-a-working-folder-location) for the exact JSON.
+- **Doesn't write to `~/.claude/settings.json`.** That file is global, cross-project, and per-user-per-machine; the kit shouldn't silently mutate it, and it's not synced from the kit repo. To stop the per-read permission prompts on the working folder, add its parent directory to `permissions.additionalDirectories` once by hand on each machine you work from — see [SETUP.md §1](SETUP.md#1-pick-a-working-folder-location) for the exact JSON.
 - **Doesn't make network calls.** No telemetry, no auto-update check, no remote dependencies at runtime.
 - **Doesn't manage your tracker / CI.** It seeds memory so Claude knows the conventions; it doesn't create JIRA projects, push GitHub Actions workflows, or open issues for you. Tracker integration (`/pull-ticket`, `pull-ticket.sh`) is **one-way read** — fetches summary / AC / status, never creates / edits / transitions / comments. See [ADR-0001 §D3](docs/adr/0001-multi-repo-folder-model.md).
 - **Doesn't replace `CLAUDE.md`.** They're complementary — the kit handles cross-session state and preferences; `CLAUDE.md` handles in-repo guidance Claude reads automatically.
