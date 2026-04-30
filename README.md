@@ -6,8 +6,16 @@
 
 A reusable scaffold for starting new projects with Claude. Battle-tested on real projects and generalized so it works for personal code, open-source, or work projects.
 
+**Setup runs once, in ~30 seconds:**
+
 <p align="center">
   <img src="https://github.com/user-attachments/assets/48ab501b-46d8-47d6-950c-88ba6721232d" alt="bootstrap.sh interactive walkthrough — runs in ~22 seconds" width="800">
+</p>
+
+**Every session after starts grounded — one line and Claude knows the project:**
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/822251d0-9252-4326-bce1-eed07d50a6fe" alt="steady-state daily-use prompt — Claude loads CONTEXT.md + SESSION-LOG.md from auto-memory" width="800">
 </p>
 
 > **Heads up — Claude state for a bootstrapped project lives in three places, none of them your repo:**

@@ -4,8 +4,8 @@ VHS-rendered demos that get embedded in the main `README.md`.
 
 ## Tapes
 
-- `bootstrap.tape` — interactive `bootstrap.sh` walkthrough (Phase 1)
-- `second-session.tape` — fresh Claude Code session loading kit context (Phase 2, pending — see [#87](https://github.com/IamMrCupp/claude-project-kit/issues/87))
+- `bootstrap.tape` — interactive `bootstrap.sh` walkthrough; setup-time demo
+- `second-session.tape` — fresh Claude Code session loading kit context via auto-memory; daily-use demo. Assumes `~/Code/recipe-card-maker` is already bootstrapped (working folder + auto-memory populated). Adjust the repo path if you fork this for your own kit.
 
 ## Rendering
 
@@ -27,9 +27,10 @@ Output lands at `demo/bootstrap.gif`.
 
 `demo/*.gif` and `demo/*.mp4` are git-ignored. The kit is docs-and-templates only; binary artifacts would bloat the repo over time.
 
-The canonical rendered copy lives as a GitHub user-attachment referenced from the main `README.md`. The currently embedded `bootstrap.gif` is at:
+The canonical rendered copies live as GitHub user-attachments referenced from the main `README.md`:
 
-> `https://github.com/user-attachments/assets/48ab501b-46d8-47d6-950c-88ba6721232d`
+- `bootstrap.gif` → `https://github.com/user-attachments/assets/48ab501b-46d8-47d6-950c-88ba6721232d`
+- `second-session.gif` → `https://github.com/user-attachments/assets/822251d0-9252-4326-bce1-eed07d50a6fe`
 
 To update the embedded demo:
 
