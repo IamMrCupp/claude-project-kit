@@ -5,6 +5,12 @@
 # Run this from the root of the project repo you want to bootstrap. The
 # auto-memory path is derived from the current working directory using
 # the Claude harness's sanitization rule ('/' -> '-', prefixed with '-').
+#
+# CONSTRAINT: This script never creates resources in external trackers
+# (issues, labels, projects, workflows, sprints). It only captures
+# references to existing trackers via --tracker / --jira-project /
+# --linear-team flags. See ADR-0001 D3 and CONVENTIONS.md
+# "Ticket-driven workflows → What the kit does NOT do with trackers".
 set -euo pipefail
 
 if [ -z "${BASH_VERSION:-}" ]; then
