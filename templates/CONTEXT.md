@@ -29,8 +29,8 @@ At the start of any new Claude session, say:
 
 The external tracker for this project, used when work is ticket-driven. See `CONVENTIONS.md` (kit-level — `## Ticket-driven workflows`) for the branch / PR / commit conventions to use against a tracker.
 
-- **Tracker type:** {{none | github | jira | linear | gitlab | shortcut | other}}
-- **Project / team key:** {{KEY — e.g. ACME, INFRA, ENG; leave blank if not applicable}}
+- **Tracker type:** {{TRACKER_TYPE}}
+- **Project / team key:** {{TRACKER_KEY}}
 - **MCP availability:** {{installed | not installed | unknown}}
 - **Tracker link:** {{URL — leave blank if none}}
 

@@ -5,6 +5,12 @@
 # Run this from the root of the project repo you want to bootstrap. The
 # auto-memory path is derived from the current working directory using
 # the Claude harness's sanitization rule ('/' -> '-', prefixed with '-').
+#
+# CONSTRAINT: This script never creates resources in external trackers
+# (issues, labels, projects, workflows, sprints). It only captures
+# references to existing trackers via --tracker / --jira-project /
+# --linear-team flags. See ADR-0001 D3 and CONVENTIONS.md
+# "Ticket-driven workflows → What the kit does NOT do with trackers".
 set -euo pipefail
 
 if [ -z "${BASH_VERSION:-}" ]; then
@@ -135,6 +141,107 @@ ci_index_line() {
   esac
 }
 
+detect_terraform() {
+  # args: repo_root
+  # Returns 0 if the repo shows Terraform / Terragrunt signals.
+  # Per ADR-0001 A.6: *.tf, *.tfvars, .terraform.lock.hcl, terragrunt.hcl,
+  # or terraform/ / modules/ directories that contain *.tf files.
+  local repo="$1"
+  [ -f "$repo/.terraform.lock.hcl" ] && return 0
+  [ -f "$repo/terragrunt.hcl" ] && return 0
+  if compgen -G "$repo/*.tf" > /dev/null 2>&1; then return 0; fi
+  if compgen -G "$repo/*.tfvars" > /dev/null 2>&1; then return 0; fi
+  if [ -d "$repo/terraform" ] && \
+     [ -n "$(find "$repo/terraform" -maxdepth 3 -name '*.tf' 2>/dev/null | head -1)" ]; then
+    return 0
+  fi
+  if [ -d "$repo/modules" ] && \
+     [ -n "$(find "$repo/modules" -maxdepth 3 -name '*.tf' 2>/dev/null | head -1)" ]; then
+    return 0
+  fi
+  return 1
+}
+
+tracker_key_value() {
+  # args: tracker jira_key linear_key
+  # emits the value to substitute for {{TRACKER_KEY}} in CONTEXT.md.
+  local tracker="$1" jira_key="${2:-}" linear_key="${3:-}"
+  case "$tracker" in
+    jira)     printf '%s' "$jira_key" ;;
+    linear)   printf '%s' "$linear_key" ;;
+    github|gitlab|shortcut|other)
+              printf '(not applicable for %s tracker)' "$tracker" ;;
+    none|"")  printf '(no tracker configured)' ;;
+  esac
+}
+
+substitute_memory_placeholders_in_dir() {
+  # Substitute all derivable placeholders in every .md file at the top level
+  # of the given directory. Used for the auto-memory folder, where bootstrap
+  # owns content end-to-end. Reads globals: WORKING_FOLDER, REPO_ROOT,
+  # PROJECT_NAME, REPO_SLUG, JIRA_PROJECT_KEY, LINEAR_TEAM_KEY,
+  # TRACKER_TYPE_VALUE, TRACKER_KEY_VALUE. Echos count of files modified.
+  local target_dir="$1"
+  local count=0
+  local f tmp
+  for f in "$target_dir"/*.md; do
+    [ -e "$f" ] || continue
+    tmp="$(mktemp)"
+    if [ -n "$REPO_SLUG" ]; then
+      sed -e "s|{{WORKING_FOLDER}}|$WORKING_FOLDER|g" \
+          -e "s|{{REPO_PATH}}|$REPO_ROOT|g" \
+          -e "s|{{PROJECT_NAME}}|$PROJECT_NAME|g" \
+          -e "s|{{REPO_SLUG}}|$REPO_SLUG|g" \
+          -e "s|{{JIRA_PROJECT_KEY}}|$JIRA_PROJECT_KEY|g" \
+          -e "s|{{LINEAR_TEAM_KEY}}|$LINEAR_TEAM_KEY|g" \
+          -e "s|{{TRACKER_TYPE}}|$TRACKER_TYPE_VALUE|g" \
+          -e "s|{{TRACKER_KEY}}|$TRACKER_KEY_VALUE|g" \
+          "$f" > "$tmp"
+    else
+      sed -e "s|{{WORKING_FOLDER}}|$WORKING_FOLDER|g" \
+          -e "s|{{REPO_PATH}}|$REPO_ROOT|g" \
+          -e "s|{{PROJECT_NAME}}|$PROJECT_NAME|g" \
+          -e "s|{{JIRA_PROJECT_KEY}}|$JIRA_PROJECT_KEY|g" \
+          -e "s|{{LINEAR_TEAM_KEY}}|$LINEAR_TEAM_KEY|g" \
+          -e "s|{{TRACKER_TYPE}}|$TRACKER_TYPE_VALUE|g" \
+          -e "s|{{TRACKER_KEY}}|$TRACKER_KEY_VALUE|g" \
+          "$f" > "$tmp"
+    fi
+    if ! cmp -s "$f" "$tmp"; then
+      mv "$tmp" "$f"
+      count=$((count + 1))
+    else
+      rm -f "$tmp"
+    fi
+  done
+  printf '%s' "$count"
+}
+
+substitute_tracker_placeholders_in_dir() {
+  # Substitute only tracker placeholders in every .md file at the top level
+  # of the given directory. Used for working-folder + workspace-CONTEXT.md
+  # where SEED-PROMPT.md owns deep-read content; bootstrap only fills the
+  # tracker config it was explicitly told via flags. Reads globals:
+  # TRACKER_TYPE_VALUE, TRACKER_KEY_VALUE. Echos count of files modified.
+  local target_dir="$1"
+  local count=0
+  local f tmp
+  for f in "$target_dir"/*.md; do
+    [ -e "$f" ] || continue
+    tmp="$(mktemp)"
+    sed -e "s|{{TRACKER_TYPE}}|$TRACKER_TYPE_VALUE|g" \
+        -e "s|{{TRACKER_KEY}}|$TRACKER_KEY_VALUE|g" \
+        "$f" > "$tmp"
+    if ! cmp -s "$f" "$tmp"; then
+      mv "$tmp" "$f"
+      count=$((count + 1))
+    else
+      rm -f "$tmp"
+    fi
+  done
+  printf '%s' "$count"
+}
+
 SKIP_MEMORY=0
 FORCE=0
 DRY_RUN=0
@@ -249,14 +356,45 @@ if [ -z "$WORKING_FOLDER" ]; then
   fi
 fi
 
+REPO_ROOT="$(pwd)"
+
+if [ "$WORKSPACE_MODE" -eq 0 ] && detect_terraform "$REPO_ROOT"; then
+  if [ "$INTERACTIVE" -eq 1 ]; then
+    echo
+    echo "Detected Terraform-shaped repo (.tf / *.tfvars / .terraform.lock.hcl /"
+    echo "terragrunt.hcl / terraform/ / modules/ with .tf files)."
+    echo "If a sibling envs/modules repo is part of the same initiative, consider"
+    echo "workspace mode (--workspace) so both repos share one working folder."
+    echo "See ADR-0001 (docs/adr/0001-multi-repo-folder-model.md)."
+    echo
+    read -r -p "Sibling envs/modules repo for this initiative? [y/N]: " INPUT
+    case "$(printf '%s' "$INPUT" | tr '[:upper:]' '[:lower:]')" in
+      y|yes)
+        echo
+        echo "Recommended: re-run with --workspace pointing at a shared workspace path"
+        echo "(e.g. ~/Documents/Claude/Projects/<initiative>) so this repo and the"
+        echo "sibling end up as subfolders under one workspace-CONTEXT.md."
+        read -r -p "Continue in single-repo mode anyway? [y/N]: " INPUT
+        case "$(printf '%s' "$INPUT" | tr '[:upper:]' '[:lower:]')" in
+          y|yes) ;;
+          *) echo "Aborted."; exit 0 ;;
+        esac
+        ;;
+      *) ;;
+    esac
+  else
+    echo "note: Terraform-shaped repo detected — consider --workspace if a sibling envs/modules repo exists for the same initiative." >&2
+  fi
+fi
+
 if [ "$INTERACTIVE" -eq 1 ]; then
-  REPO_BASENAME="$(basename "$(pwd)")"
+  REPO_BASENAME="$(basename "$REPO_ROOT")"
   DEFAULT_WF="$HOME/Documents/Claude/Projects/$REPO_BASENAME"
 
   echo "bootstrap.sh — interactive mode"
   echo "(Run with -h for flags and non-interactive usage.)"
   echo
-  echo "Repo: $(pwd)"
+  echo "Repo: $REPO_ROOT"
   echo
   echo "Working-folder path. Examples:"
   echo "  $DEFAULT_WF"
@@ -281,7 +419,6 @@ if [ ! -d "$KIT_ROOT/templates" ] || [ ! -d "$KIT_ROOT/memory-templates" ]; then
   exit 1
 fi
 
-REPO_ROOT="$(pwd)"
 SANITIZED="$(echo "$REPO_ROOT" | sed 's|/|-|g')"
 MEMORY_DIR="$HOME/.claude/projects/${SANITIZED}/memory"
 
@@ -351,6 +488,9 @@ if REMOTE_URL="$(git -C "$REPO_ROOT" remote get-url origin 2>/dev/null)"; then
     | sed -E 's|^https?://[^/]+/||; s|^git@[^:]+:||; s|\.git$||')"
 fi
 
+TRACKER_TYPE_VALUE="${TRACKER:-none}"
+TRACKER_KEY_VALUE="$(tracker_key_value "$TRACKER" "$JIRA_PROJECT_KEY" "$LINEAR_TEAM_KEY")"
+
 if [ "$WORKSPACE_MODE" -eq 1 ]; then
   echo "Workspace:      $WORKSPACE_DIR"
   echo "Repo subfolder: $WORKSPACE_REPO_NAME (full path: $WORKING_FOLDER)"
@@ -395,6 +535,12 @@ if [ "$DRY_RUN" -eq 1 ]; then
   echo "  + rename phase-N-checklist.md → phase-0-checklist.md"
   if [ -d "$KIT_ROOT/templates/.claude" ]; then
     echo "  + copy templates/.claude/ → $WORKING_FOLDER/.claude/ (starter agents + commands)"
+  fi
+  echo "  + substitute tracker placeholders in CONTEXT.md:"
+  echo "      {{TRACKER_TYPE}}      → $TRACKER_TYPE_VALUE"
+  echo "      {{TRACKER_KEY}}       → $TRACKER_KEY_VALUE"
+  if [ "$WORKSPACE_MODE" -eq 1 ] && [ ! -f "$WORKSPACE_DIR/workspace-CONTEXT.md" ]; then
+    echo "  + same substitution in workspace-CONTEXT.md"
   fi
   if [ -e "$WORKING_FOLDER" ] && [ -n "$(ls -A "$WORKING_FOLDER" 2>/dev/null)" ] && [ "$FORCE" -eq 0 ]; then
     echo "  ! working folder already non-empty — real run would fail without --force"
@@ -490,6 +636,18 @@ if [ -d "$KIT_ROOT/templates/.claude" ]; then
   echo "  ✓ Copied .claude/ starters (agents + commands) to $WORKING_FOLDER/.claude/"
 fi
 
+WF_FILLED="$(substitute_tracker_placeholders_in_dir "$WORKING_FOLDER")"
+if [ "$WF_FILLED" -gt 0 ]; then
+  echo "  ✓ Filled tracker config in CONTEXT.md"
+fi
+
+if [ "$WORKSPACE_MODE" -eq 1 ] && [ -f "$WORKSPACE_DIR/workspace-CONTEXT.md" ]; then
+  WS_FILLED="$(substitute_tracker_placeholders_in_dir "$WORKSPACE_DIR")"
+  if [ "$WS_FILLED" -gt 0 ]; then
+    echo "  ✓ Filled tracker config in workspace-CONTEXT.md"
+  fi
+fi
+
 if [ "$SKIP_MEMORY" -eq 0 ]; then
   mkdir -p "$MEMORY_DIR"
   cp "$KIT_ROOT/memory-templates/"*.md "$MEMORY_DIR/"
@@ -517,32 +675,7 @@ if [ "$SKIP_MEMORY" -eq 0 ]; then
     echo "  ✓ Seeded CI memory ($CI_TOOL) → reference_ci.md"
   fi
 
-  FILLED_FILES=0
-  for f in "$MEMORY_DIR"/*.md; do
-    tmp="$(mktemp)"
-    if [ -n "$REPO_SLUG" ]; then
-      sed -e "s|{{WORKING_FOLDER}}|$WORKING_FOLDER|g" \
-          -e "s|{{REPO_PATH}}|$REPO_ROOT|g" \
-          -e "s|{{PROJECT_NAME}}|$PROJECT_NAME|g" \
-          -e "s|{{REPO_SLUG}}|$REPO_SLUG|g" \
-          -e "s|{{JIRA_PROJECT_KEY}}|$JIRA_PROJECT_KEY|g" \
-          -e "s|{{LINEAR_TEAM_KEY}}|$LINEAR_TEAM_KEY|g" \
-          "$f" > "$tmp"
-    else
-      sed -e "s|{{WORKING_FOLDER}}|$WORKING_FOLDER|g" \
-          -e "s|{{REPO_PATH}}|$REPO_ROOT|g" \
-          -e "s|{{PROJECT_NAME}}|$PROJECT_NAME|g" \
-          -e "s|{{JIRA_PROJECT_KEY}}|$JIRA_PROJECT_KEY|g" \
-          -e "s|{{LINEAR_TEAM_KEY}}|$LINEAR_TEAM_KEY|g" \
-          "$f" > "$tmp"
-    fi
-    if ! cmp -s "$f" "$tmp"; then
-      mv "$tmp" "$f"
-      FILLED_FILES=$((FILLED_FILES + 1))
-    else
-      rm -f "$tmp"
-    fi
-  done
+  FILLED_FILES="$(substitute_memory_placeholders_in_dir "$MEMORY_DIR")"
   echo "  ✓ Filled placeholders in $FILLED_FILES memory files"
   if [ -z "$REPO_SLUG" ]; then
     echo "    (no git remote 'origin' found — {{REPO_SLUG}} left for manual fill)"

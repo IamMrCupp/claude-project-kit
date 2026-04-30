@@ -158,3 +158,48 @@ teardown() { bootstrap_teardown; }
   [ -d "$MEM" ]
   [ -f "$MEM/MEMORY.md" ]
 }
+
+# --- Phase 4 D.1 — tracker config substitution into workspace-CONTEXT.md ---
+
+@test "--workspace --tracker jira fills tracker config in workspace-CONTEXT.md" {
+  WS="$TEST_TMP/acme-platform"
+  REPO_NAME="$(basename "$TEST_REPO")"
+  run "$BOOTSTRAP" --workspace "$WS" --tracker jira --jira-project ACME --skip-memory
+  [ "$status" -eq 0 ]
+
+  grep -q '^- \*\*Tracker type:\*\* jira$' "$WS/workspace-CONTEXT.md"
+  grep -q '^- \*\*Project / team key:\*\* ACME$' "$WS/workspace-CONTEXT.md"
+  ! grep -q '{{TRACKER_TYPE}}' "$WS/workspace-CONTEXT.md"
+  ! grep -q '{{TRACKER_KEY}}' "$WS/workspace-CONTEXT.md"
+
+  # Per-repo CONTEXT.md also gets the same substitution
+  grep -q '^- \*\*Tracker type:\*\* jira$' "$WS/$REPO_NAME/CONTEXT.md"
+  grep -q '^- \*\*Project / team key:\*\* ACME$' "$WS/$REPO_NAME/CONTEXT.md"
+}
+
+@test "--workspace re-run against existing workspace does not re-substitute tracker config" {
+  WS="$TEST_TMP/acme-platform"
+
+  # First run with jira/ACME
+  run "$BOOTSTRAP" --workspace "$WS" --tracker jira --jira-project ACME --skip-memory
+  [ "$status" -eq 0 ]
+  grep -q '^- \*\*Project / team key:\*\* ACME$' "$WS/workspace-CONTEXT.md"
+
+  # User manually edits workspace-CONTEXT.md
+  sed -i.bak 's/Project \/ team key:\*\* ACME/Project \/ team key:\*\* ACME-EDITED/' "$WS/workspace-CONTEXT.md"
+  rm -f "$WS/workspace-CONTEXT.md.bak"
+  grep -q 'ACME-EDITED' "$WS/workspace-CONTEXT.md"
+
+  # Bootstrap a sibling repo into the same workspace with different tracker key
+  REPO2="$TEST_TMP/repo2"
+  mkdir -p "$REPO2"
+  git -C "$REPO2" init -q
+  cd "$REPO2"
+
+  run "$BOOTSTRAP" --workspace "$WS" --tracker jira --jira-project DIFFERENT --skip-memory
+  [ "$status" -eq 0 ]
+
+  # User's edit survives — workspace-CONTEXT.md was not overwritten
+  grep -q 'ACME-EDITED' "$WS/workspace-CONTEXT.md"
+  ! grep -q 'DIFFERENT' "$WS/workspace-CONTEXT.md"
+}
