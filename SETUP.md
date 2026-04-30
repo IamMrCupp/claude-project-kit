@@ -184,7 +184,7 @@ Every template uses `{{PLACEHOLDER}}` markers. Search-and-replace in your editor
 - `{{ONE_PARAGRAPH_DESCRIPTION}}` — what the project is, in plain English
 - `{{PLATFORM_TARGETS}}` — macOS / Linux / Windows / web / etc.
 
-For a fully filled-in reference, see [`examples/widget-tracker/CONTEXT.md`](examples/widget-tracker/CONTEXT.md) — a fictional Go CLI project at a plausible mid-phase state.
+For fully filled-in references, see [`examples/widget-tracker/CONTEXT.md`](examples/widget-tracker/CONTEXT.md) (a fictional Go CLI single-repo project, mid-Phase 1) and [`examples/acme-platform/`](examples/acme-platform/) (a fictional Terraform multi-repo workspace driven by JIRA tickets, with active + archived ticket scratchpads).
 
 ---
 
