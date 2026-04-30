@@ -27,6 +27,20 @@ Avoid:
 
 Whatever you pick, the **repo stays the repo; the working folder stays separate**. Never commit it.
 
+> **One-time: tell Claude Code to trust the working-folder root.** Because the working folder lives outside any repo, Claude Code prompts for permission every time it reads or writes `CONTEXT.md` / `SESSION-LOG.md` / phase checklists. Add the **parent directory** of your working folders to `permissions.additionalDirectories` in `~/.claude/settings.json` once and the prompts stop — for every kit project that lives under that root, on both the macOS desktop app and the CLI.
+>
+> ```json
+> {
+>   "permissions": {
+>     "additionalDirectories": [
+>       "~/Documents/Claude/Projects/"
+>     ]
+>   }
+> }
+> ```
+>
+> Adjust the path to match wherever you keep your working folders (`~/claude-projects/`, a synced drive, etc.). One entry covers every project underneath it. The kit doesn't write this for you — `~/.claude/settings.json` is global, and a per-project bootstrap shouldn't silently mutate cross-project state.
+
 > Throughout this guide, `<framework-dir>` means wherever you've cloned/extracted this kit (e.g. `~/Code/claude-project-kit`), and `<working-folder>` means the path you just picked above.
 
 ---
