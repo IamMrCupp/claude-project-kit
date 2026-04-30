@@ -248,11 +248,23 @@ cd <repo-b>
 
 Bootstrap detects the existing workspace (via the presence of `workspace-CONTEXT.md`), preserves it, and adds `<initiative>/<repo-b>/` as a new per-repo subfolder. Repeat for each repo in the initiative.
 
+### Pulling a ticket into the workspace
+
+Once a workspace is set up with tracker config (`--tracker jira --jira-project ACME`), the `/pull-ticket <KEY>` slash command (in `templates/.claude/commands/`) or the `pull-ticket.sh <KEY>` helper script at the kit root fetch ticket data from the configured tracker and seed `tickets/<KEY>-<slug>.md`. Read-only against the tracker — fetches summary / AC / status; never creates, edits, transitions, or comments.
+
+```bash
+# In Claude:  /pull-ticket ACME-1234
+# In a terminal:
+~/Code/claude-project-kit/pull-ticket.sh ACME-1234
+```
+
+Idempotence: both refuse to overwrite an existing scratchpad with the same `<KEY>-` prefix (active or archived). Re-pull by removing or archiving the old file first, or do it from Claude (the slash command can re-pull if you confirm).
+
 ### What `--workspace` does NOT do (yet)
 
-- **Tracker config substitution into CONTEXT.md** — for now, fill the `## Tracker Configuration` section in `<initiative>/<repo-a>/CONTEXT.md` and `<initiative>/workspace-CONTEXT.md` by hand. Bootstrap-side substitution is on the Phase 4 backlog ([#61](https://github.com/IamMrCupp/claude-project-kit/issues/61) §C.1 / D.1).
-- **Terraform sibling-repo prompt** — bootstrap doesn't yet detect Terraform-shaped repos and prompt about sibling envs/modules. Coming in a follow-up; for now, you decide which repos belong in the workspace.
 - **Interactive workspace prompt** — `--workspace` requires the explicit flag. Interactive mode still defaults to single-repo. Use the flag-based form above for workspace bootstraps.
+
+(Tracker config substitution into `CONTEXT.md` / `workspace-CONTEXT.md` and the Terraform sibling-repo prompt landed in v0.17.0. The interactive workspace prompt is the only remaining `--workspace` polish item.)
 
 ---
 
