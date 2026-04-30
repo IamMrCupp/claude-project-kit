@@ -6,6 +6,15 @@ See [Upgrading an existing project](SETUP.md#upgrading-an-existing-project) for 
 
 ---
 
+## [0.19.2](https://github.com/IamMrCupp/claude-project-kit/compare/v0.19.1...v0.19.2) (2026-04-30)
+
+
+### Documentation
+
+* **examples:** add acme-platform multi-repo workspace exemplar (Phase 4 §G) ([8810cd8](https://github.com/IamMrCupp/claude-project-kit/commit/8810cd8ed584cf56fcc35a7513373ad8c0e4596f))
+* **examples:** add acme-platform multi-repo workspace exemplar (Phase 4 G.1) ([3c56d91](https://github.com/IamMrCupp/claude-project-kit/commit/3c56d915aa10dd0187060bb9763e35f93e2b6ec3))
+* reference acme-platform exemplar from README/SETUP/FEATURES (Phase 4 G.2) ([4437f92](https://github.com/IamMrCupp/claude-project-kit/commit/4437f9276c169f21444f92ca5f15c04d17945366))
+
 ## [0.19.1](https://github.com/IamMrCupp/claude-project-kit/compare/v0.19.0...v0.19.1) (2026-04-30)
 
 
