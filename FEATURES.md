@@ -5,7 +5,9 @@ A feature-by-feature reference. For setup steps, see [SETUP.md](SETUP.md). For t
 ## Contents
 
 - [Bootstrap](#bootstrap)
+- [Workspace mode (multi-repo)](#workspace-mode-multi-repo)
 - [Issue tracker awareness](#issue-tracker-awareness)
+- [Per-ticket scratchpads](#per-ticket-scratchpads)
 - [CI awareness](#ci-awareness)
 - [Auto-memory seeding](#auto-memory-seeding)
 - [Phase-based planning docs](#phase-based-planning-docs)
@@ -57,6 +59,49 @@ Override the auto-derived project name used to fill `{{PROJECT_NAME}}` in seeded
 bootstrap.sh ~/Documents/Claude/Projects/foo --project-name "Foo Service"
 ```
 
+### Terraform sibling-repo detection
+
+Bootstrap detects Terraform-shaped repos (signals: `*.tf`, `*.tfvars`, `.terraform.lock.hcl`, `terragrunt.hcl`, or `terraform/` / `modules/` subdirs containing `.tf` files) and prompts about a possible sibling envs/modules repo. In interactive mode it asks "Sibling envs/modules repo for this initiative?" and recommends `--workspace` if yes. In non-interactive mode it emits a one-line stderr hint. Suppressed under `--workspace`.
+
+The signal list comes from [ADR-0001 §A.6](docs/adr/0001-multi-repo-folder-model.md). Pulumi (`Pulumi.yaml`) and CDK (`cdk.json`) are deferred — promote in a follow-up if the demand surfaces.
+
+---
+
+## Workspace mode (multi-repo)
+
+`--workspace <path>` flips bootstrap into multi-repo mode for initiatives that span repos (the canonical case: Terraform environment definitions in one repo + Terraform modules in another). Bootstrap creates a workspace folder above per-repo subfolders:
+
+```
+~/Documents/Claude/Projects/<initiative>/
+├── workspace-CONTEXT.md      ← cross-repo overview, shared tracker config
+├── tickets/                  ← per-ticket scratchpads
+│   └── archive/              ← closed tickets
+├── <repo-a>/                 ← per-repo working folder (CONTEXT.md, SESSION-LOG.md, …)
+└── <repo-b>/                 ← second repo joins via re-running bootstrap
+```
+
+```bash
+# First repo in a new workspace
+cd ~/Code/my-terraform-modules
+~/Code/claude-project-kit/bootstrap.sh --workspace \
+  ~/Documents/Claude/Projects/acme-platform/ \
+  --tracker jira --jira-project ACME --ci atlantis
+
+# Second repo joins the same workspace
+cd ~/Code/my-terraform-envs
+~/Code/claude-project-kit/bootstrap.sh --workspace \
+  ~/Documents/Claude/Projects/acme-platform/ \
+  --tracker jira --jira-project ACME --ci atlantis
+```
+
+Re-running against an existing workspace (detected via `workspace-CONTEXT.md` presence) is idempotent: per-repo subfolders get added without recreating workspace files. User edits to `workspace-CONTEXT.md` survive.
+
+Tracker config flags (`--tracker jira --jira-project ACME`) substitute into `workspace-CONTEXT.md`'s Tracker Configuration section AND into each per-repo `CONTEXT.md`. MCP availability and tracker link stay as prose hints for SEED-PROMPT or human fill.
+
+Auto-memory keys to the repo (`~/.claude/projects/<sanitized-repo-path>/memory/`), not the workspace path. Workspace is a working-folder layout choice; memory stays per-repo.
+
+For converting an existing single-repo working folder into a workspace by hand, see [SETUP.md §Upgrading a single-repo working folder to a workspace](SETUP.md#upgrading-a-single-repo-working-folder-to-a-workspace). The kit doesn't ship an automated migration helper — the manual flow is a handful of `mv` commands.
+
 ---
 
 ## Issue tracker awareness
@@ -74,6 +119,37 @@ bootstrap.sh ~/Documents/Claude/Projects/foo --project-name "Foo Service"
 | `none` | — | Skips tracker memory entirely. |
 
 In non-interactive mode, omitting `--tracker` is the same as `--tracker none` — bootstrap won't guess.
+
+`--tracker` and `--jira-project` / `--linear-team` also fill `{{TRACKER_TYPE}}` and `{{TRACKER_KEY}}` in `CONTEXT.md` (and `workspace-CONTEXT.md` in workspace mode), so the working folder's Tracker Configuration section is pre-populated alongside the auto-memory file. MCP availability + tracker link stay as prose hints for SEED-PROMPT or human fill.
+
+**Read-only constraint:** the kit never creates, edits, transitions, or comments on tracker resources. It captures references to existing trackers only — JIRA / Linear / GitHub Issues projects must exist before bootstrap. See [ADR-0001 §D3](docs/adr/0001-multi-repo-folder-model.md) and `CONVENTIONS.md` "Ticket-driven workflows → What the kit does NOT do with trackers".
+
+---
+
+## Per-ticket scratchpads
+
+For ticket-driven work (JIRA, GitHub Issues, Linear, GitLab, Shortcut), the kit ships a per-ticket scratchpad pattern: `tickets/<KEY>-<slug>.md` accumulates working notes, branches, and PRs as the ticket progresses; the upstream tracker stays the source of truth.
+
+Two entry points fetch tracker data and seed the scratchpad — both **read-only** against the tracker:
+
+- **`/pull-ticket <KEY>` slash command** — reads tracker config from `CONTEXT.md` (or `../workspace-CONTEXT.md` in workspace mode), fetches via the relevant tracker MCP, fills `templates/workspace/ticket.md`, updates the workspace-CONTEXT "Active tickets" list, and stages a `SESSION-LOG.md` entry. Use from inside Claude.
+
+- **`pull-ticket.sh <KEY>` helper script** — terminal-driven equivalent. Uses `gh issue view` for GitHub Issues, `jira` (jira-cli) for JIRA, `glab issue view` for GitLab; falls back to a placeholder stub for Linear / Shortcut / `other` (or if no CLI is available). Writes the scratchpad; doesn't update workspace-CONTEXT or SESSION-LOG.
+
+Both refuse to overwrite an existing scratchpad with the same `<KEY>-` prefix (active or archived) — your working notes survive a re-pull.
+
+```bash
+# In Claude:  /pull-ticket ACME-1234
+
+# In a terminal:
+cd ~/Code/my-terraform-modules
+~/Code/claude-project-kit/pull-ticket.sh ACME-1234
+# → writes <workspace>/tickets/ACME-1234-fix-lb-routing.md (or stub if no CLI)
+```
+
+`templates/workspace/ticket.md` defines the file shape: tracker link, status, summary, AC, working notes, branches/PRs across repos (for multi-repo tickets), decisions, cross-references. When the upstream ticket closes, move the file to `tickets/archive/` with a 1-2 sentence "what shipped" note — the archive becomes a grep-able record of what the team delivered for each ticket.
+
+The branch / PR / commit conventions for ticket-driven work (JIRA-style key in the branch slug, PR title, and commit subject) are in `CONVENTIONS.md` "Ticket-driven workflows".
 
 ---
 
@@ -149,12 +225,13 @@ These are **starters**. Edit the frontmatter (model, tool allowlist), customize 
 
 ## Starter slash commands
 
-Four slash commands stage in `<working-folder>/.claude/commands/`. Same activation pattern — copy `.claude/` into your target repo.
+Five slash commands stage in `<working-folder>/.claude/commands/`. Same activation pattern — copy `.claude/` into your target repo.
 
 - **`/session-start`** — packages Prompt 1 from `PROMPTS.md`. Loads `CONTEXT.md`, `SESSION-LOG.md`, and the current phase checklist; hands back a 3–5 bullet grounding summary. Use at the start of a fresh session.
 - **`/refresh-context`** — re-reads the working folder mid-session, after a `/close-phase` or `/session-end` writeback or when a long session has drifted. Hands back a delta read against the latest state.
 - **`/close-phase`** — runs the phase-close writeback (checklist tick, `plan.md` status bump, `CONTEXT.md` update, optional acceptance-results archive). Takes a phase number or infers from `CONTEXT.md`.
 - **`/session-end`** — packages Prompt 3 from `PROMPTS.md`. Drafts the four end-of-session updates (SESSION-LOG entry, CONTEXT bump, checklist scan, memory candidates) and waits for confirmation before writing.
+- **`/pull-ticket <KEY>`** — packages Prompt 6 from `PROMPTS.md`. Fetches a tracker ticket (JIRA / GitHub Issues / Linear / GitLab / Shortcut) via the relevant MCP, creates `tickets/<KEY>-<slug>.md` from the kit's ticket template, updates `workspace-CONTEXT.md` "Active tickets" list, stages a `SESSION-LOG.md` line. Read-only against the tracker. See [Per-ticket scratchpads](#per-ticket-scratchpads) for the full flow.
 
 ---
 
@@ -182,6 +259,6 @@ Every step has a manual alternative — see [SETUP.md §Manual alternative](SETU
 
 - **Doesn't modify your target repo.** Templates land in the working folder; memory lands in the harness path. Your repo stays clean.
 - **Doesn't make network calls.** No telemetry, no auto-update check, no remote dependencies at runtime.
-- **Doesn't manage your tracker / CI.** It seeds memory so Claude knows the conventions; it doesn't create JIRA projects, push GitHub Actions workflows, or open issues for you.
+- **Doesn't manage your tracker / CI.** It seeds memory so Claude knows the conventions; it doesn't create JIRA projects, push GitHub Actions workflows, or open issues for you. Tracker integration (`/pull-ticket`, `pull-ticket.sh`) is **one-way read** — fetches summary / AC / status, never creates / edits / transitions / comments. See [ADR-0001 §D3](docs/adr/0001-multi-repo-folder-model.md).
 - **Doesn't replace `CLAUDE.md`.** They're complementary — the kit handles cross-session state and preferences; `CLAUDE.md` handles in-repo guidance Claude reads automatically.
 - **Doesn't auto-upgrade installed projects.** When the kit ships new templates, existing adopters apply changes manually with the diff in [CHANGELOG.md](CHANGELOG.md). Bootstrap is write-once by design.
