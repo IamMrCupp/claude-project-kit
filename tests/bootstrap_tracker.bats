@@ -90,3 +90,52 @@ teardown() { bootstrap_teardown; }
   [ "$status" -eq 0 ]
   ! grep -q "reference_issue_tracker.md" "$(memory_dir)/MEMORY.md"
 }
+
+# --- Phase 4 D.1 — tracker config substitution into CONTEXT.md ---
+
+@test "--tracker jira substitutes tracker config into CONTEXT.md" {
+  run "$BOOTSTRAP" --tracker jira --jira-project INFRA "$TEST_WF"
+  [ "$status" -eq 0 ]
+  grep -q '^- \*\*Tracker type:\*\* jira$' "$TEST_WF/CONTEXT.md"
+  grep -q '^- \*\*Project / team key:\*\* INFRA$' "$TEST_WF/CONTEXT.md"
+  ! grep -q '{{TRACKER_TYPE}}' "$TEST_WF/CONTEXT.md"
+  ! grep -q '{{TRACKER_KEY}}' "$TEST_WF/CONTEXT.md"
+}
+
+@test "--tracker linear substitutes tracker config into CONTEXT.md" {
+  run "$BOOTSTRAP" --tracker linear --linear-team ENG "$TEST_WF"
+  [ "$status" -eq 0 ]
+  grep -q '^- \*\*Tracker type:\*\* linear$' "$TEST_WF/CONTEXT.md"
+  grep -q '^- \*\*Project / team key:\*\* ENG$' "$TEST_WF/CONTEXT.md"
+}
+
+@test "--tracker github substitutes type with not-applicable key" {
+  run "$BOOTSTRAP" --tracker github "$TEST_WF"
+  [ "$status" -eq 0 ]
+  grep -q '^- \*\*Tracker type:\*\* github$' "$TEST_WF/CONTEXT.md"
+  grep -q 'not applicable for github tracker' "$TEST_WF/CONTEXT.md"
+}
+
+@test "no --tracker flag substitutes tracker type as none" {
+  run "$BOOTSTRAP" "$TEST_WF"
+  [ "$status" -eq 0 ]
+  grep -q '^- \*\*Tracker type:\*\* none$' "$TEST_WF/CONTEXT.md"
+  grep -q 'no tracker configured' "$TEST_WF/CONTEXT.md"
+}
+
+@test "tracker substitution does not touch non-CONTEXT working-folder files" {
+  # SEED-PROMPT.md owns deep-read content; bootstrap should leave its
+  # placeholders alone (e.g. {{PROJECT_NAME}}, {{REPO_PATH}}).
+  run "$BOOTSTRAP" --tracker jira --jira-project INFRA "$TEST_WF"
+  [ "$status" -eq 0 ]
+  grep -q '{{PROJECT_NAME}}' "$TEST_WF/plan.md"
+  grep -q '{{REPO_PATH}}' "$TEST_WF/CONTEXT.md"
+}
+
+@test "dry-run shows tracker placeholder substitutions for CONTEXT.md" {
+  run "$BOOTSTRAP" --dry-run --tracker jira --jira-project ACME "$TEST_WF"
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"substitute tracker placeholders in CONTEXT.md"* ]]
+  [[ "$output" == *"{{TRACKER_TYPE}}"*"jira"* ]]
+  [[ "$output" == *"{{TRACKER_KEY}}"*"ACME"* ]]
+}

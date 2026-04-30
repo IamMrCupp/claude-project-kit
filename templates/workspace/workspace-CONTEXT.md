@@ -27,8 +27,8 @@ This file is private — never commit it to any repo.
 
 Shared tracker config for the initiative. If a single tracker covers all repos, capture it here once instead of duplicating in each `<repo>/CONTEXT.md`.
 
-- **Tracker type:** {{none | github | jira | linear | gitlab | shortcut | other}}
-- **Project / team key:** {{KEY — e.g. ACME, INFRA, ENG}}
+- **Tracker type:** {{TRACKER_TYPE}}
+- **Project / team key:** {{TRACKER_KEY}}
 - **MCP availability:** {{installed | not installed | unknown}}
 - **Tracker link:** {{URL}}
 
