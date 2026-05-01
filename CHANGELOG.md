@@ -6,6 +6,14 @@ See [Upgrading an existing project](SETUP.md#upgrading-an-existing-project) for 
 
 ---
 
+## [0.24.0](https://github.com/IamMrCupp/claude-project-kit/compare/v0.23.0...v0.24.0) (2026-05-01)
+
+
+### Features
+
+* **scripts:** add install-commands.sh for global/per-project slash command + agent install ([e1efaa3](https://github.com/IamMrCupp/claude-project-kit/commit/e1efaa32e422421517a28fb716234633e5d48140))
+* **scripts:** add install-commands.sh for global/per-project slash command + agent install ([3a89829](https://github.com/IamMrCupp/claude-project-kit/commit/3a898295c7b4b693e810ef65196b182e61de6d99))
+
 ## [0.23.0](https://github.com/IamMrCupp/claude-project-kit/compare/v0.22.0...v0.23.0) (2026-05-01)
 
 
