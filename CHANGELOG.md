@@ -6,6 +6,13 @@ See [Upgrading an existing project](SETUP.md#upgrading-an-existing-project) for 
 
 ---
 
+## [0.27.0](https://github.com/IamMrCupp/claude-project-kit/compare/v0.26.0...v0.27.0) (2026-05-01)
+
+
+### Features
+
+* **scripts:** add rename-workspace.sh helper ([910e611](https://github.com/IamMrCupp/claude-project-kit/commit/910e611a87726fd3a6a76610eedd087bea1ab95d))
+
 ## [0.26.0](https://github.com/IamMrCupp/claude-project-kit/compare/v0.25.0...v0.26.0) (2026-05-01)
 
 
