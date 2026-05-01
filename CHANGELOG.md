@@ -6,6 +6,14 @@ See [Upgrading an existing project](SETUP.md#upgrading-an-existing-project) for 
 
 ---
 
+## [0.25.0](https://github.com/IamMrCupp/claude-project-kit/compare/v0.24.0...v0.25.0) (2026-05-01)
+
+
+### Features
+
+* include Next session prompt in SESSION-LOG entries on close ([e4678b7](https://github.com/IamMrCupp/claude-project-kit/commit/e4678b768e602c4d7c21fbbc0489e7d4a5acf1e3))
+* include Next session prompt in SESSION-LOG entries on close ([02435d7](https://github.com/IamMrCupp/claude-project-kit/commit/02435d74c027fa5a6bdb2ffa4eb564d5034e6478))
+
 ## [0.24.0](https://github.com/IamMrCupp/claude-project-kit/compare/v0.23.0...v0.24.0) (2026-05-01)
 
 
