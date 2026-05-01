@@ -43,6 +43,19 @@ Whatever you pick, the **repo stays the repo; the working folder stays separate*
 >
 > **If you use the kit on more than one machine** (work laptop + personal desktop, etc.), repeat the edit on each. `~/.claude/settings.json` is local user config, not part of the kit repo, so cloning the kit on a new machine won't bring it along.
 
+> **Heads-up: `<repo>/.claude/settings.local.json`.** Claude Code writes this file in every project where you grant Bash / MCP / read-path permissions interactively. It is **per-project, machine-specific, and Claude-Code-managed** — the kit doesn't create or edit it. **Add it to your `.gitignore`** so machine-specific permissions don't get committed and follow the repo around. Two equivalent forms:
+>
+> ```bash
+> # Per-repo (add this line to <repo>/.gitignore)
+> .claude/settings.local.json
+>
+> # Once globally — covers every repo on this machine
+> # (add this line to ~/.config/git/ignore)
+> **/.claude/settings.local.json
+> ```
+>
+> If a permission is one you want allowed in *every* kit project (e.g. `Bash(gh run *)` for CI watchers), graduate it from the per-project `.claude/settings.local.json` to the global `~/.claude/settings.json` by hand. The kit doesn't sync this for the same reason it doesn't write to `~/.claude/settings.json` for you — global config is yours to curate.
+
 > Throughout this guide, `<framework-dir>` means wherever you've cloned/extracted this kit (e.g. `~/Code/claude-project-kit`), and `<working-folder>` means the path you just picked above.
 
 ---
