@@ -29,9 +29,18 @@ for review; this command exists for moments when waiting risks losing work.
    AND add a one-line entry to `MEMORY.md`. Better to write a draft I edit
    later than to lose the rule.
 
+5. Include a **Next session prompt** as part of the SESSION-LOG entry —
+   a short, copy-pasteable block to start the next session grounded.
+   Tailor it from this session's state: focus phrase, current branch +
+   open PR (if any), top open thread. If nothing is in flight, use the
+   short form (`Load context and give me a 3-bullet summary of where we
+   are.`). Format exactly as `templates/SESSION-LOG.md` shows:
+   `**Next session prompt:**` followed by a fenced code block.
+
 After writing, print a one-paragraph summary of what you wrote — what entries,
-what status changes, what new memory. That's the read-on-next-session
-checkpoint.
+what status changes, what new memory. **Then echo the next-session prompt
+back in chat** so I can grab it without reopening SESSION-LOG.md. That's the
+read-on-next-session checkpoint.
 
 ## When to use this vs. `/session-end`
 

@@ -22,9 +22,10 @@ The working-folder path comes from `reference_ai_working_folder.md` in auto-memo
 3. **Update CONTEXT.md "Current Phase Status"** block — mark the closing phase complete, set the next phase posture (often "Deferred — no active work").
 4. **Archive acceptance results** if `acceptance-test-results.md` exists and is non-empty: rename to `acceptance-test-results-phase-$ARGUMENTS.md` and update the CONTEXT.md Reference section to point at the archive.
 5. **Draft a SESSION-LOG entry** for this session covering: focus, PRs landed, key decisions, non-obvious findings, open threads.
+6. **Include a Next session prompt** as part of the SESSION-LOG entry — a short, copy-pasteable block tailored to where the next session should pick up. After phase close, this typically points at the next phase's first task: e.g. *"Phase N closed; next phase scoping is the open thread. Load context, summarize phase-(N+1) plan, propose first task."* Format as `**Next session prompt:**` followed by a fenced code block, matching `templates/SESSION-LOG.md`.
 
 ## Hand back
 
-Show each change as a diff (or as the proposed file content if it's a new file). Wait for the user's confirmation per change before writing.
+Show each change as a diff (or as the proposed file content if it's a new file). Wait for the user's confirmation per change before writing. After confirmation and writing, **echo the next-session prompt back in chat** so the user doesn't have to reopen SESSION-LOG.md to grab it.
 
 Do not invoke `git commit` or push. The user commits the working-folder updates separately when they're ready.

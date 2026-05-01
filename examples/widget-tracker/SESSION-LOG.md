@@ -73,4 +73,13 @@ Chronological record of Claude working sessions. Each entry captures what was do
 - Start thinking about Section C's in-memory → SQLite swap. Not urgent; Section B first.
 - Open Question #4 still unresolved; try to resolve before Section C so README docs can be authoritative.
 
+**Next session prompt:**
+
+```
+Load context and give me a 3-bullet summary of where we are.
+Last session: `add` shipped, `list` started. Branch `feat/list-command`
+is open with PR #7; B.2 filter flags (AND vs OR) is the top open thread.
+Pick up there.
+```
+
 ---
