@@ -74,6 +74,14 @@ teardown() { bootstrap_teardown; }
   grep -qE '^- Kit version: ' "$TEST_WF/SESSION-LOG.md"
 }
 
+@test "Bootstrap entry includes a Next session prompt block" {
+  run "$BOOTSTRAP" "$TEST_WF" --skip-memory
+  [ "$status" -eq 0 ]
+  grep -qF '**Next session prompt:**' "$TEST_WF/SESSION-LOG.md"
+  grep -q 'Load context and give me a 3-bullet summary' "$TEST_WF/SESSION-LOG.md"
+  grep -q 'running the SEED-PROMPT' "$TEST_WF/SESSION-LOG.md"
+}
+
 @test "Bootstrap entry includes seed-prompt next step" {
   run "$BOOTSTRAP" "$TEST_WF" --skip-memory
   [ "$status" -eq 0 ]

@@ -34,7 +34,17 @@ Use this shape for every session entry. Keep prose tight — future-you will sca
 
 **Open threads / next steps:**
 - {{…}}
+
+**Next session prompt:**
+
 ```
+Load context and give me a 3-bullet summary of where we are.
+Last session: {{focus phrase}}. Branch `{{branch}}` is open with PR #{{N}};
+top open thread: {{one-line thread}}. Pick up from there.
+```
+```
+
+The "Next session prompt" block is filled by `/session-end` (and `/session-handoff`, `/close-phase`) so future-you can scroll back, copy the latest entry's prompt, and paste it into a fresh Claude session with everything Claude needs to resume. If no branch is open or no threads are pending, simplify the prompt to just the short form (`Load context and give me a 3-bullet summary of where we are.`).
 
 ---
 
