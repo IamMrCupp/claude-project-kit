@@ -6,6 +6,14 @@ See [Upgrading an existing project](SETUP.md#upgrading-an-existing-project) for 
 
 ---
 
+## [0.22.0](https://github.com/IamMrCupp/claude-project-kit/compare/v0.21.1...v0.22.0) (2026-05-01)
+
+
+### Features
+
+* durable bootstrap session via SESSION-LOG entry + /session-handoff ([9e36b16](https://github.com/IamMrCupp/claude-project-kit/commit/9e36b16bbc1ab788907a9f912bdcd381c6120670))
+* durable bootstrap session via SESSION-LOG entry + /session-handoff ([118a289](https://github.com/IamMrCupp/claude-project-kit/commit/118a28937fe7e81492a0651901d5727211fa0693))
+
 ## [0.21.1](https://github.com/IamMrCupp/claude-project-kit/compare/v0.21.0...v0.21.1) (2026-05-01)
 
 
