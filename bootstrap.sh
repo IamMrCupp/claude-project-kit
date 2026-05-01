@@ -329,7 +329,13 @@ write_initial_session_log_entry() {
     if [ "$WORKSPACE_MODE" -eq 1 ]; then
       printf -- '- For each sibling repo in this workspace, re-run `bootstrap.sh --workspace %s` from that repo.\n' "$WORKSPACE_DIR"
     fi
-    printf -- '- Fill `[CLAUDE-INFERRED]` / `[HUMAN-CONFIRM]` markers in `CONTEXT.md` once SEED-PROMPT runs.\n'
+    printf -- '- Fill `[CLAUDE-INFERRED]` / `[HUMAN-CONFIRM]` markers in `CONTEXT.md` once SEED-PROMPT runs.\n\n'
+    printf '**Next session prompt:**\n\n'
+    printf '```\n'
+    printf 'Load context and give me a 3-bullet summary of where we are.\n'
+    printf 'Last session was the kit bootstrap — running the SEED-PROMPT to fill\n'
+    printf 'the working-folder templates is the next step. Pick up there.\n'
+    printf '```\n'
     printf '\n---\n'
   } >> "$target"
 }

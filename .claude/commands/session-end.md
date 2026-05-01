@@ -24,5 +24,16 @@ confirmation before writing anything.
    those are candidates for a new feedback_*.md memory file. Draft the
    feedback entry if applicable.
 
+5. Draft a **Next session prompt** as part of the SESSION-LOG entry — a
+   short, copy-pasteable block tomorrow-me can grab to start the next
+   session grounded. Tailor it from this session's actual state:
+   focus phrase, current branch + open PR (if any), the top open thread.
+   If nothing is open or in flight, fall back to the short form
+   (`Load context and give me a 3-bullet summary of where we are.`).
+   Format the field exactly as `templates/SESSION-LOG.md` shows it —
+   `**Next session prompt:**` followed by a fenced code block.
+
 Show me each of these as a separate section. I'll confirm each before
-anything is written.
+anything is written. After I confirm and you write everything, **echo
+the next-session prompt back to me in chat** so I don't have to reopen
+SESSION-LOG.md to grab it.

@@ -46,6 +46,15 @@ Chronological record of Claude working sessions in the `terraform-envs` repo. **
 - Once Atlantis applies, update ACME-1234's `Status` in this scratchpad to `Done` and stage the archive note.
 - Carry over: `prod-dr/` is still on `lighthouse-vpc@v1.0.0` (pre-CIDR-fix). Open follow-up ticket whenever DR drift becomes load-bearing.
 
+**Next session prompt:**
+
+```
+Load context and give me a 3-bullet summary of where we are.
+Last session: ACME-1234 prod-bump PR opened (#501, draft, awaiting soak end
+17:00 UTC 2026-04-25). Top open thread: mark PR #501 ready and merge
+once soak completes, then archive ACME-1234. Pick up there.
+```
+
 ---
 
 ## Session: 2026-04-14 — ACME-1100 dev migration
