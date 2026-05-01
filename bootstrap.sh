@@ -242,6 +242,87 @@ substitute_tracker_placeholders_in_dir() {
   printf '%s' "$count"
 }
 
+kit_version() {
+  # Best-effort kit version string — git describe if the kit is a checkout,
+  # else "unknown". Never errors.
+  local v
+  if v="$(git -C "$KIT_ROOT" describe --tags --always --dirty 2>/dev/null)"; then
+    printf '%s' "$v"
+  else
+    printf 'unknown'
+  fi
+}
+
+write_initial_session_log_entry() {
+  # Append a factual Bootstrap entry to <working-folder>/SESSION-LOG.md so the
+  # bootstrap session is durable even if a hand-off interrupts before
+  # /session-end runs. Reads globals: WORKING_FOLDER, REPO_ROOT, MEMORY_DIR,
+  # WORKSPACE_MODE, WORKSPACE_DIR, WORKSPACE_REPO_NAME, WORKSPACE_FIRST_REPO,
+  # TRACKER, JIRA_PROJECT_KEY, LINEAR_TEAM_KEY, CI_TOOL, SKIP_MEMORY.
+  local target="$WORKING_FOLDER/SESSION-LOG.md"
+  [ -f "$target" ] || return 0
+
+  local today; today="$(date +%Y-%m-%d)"
+  local mode_label="single-repo"
+  if [ "$WORKSPACE_MODE" -eq 1 ]; then
+    if [ "$WORKSPACE_FIRST_REPO" -eq 1 ]; then
+      mode_label="workspace (new — first repo)"
+    else
+      mode_label="workspace (added repo to existing workspace)"
+    fi
+  fi
+
+  local tracker_line="(none)"
+  case "$TRACKER" in
+    jira)     tracker_line="jira (project: $JIRA_PROJECT_KEY)" ;;
+    linear)   tracker_line="linear (team: $LINEAR_TEAM_KEY)" ;;
+    github|gitlab|shortcut|other) tracker_line="$TRACKER" ;;
+  esac
+
+  local ci_line="(none)"
+  if [ -n "$CI_TOOL" ] && [ "$CI_TOOL" != "none" ]; then
+    ci_line="$CI_TOOL"
+  fi
+
+  local memory_line
+  if [ "$SKIP_MEMORY" -eq 1 ]; then
+    memory_line="skipped (--skip-memory)"
+  else
+    memory_line="$MEMORY_DIR"
+  fi
+
+  {
+    printf '\n## Session: %s — Bootstrap\n\n' "$today"
+    printf '**Focus:** Initial bootstrap of the working folder%s.\n\n' \
+      "$( [ "$SKIP_MEMORY" -eq 0 ] && printf ' + auto-memory' )"
+    printf '**Bootstrap config:**\n'
+    printf -- '- Mode: %s\n' "$mode_label"
+    if [ "$WORKSPACE_MODE" -eq 1 ]; then
+      printf -- '- Workspace: `%s`\n' "$WORKSPACE_DIR"
+      printf -- '- Repo subfolder: `%s` (full path: `%s`)\n' \
+        "$WORKSPACE_REPO_NAME" "$WORKING_FOLDER"
+    else
+      printf -- '- Working folder: `%s`\n' "$WORKING_FOLDER"
+    fi
+    printf -- '- Repo: `%s`\n' "$REPO_ROOT"
+    printf -- '- Tracker: %s\n' "$tracker_line"
+    printf -- '- CI: %s\n' "$ci_line"
+    printf -- '- Auto-memory: %s\n' "$memory_line"
+    printf -- '- Kit version: %s\n\n' "$(kit_version)"
+    printf '**Open threads / next steps:**\n'
+    printf -- '- Run the seed prompt: `Follow the instructions in %s/SEED-PROMPT.md.`\n' \
+      "$WORKING_FOLDER"
+    if [ "$SKIP_MEMORY" -eq 0 ]; then
+      printf -- '- Tune auto-memory at `%s` — prune what does not apply, customize feedback files.\n' "$MEMORY_DIR"
+    fi
+    if [ "$WORKSPACE_MODE" -eq 1 ]; then
+      printf -- '- For each sibling repo in this workspace, re-run `bootstrap.sh --workspace %s` from that repo.\n' "$WORKSPACE_DIR"
+    fi
+    printf -- '- Fill `[CLAUDE-INFERRED]` / `[HUMAN-CONFIRM]` markers in `CONTEXT.md` once SEED-PROMPT runs.\n'
+    printf '\n---\n'
+  } >> "$target"
+}
+
 SKIP_MEMORY=0
 FORCE=0
 DRY_RUN=0
@@ -683,6 +764,9 @@ if [ "$SKIP_MEMORY" -eq 0 ]; then
     echo "    (no git remote 'origin' found — {{REPO_SLUG}} left for manual fill)"
   fi
 fi
+
+write_initial_session_log_entry
+echo "  ✓ Wrote initial Bootstrap entry to $WORKING_FOLDER/SESSION-LOG.md"
 
 echo
 echo "Bootstrap complete."
