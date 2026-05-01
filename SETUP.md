@@ -174,7 +174,9 @@ Every working session should end with:
 
 The habit that makes this work: the **last thing you do** before quitting is update these docs. It takes two minutes and rescues the next session from "where was I?"
 
-For a scaffolded version of this pass, paste **Prompt 3 ("Wrapping up a session")** from [PROMPTS.md](PROMPTS.md). It has Claude draft all four items and stop for your review before writing anything — easier than remembering each piece by hand.
+For a scaffolded version of this pass, paste **Prompt 3 ("Wrapping up a session")** from [PROMPTS.md](PROMPTS.md), or run the **`/session-end`** slash command. Both draft all four items and stop for your review before writing anything — easier than remembering each piece by hand.
+
+**For interrupted sessions** (switching to Claude desktop, abrupt pause, context-window pressure), use **`/session-handoff`** instead — same drafting work but writes immediately, no confirmation gate. Persistence over polish; review on the next `/session-start`. Pairs with `bootstrap.sh`'s automatic Bootstrap entry — between the two, even an aborted bootstrap-and-seed-prompt session leaves a durable record on disk.
 
 ---
 
@@ -190,7 +192,7 @@ mv "<working-folder>/phase-N-checklist.md" "<working-folder>/phase-0-checklist.m
 [ -d "<framework-dir>/templates/.claude" ] && cp -R "<framework-dir>/templates/.claude" "<working-folder>/"
 ```
 
-The `.claude/` directory holds starter agents and slash commands that match the kit's session-start, session-end, and phase-close conventions. They're staged in the working folder; copy into your target repo's `.claude/` if you want them active. See [`templates/.claude/README.md`](templates/.claude/README.md) for the full list (two agents + four slash commands) and how to activate them.
+The `.claude/` directory holds starter agents and slash commands that match the kit's session-start, session-end, session-handoff, and phase-close conventions. They're staged in the working folder; copy into your target repo's `.claude/` if you want them active. See [`templates/.claude/README.md`](templates/.claude/README.md) for the full list (two agents + six slash commands) and how to activate them.
 
 ### Seed auto-memory
 The harness expects memory at `~/.claude/projects/<sanitized-path>/memory/`. Sanitization rule: absolute repo path with `/` replaced by `-`, prefixed with `-`. Example: `/Users/you/Code/acme/foo` → `-Users-you-Code-acme-foo`.

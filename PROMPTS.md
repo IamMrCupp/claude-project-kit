@@ -123,6 +123,7 @@ anything is written.
 - If `reference_ai_working_folder.md` is set up in auto-memory, Claude already knows where the working folder lives. Otherwise prefix with: *"Working folder is `<path>`."*
 - The "draft first, don't write" guard is load-bearing — session-end updates are easy to get wrong (overzealous status bumps, hallucinated PR numbers), and reviewing is faster than undoing.
 - For a bare-minimum wrap-up (no checklist or memory review), the one-liner *"Draft a SESSION-LOG.md entry for today and show it to me"* is usually enough.
+- **For mid-session handoffs** (switching to Claude desktop, context-window pressure, abrupt pause), use `/session-handoff` instead — same drafting work but writes immediately without the confirmation gate. The trade-off is real (occasionally writes something slightly off, corrected on the next `/session-start`) and strictly better than losing the session entirely.
 
 ---
 

@@ -31,6 +31,10 @@ A feature-by-feature reference. For setup steps, see [SETUP.md](SETUP.md). For t
 - `--force` — override the working-folder check (auto-memory is **still** protected; existing memory files are never overwritten).
 - `--skip-memory` — seed the working folder only, leave `~/.claude/projects/<sanitized-path>/memory/` alone.
 
+### Initial SESSION-LOG entry
+
+Every successful run appends a factual "Bootstrap" entry to `<working-folder>/SESSION-LOG.md` capturing the date, mode (single-repo / workspace), working folder, repo path, tracker, CI, auto-memory location, kit version, and next-step pointers. Deterministic write — no LLM in the loop, no confirmation gate. The bootstrap-time state stays durable even if the user hands off before running `/session-end`. Pairs with `/session-handoff` to make the entire bootstrap-and-seed-prompt session resilient to interrupts.
+
 ```bash
 bootstrap.sh ~/Documents/Claude/Projects/foo --dry-run
 ```
@@ -227,12 +231,13 @@ These are **starters**. Edit the frontmatter (model, tool allowlist), customize 
 
 ## Starter slash commands
 
-Five slash commands stage in `<working-folder>/.claude/commands/`. Same activation pattern — copy `.claude/` into your target repo.
+Six slash commands stage in `<working-folder>/.claude/commands/`. Same activation pattern — copy `.claude/` into your target repo.
 
 - **`/session-start`** — packages Prompt 1 from `PROMPTS.md`. Loads `CONTEXT.md`, `SESSION-LOG.md`, and the current phase checklist; hands back a 3–5 bullet grounding summary. Use at the start of a fresh session.
 - **`/refresh-context`** — re-reads the working folder mid-session, after a `/close-phase` or `/session-end` writeback or when a long session has drifted. Hands back a delta read against the latest state.
 - **`/close-phase`** — runs the phase-close writeback (checklist tick, `plan.md` status bump, `CONTEXT.md` update, optional acceptance-results archive). Takes a phase number or infers from `CONTEXT.md`.
 - **`/session-end`** — packages Prompt 3 from `PROMPTS.md`. Drafts the four end-of-session updates (SESSION-LOG entry, CONTEXT bump, checklist scan, memory candidates) and waits for confirmation before writing.
+- **`/session-handoff`** — same drafting work as `/session-end`, but **writes immediately** without a confirmation gate. Use when waiting risks losing work: switching to Claude desktop, context-window pressure, abrupt pause. Persistence > polish; review on the next `/session-start`. Pairs with `bootstrap.sh`'s automatic Bootstrap entry — between the two, the bootstrap-and-seed-prompt session is durable end-to-end even if the user pauses without a clean wrap-up.
 - **`/pull-ticket <KEY>`** — packages Prompt 6 from `PROMPTS.md`. Fetches a tracker ticket (JIRA / GitHub Issues / Linear / GitLab / Shortcut) via the relevant MCP, creates `tickets/<KEY>-<slug>.md` from the kit's ticket template, updates `workspace-CONTEXT.md` "Active tickets" list, stages a `SESSION-LOG.md` line. Read-only against the tracker. See [Per-ticket scratchpads](#per-ticket-scratchpads) for the full flow.
 
 ---
