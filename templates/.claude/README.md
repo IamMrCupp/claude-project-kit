@@ -20,13 +20,25 @@ Two agents and six slash commands that follow the kit's session-start, session-e
 
 ## How to activate them
 
-These are **staged in your working folder, not in your target repo.** The kit doesn't modify the target repo — that's the kit's invariant. To activate the agents and commands, copy the directory into your target repo:
+These commands and agents are **workflow-shaped**, not project-shaped — every kit project uses them the same way. Recommended install: **once, globally** at user level so they're available across every project on the machine. Use the kit's helper:
 
 ```bash
-cp -r <working-folder>/.claude/ <your-repo>/.claude/
+# Recommended: install at user level (~/.claude/{commands,agents}/).
+# One install, every kit project on this machine.
+<kit-dir>/scripts/install-commands.sh --global
 ```
 
-Then commit the target's `.claude/` (or `.gitignore` it) to taste — the kit doesn't have an opinion. Both agents and slash commands work the same way whether they're committed or not.
+The helper is **idempotent and write-once** — files already present in the target are skipped, never overwritten. Re-run after pulling kit updates to pick up new commands.
+
+If you'd rather scope the install to a single repo (overriding any global copies for that repo, or keeping the kit's footprint visible per-project), use:
+
+```bash
+<kit-dir>/scripts/install-commands.sh --project <repo-path>
+```
+
+The staged copy in your working folder stays as a stable reference either way. To copy by hand instead of running the helper, the source is `<kit-dir>/templates/.claude/{commands,agents}/` — copy into `~/.claude/` (global) or `<your-repo>/.claude/` (per-project).
+
+**Caveat — kit-coupling.** All slash commands except `code-reviewer` (which is universal) assume a kit-bootstrapped project (CONTEXT.md / SESSION-LOG.md / phase-N-checklist.md). They will error in non-kit projects until [kit issue #82](https://github.com/IamMrCupp/claude-project-kit/issues/82) (graceful degradation) lands. Installing globally is still the right call if every project you work on is kit-bootstrapped.
 
 ## Customizing
 
