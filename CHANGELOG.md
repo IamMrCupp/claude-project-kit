@@ -6,6 +6,14 @@ See [Upgrading an existing project](SETUP.md#upgrading-an-existing-project) for 
 
 ---
 
+## [0.21.0](https://github.com/IamMrCupp/claude-project-kit/compare/v0.20.3...v0.21.0) (2026-05-01)
+
+
+### Features
+
+* **scripts:** add sync-memory.sh helper for kit-on-kit memory drift ([00a8923](https://github.com/IamMrCupp/claude-project-kit/commit/00a8923ebd6601ceda018888deb0af7340c18e44))
+* **scripts:** add sync-memory.sh helper for kit-on-kit memory drift ([9110d82](https://github.com/IamMrCupp/claude-project-kit/commit/9110d8266efff0f0482eff5dbeaf1f33a0de668a))
+
 ## [0.20.3](https://github.com/IamMrCupp/claude-project-kit/compare/v0.20.2...v0.20.3) (2026-04-30)
 
 
