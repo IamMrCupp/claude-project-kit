@@ -6,6 +6,14 @@ See [Upgrading an existing project](SETUP.md#upgrading-an-existing-project) for 
 
 ---
 
+## [0.29.1](https://github.com/IamMrCupp/claude-project-kit/compare/v0.29.0...v0.29.1) (2026-05-01)
+
+
+### Documentation
+
+* **readme:** catch up on v0.21-v0.29 helpers + /session-handoff ([efddabe](https://github.com/IamMrCupp/claude-project-kit/commit/efddabe83adb728fcd0cbaa039486e5366ba97a5))
+* **readme:** catch up on v0.21-v0.29 helpers + /session-handoff ([65e644b](https://github.com/IamMrCupp/claude-project-kit/commit/65e644bed684a7737f4b1d9ffcefef5308defec3))
+
 ## [0.29.0](https://github.com/IamMrCupp/claude-project-kit/compare/v0.28.0...v0.29.0) (2026-05-01)
 
 
