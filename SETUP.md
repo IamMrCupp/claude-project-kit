@@ -325,6 +325,31 @@ Once a workspace is set up with tracker config (`--tracker jira --jira-project A
 
 Idempotence: both refuse to overwrite an existing scratchpad with the same `<KEY>-` prefix (active or archived). Re-pull by removing or archiving the old file first, or do it from Claude (the slash command can re-pull if you confirm).
 
+### Renaming a workspace
+
+A naive `mv` of the workspace folder works for the directory tree, but **leaves stale references** in per-repo auto-memory at `~/.claude/projects/<sanitized-repo-path>/memory/reference_ai_working_folder.md` (which pins the workspace path baked in at bootstrap time). Use the rename helper instead:
+
+```bash
+<framework-dir>/scripts/rename-workspace.sh \
+  ~/Documents/Claude/Projects/<old-name>/ \
+  ~/Documents/Claude/Projects/<new-name>/
+```
+
+The helper:
+
+1. `mv`s the workspace directory.
+2. Rewrites every auto-memory file across `~/.claude/projects/*/memory/*.md` that referenced the old path.
+3. Backs each rewritten memory file up to `<file>.bak.<timestamp>` first.
+4. Reports any old-path references **inside** the workspace tree (in `workspace-CONTEXT.md`, per-repo `CONTEXT.md`, etc.) — these are NOT auto-rewritten because prose may legitimately reference history. Review and edit by hand if appropriate.
+
+Pass `--dry-run` to preview before committing:
+
+```bash
+<framework-dir>/scripts/rename-workspace.sh --dry-run \
+  ~/Documents/Claude/Projects/<old-name>/ \
+  ~/Documents/Claude/Projects/<new-name>/
+```
+
 ### What `--workspace` does NOT do (yet)
 
 - **Interactive workspace prompt** — `--workspace` requires the explicit flag. Interactive mode still defaults to single-repo. Use the flag-based form above for workspace bootstraps.
