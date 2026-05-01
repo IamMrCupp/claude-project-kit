@@ -6,6 +6,14 @@ See [Upgrading an existing project](SETUP.md#upgrading-an-existing-project) for 
 
 ---
 
+## [0.26.0](https://github.com/IamMrCupp/claude-project-kit/compare/v0.25.0...v0.26.0) (2026-05-01)
+
+
+### Features
+
+* **workspace:** scaffold multi-initiative shape (current initiative + workspace-plan.md) ([de4ac4a](https://github.com/IamMrCupp/claude-project-kit/commit/de4ac4ae12a788a35c4ce280508549e3c9ac4389))
+* **workspace:** scaffold multi-initiative shape (current initiative + workspace-plan.md) ([48567f2](https://github.com/IamMrCupp/claude-project-kit/commit/48567f249a889eca76e5bd89c57227ef325bed9e))
+
 ## [0.25.0](https://github.com/IamMrCupp/claude-project-kit/compare/v0.24.0...v0.25.0) (2026-05-01)
 
 
