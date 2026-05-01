@@ -236,7 +236,15 @@ For fully filled-in references, see [`examples/widget-tracker/CONTEXT.md`](examp
 `bootstrap.sh` is deliberately **write-once** — it won't touch a working folder or auto-memory dir that's already populated. When the kit evolves, existing adopters upgrade manually:
 
 1. Check [`CHANGELOG.md`](CHANGELOG.md) to see what's landed since your bootstrap SHA (or since the last time you upgraded). Each entry has a **For existing adopters** section with specifics.
-2. **New files in `templates/`** — copy into your working folder manually:
+2. **New files in `templates/`** — easiest path is the sync helper, which copies any missing templates into a working folder without overwriting existing files (and reports any *outdated* files for you to merge by hand):
+   ```bash
+   # For a single-repo working folder (or a per-repo subfolder of a workspace)
+   <kit-dir>/scripts/sync-templates.sh <working-folder>
+
+   # For workspace-level files (workspace-CONTEXT.md, workspace-plan.md)
+   <kit-dir>/scripts/sync-templates.sh --workspace <workspace-root>
+   ```
+   Pass `--dry-run` first to preview. The helper never overwrites — when an existing file differs from the kit's current template, it reports "outdated; review and merge by hand if desired" rather than clobbering your filled-in content. To copy a single file by hand instead:
    ```bash
    cp <kit-dir>/templates/<NEW_FILE>.md <working-folder>/
    ```
