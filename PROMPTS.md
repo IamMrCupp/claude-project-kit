@@ -41,6 +41,7 @@ landed most recently, and any open threads. Then wait for my next instruction.
 - Replace `<working-folder>` with the actual path (e.g. `~/Documents/Claude/Projects/my-project/`).
 - If you're resuming mid-PR, use [Prompt 4](#4-resuming-mid-pr) instead of either form above — it loads the same context but adds a structured branch + PR + CI assessment.
 - The `/session-start` slash command (in `templates/.claude/commands/`) runs the verbose flow as a one-step invocation. Copy it into your repo's `.claude/commands/` to enable.
+- **In workspace mode** (the working folder is a per-repo subfolder under a workspace dir), Claude should read `../workspace-CONTEXT.md` *first*, **before** the per-repo files — it identifies the **current initiative** so the per-repo load makes sense in context. Then read `../workspace-plan.md` if available for the broader initiative arc. Then load `<working-folder>/CONTEXT.md` etc. as normal. The verbose form's file list still works at the per-repo level; the workspace-level reads are additive.
 
 ---
 
