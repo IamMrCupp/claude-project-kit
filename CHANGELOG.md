@@ -6,6 +6,19 @@ See [Upgrading an existing project](SETUP.md#upgrading-an-existing-project) for 
 
 ---
 
+## [0.23.0](https://github.com/IamMrCupp/claude-project-kit/compare/v0.22.0...v0.23.0) (2026-05-01)
+
+
+### Features
+
+* **bootstrap:** opt-in --trust-working-folder-root flag and interactive prompt ([45f7867](https://github.com/IamMrCupp/claude-project-kit/commit/45f78679b227f14b178fe208c3ef0dc53c360c25))
+* **bootstrap:** opt-in --trust-working-folder-root flag and interactive prompt ([cd6dc4d](https://github.com/IamMrCupp/claude-project-kit/commit/cd6dc4d7b09f47250c1e7370fceab1a67f176460))
+
+
+### Tests
+
+* **interactive:** add expect for new trust-root prompt in 5 .exp tests ([c82bb8a](https://github.com/IamMrCupp/claude-project-kit/commit/c82bb8ac08603903d6ae916b618eb943b769e34e))
+
 ## [0.22.0](https://github.com/IamMrCupp/claude-project-kit/compare/v0.21.1...v0.22.0) (2026-05-01)
 
 
