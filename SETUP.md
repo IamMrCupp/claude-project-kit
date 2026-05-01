@@ -192,7 +192,13 @@ mv "<working-folder>/phase-N-checklist.md" "<working-folder>/phase-0-checklist.m
 [ -d "<framework-dir>/templates/.claude" ] && cp -R "<framework-dir>/templates/.claude" "<working-folder>/"
 ```
 
-The `.claude/` directory holds starter agents and slash commands that match the kit's session-start, session-end, session-handoff, and phase-close conventions. They're staged in the working folder; copy into your target repo's `.claude/` if you want them active. See [`templates/.claude/README.md`](templates/.claude/README.md) for the full list (two agents + six slash commands) and how to activate them.
+The `.claude/` directory holds starter agents and slash commands that match the kit's session-start, session-end, session-handoff, and phase-close conventions. **Recommended install: globally, once per machine** so they're available across every kit project:
+
+```bash
+<framework-dir>/scripts/install-commands.sh --global
+```
+
+The helper is idempotent and never overwrites existing files. To scope to one repo instead, use `--project <repo-path>`. See [`templates/.claude/README.md`](templates/.claude/README.md) for the full list (two agents + six slash commands), the kit-coupling caveat (most commands assume a kit working folder), and manual-copy alternatives.
 
 ### Seed auto-memory
 The harness expects memory at `~/.claude/projects/<sanitized-path>/memory/`. Sanitization rule: absolute repo path with `/` replaced by `-`, prefixed with `-`. Example: `/Users/you/Code/acme/foo` → `-Users-you-Code-acme-foo`.
@@ -236,9 +242,13 @@ For fully filled-in references, see [`examples/widget-tracker/CONTEXT.md`](examp
    ```bash
    cp <kit-dir>/memory-templates/<NEW_FILE>.md ~/.claude/projects/<sanitized-path>/memory/
    ```
-4. **New files in `templates/.claude/`** — copy into your working folder's `.claude/` (then re-copy into your target repo if you've activated those starters):
+4. **New files in `templates/.claude/`** — easiest path is to re-run the install helper, which adds any missing commands or agents without overwriting existing files:
    ```bash
-   cp -R <kit-dir>/templates/.claude/<NEW_FILE> <working-folder>/.claude/
+   <kit-dir>/scripts/install-commands.sh --global   # or --project <repo-path>
+   ```
+   To copy a single file by hand instead:
+   ```bash
+   cp <kit-dir>/templates/.claude/<commands_or_agents>/<NEW_FILE>.md ~/.claude/<commands_or_agents>/
    ```
 5. **Changed prose in kit-level files** (e.g. `CONVENTIONS.md`, `SETUP.md`, `README.md`) — re-read them. Your local copies of working-folder templates and memory files are yours; they don't auto-upgrade.
 6. **New `bootstrap.sh` flags or behavior** — apply only to *new* projects you bootstrap going forward. Already-bootstrapped projects keep their current state.
