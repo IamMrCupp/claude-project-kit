@@ -6,6 +6,14 @@ See [Upgrading an existing project](SETUP.md#upgrading-an-existing-project) for 
 
 ---
 
+## [0.28.0](https://github.com/IamMrCupp/claude-project-kit/compare/v0.27.0...v0.28.0) (2026-05-01)
+
+
+### Features
+
+* **commands:** graceful degradation when invoked outside a kit working folder ([f69173a](https://github.com/IamMrCupp/claude-project-kit/commit/f69173a822de25a22fcc71d30ecf6aa52978bbfc))
+* **commands:** graceful degradation when invoked outside a kit working folder ([e6404ec](https://github.com/IamMrCupp/claude-project-kit/commit/e6404eccc3e851b9aabf0074509b2c6d664c1de0))
+
 ## [0.27.0](https://github.com/IamMrCupp/claude-project-kit/compare/v0.26.0...v0.27.0) (2026-05-01)
 
 
