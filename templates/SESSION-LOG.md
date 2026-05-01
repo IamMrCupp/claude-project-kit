@@ -38,19 +38,10 @@ Use this shape for every session entry. Keep prose tight — future-you will sca
 
 ---
 
-## Session: {{YYYY-MM-DD}} — Initial setup
-
-**Focus:** Bootstrap working folder, seed planning docs, establish conventions.
-
-**Outputs:**
-- Created `CONTEXT.md`, `plan.md`, `implementation.md`, `research.md` (skeletons)
-- Created `phase-0-checklist.md` for initial setup work
-
-**Key decisions:**
-- Working folder location: `{{WORKING_FOLDER}}`
-- Adopted conventions from `~/Documents/Claude/Framework/CONVENTIONS.md` (with modifications: {{list any}})
-
-**Open threads:**
-- {{…}}
-
----
+<!--
+Session entries go below. `bootstrap.sh` appends a factual "Bootstrap" entry
+on first run capturing the date, working-folder path, repo path, tracker /
+CI config, and kit version — so the bootstrap session is durable even if
+hand-off interrupts before /session-end runs. Subsequent sessions append
+their own entries here using the format above.
+-->

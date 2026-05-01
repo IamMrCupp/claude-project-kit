@@ -167,6 +167,7 @@ Output a summary in this exact shape:
 Once the user answers your questions and confirms inferences:
 
 1. Replace the `[CLAUDE-INFERRED]` and `[HUMAN-CONFIRM]` markers with the confirmed values in `CONTEXT.md` and `research.md`.
-2. Ask whether to proceed to Phase 0/1 scoping (populate `plan.md` phases, create `phase-N-checklist.md`) or stop here for the user to drive.
+2. Run `/session-handoff` (or fall back to drafting the equivalent and writing immediately) to append a SESSION-LOG entry capturing what got derived during this seed-prompt run — architecture decisions, key inferences, anything non-obvious that future sessions will want. `bootstrap.sh` already wrote a factual "Bootstrap" entry; this one captures everything Claude derived on top of those facts. Persisting now means the seed-prompt session is durable even if the user pauses without running `/session-end`.
+3. Ask whether to proceed to Phase 0/1 scoping (populate `plan.md` phases, create `phase-N-checklist.md`) or stop here for the user to drive.
 
-Do not presume the next move. The seed prompt's job ends at "working folder is filled and confirmed." Anything after that is the user's call.
+Do not presume the next move beyond the writeback above. The seed prompt's job ends at "working folder is filled, confirmed, and captured in SESSION-LOG." Anything after that is the user's call.
