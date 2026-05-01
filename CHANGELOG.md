@@ -6,6 +6,14 @@ See [Upgrading an existing project](SETUP.md#upgrading-an-existing-project) for 
 
 ---
 
+## [0.29.0](https://github.com/IamMrCupp/claude-project-kit/compare/v0.28.0...v0.29.0) (2026-05-01)
+
+
+### Features
+
+* **scripts:** add sync-templates.sh for working-folder + workspace template upgrades ([ee3c473](https://github.com/IamMrCupp/claude-project-kit/commit/ee3c4731dd816b0f3d2af78d52504206df2f9cd5))
+* **scripts:** add sync-templates.sh for working-folder + workspace template upgrades ([fe214cd](https://github.com/IamMrCupp/claude-project-kit/commit/fe214cd053fdab4923c1bbffa683b68757343366))
+
 ## [0.28.0](https://github.com/IamMrCupp/claude-project-kit/compare/v0.27.0...v0.28.0) (2026-05-01)
 
 
