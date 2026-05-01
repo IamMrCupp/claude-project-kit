@@ -216,11 +216,13 @@ Saves ~30 minutes of manual fill-in on a real project, and the inference markers
 
 ## Starter agents
 
-Two agents stage in `<working-folder>/.claude/agents/`. The kit doesn't modify your target repo — to activate, copy the directory in:
+Two agents stage in `<working-folder>/.claude/agents/`. **Recommended install: globally, once per machine** so they're available across every kit project:
 
 ```bash
-cp -r <working-folder>/.claude/ <your-repo>/.claude/
+<kit-dir>/scripts/install-commands.sh --global
 ```
+
+The helper is idempotent and never overwrites existing files. To scope to one repo instead, pass `--project <repo-path>`. To copy by hand, the source is `<kit-dir>/templates/.claude/agents/`.
 
 - **`code-reviewer`** — reviews diffs, branches, or files for security / correctness / performance / style. Project-agnostic; works anywhere.
 - **`session-summarizer`** — drafts SESSION-LOG entries, CONTEXT.md status bumps, checklist scans, and memory candidates from the current session's activity. Specific to projects using the kit's working-folder pattern.
@@ -231,7 +233,7 @@ These are **starters**. Edit the frontmatter (model, tool allowlist), customize 
 
 ## Starter slash commands
 
-Six slash commands stage in `<working-folder>/.claude/commands/`. Same activation pattern — copy `.claude/` into your target repo.
+Six slash commands stage in `<working-folder>/.claude/commands/`. Same install path as agents — `scripts/install-commands.sh --global` (recommended, covers every project) or `--project <repo-path>` (scope to one repo).
 
 - **`/session-start`** — packages Prompt 1 from `PROMPTS.md`. Loads `CONTEXT.md`, `SESSION-LOG.md`, and the current phase checklist; hands back a 3–5 bullet grounding summary. Use at the start of a fresh session.
 - **`/refresh-context`** — re-reads the working folder mid-session, after a `/close-phase` or `/session-end` writeback or when a long session has drifted. Hands back a delta read against the latest state.
