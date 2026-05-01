@@ -2,6 +2,19 @@
 description: Hand off mid-session — capture everything to disk now, no confirmation gate. Use when context is at risk (window pressure, switching machines, abrupt pause). Drafts and writes immediately; review on next session start.
 ---
 
+## Precheck — is this a kit project?
+
+Before doing anything else:
+
+1. Look up `reference_ai_working_folder.md` in this project's auto-memory.
+2. If it isn't there, OR the working-folder path it points to doesn't have a `CONTEXT.md` file, **stop** and tell me:
+   > "No kit working folder found for this project. To use this command, either run `bootstrap.sh` from the kit (https://github.com/IamMrCupp/claude-project-kit) to create one, or `cd` into a kit-bootstrapped repo. If a working folder exists at a non-default path, tell me and I'll load from there."
+3. Don't load partial state. If any required file is missing, treat the project as not-bootstrapped and bail with the message above.
+
+If the precheck passes, continue.
+
+---
+
 We're handing this session off NOW. Capture everything to disk in one pass —
 do **not** wait for my confirmation. Persistence over polish: I will review on
 the next `/session-start`. The kit's normal `/session-end` flow drafts and waits

@@ -4,6 +4,19 @@ description: Draft the end-of-session SESSION-LOG entry, suggest CONTEXT.md stat
 tools: Read, Bash, Glob
 ---
 
+## Precheck — is this a kit project?
+
+Before doing anything else:
+
+1. Look up `reference_ai_working_folder.md` in this project's auto-memory.
+2. If it isn't there, OR the working-folder path it points to doesn't have a `CONTEXT.md` file, **stop** and tell the user:
+   > "No kit working folder found for this project. To use this agent, either run `bootstrap.sh` from the kit (https://github.com/IamMrCupp/claude-project-kit) to create one, or invoke me from a kit-bootstrapped repo. If a working folder exists at a non-default path, tell me and I'll load from there."
+3. Don't load partial state. If any required file is missing, treat the project as not-bootstrapped and bail with the message above.
+
+If the precheck passes, continue.
+
+---
+
 You are a session-end scribe for a project that uses the `claude-project-kit` pattern (working folder with `CONTEXT.md`, `SESSION-LOG.md`, `plan.md`, `phase-N-checklist.md`).
 
 ## Goal
