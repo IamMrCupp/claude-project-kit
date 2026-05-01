@@ -4,9 +4,10 @@ description: Load the working folder's CONTEXT.md, SESSION-LOG.md, and current p
 
 Before we start, read these files in my AI working folder, in order:
 
-1. `<working-folder>/CONTEXT.md` — project overview, working rules, current phase
-2. `<working-folder>/SESSION-LOG.md` — chronological session history
-3. The current phase's checklist (e.g. `<working-folder>/phase-<N>-checklist.md`)
+1. **In workspace mode only** — if `<working-folder>/../workspace-CONTEXT.md` exists, read it FIRST. It tells you the current initiative so the per-repo load below makes sense in context. Also read `<working-folder>/../workspace-plan.md` if it exists for the broader initiative arc.
+2. `<working-folder>/CONTEXT.md` — project overview, working rules, current phase
+3. `<working-folder>/SESSION-LOG.md` — chronological session history
+4. The current phase's checklist (e.g. `<working-folder>/phase-<N>-checklist.md`)
 
 These are my persistent project context — they live outside the repo and hold scope, decisions, and current status. Don't edit them unless I ask; updates happen at session end.
 

@@ -36,6 +36,25 @@ teardown() { bootstrap_teardown; }
   grep -q "Workspace —" "$WS/workspace-CONTEXT.md"
 }
 
+@test "--workspace copies workspace-plan.md to workspace root" {
+  WS="$TEST_TMP/acme-platform"
+  run "$BOOTSTRAP" --workspace "$WS" --skip-memory
+  [ "$status" -eq 0 ]
+
+  [ -f "$WS/workspace-plan.md" ]
+  grep -q "Workspace Plan —" "$WS/workspace-plan.md"
+  grep -q "Active initiative" "$WS/workspace-plan.md"
+}
+
+@test "--workspace workspace-CONTEXT.md has Current Initiative + Past initiatives sections" {
+  WS="$TEST_TMP/acme-platform"
+  run "$BOOTSTRAP" --workspace "$WS" --skip-memory
+  [ "$status" -eq 0 ]
+
+  grep -q "^## Current Initiative$" "$WS/workspace-CONTEXT.md"
+  grep -q "^## Past initiatives$" "$WS/workspace-CONTEXT.md"
+}
+
 @test "--workspace populates per-repo subfolder with standard templates" {
   WS="$TEST_TMP/acme-platform"
   run "$BOOTSTRAP" --workspace "$WS" --skip-memory
