@@ -39,9 +39,14 @@ Whatever you pick, the **repo stays the repo; the working folder stays separate*
 > }
 > ```
 >
-> Adjust the path to match wherever you keep your working folders (`~/claude-projects/`, a synced drive, etc.). One entry covers every project underneath it. The kit doesn't write this for you — `~/.claude/settings.json` is global, and a per-project bootstrap shouldn't silently mutate cross-project state.
+> Adjust the path to match wherever you keep your working folders (`~/claude-projects/`, a synced drive, etc.). One entry covers every project underneath it.
 >
-> **If you use the kit on more than one machine** (work laptop + personal desktop, etc.), repeat the edit on each. `~/.claude/settings.json` is local user config, not part of the kit repo, so cloning the kit on a new machine won't bring it along.
+> **Two ways to set this:**
+>
+> 1. **Hand-edit** the JSON above (most explicit, no kit involvement). Restart Claude Code afterwards.
+> 2. **Let bootstrap do it for you** with the opt-in flag `--trust-working-folder-root`, or accept the interactive prompt during `bootstrap.sh` setup. Bootstrap appends only the working-folder parent (idempotent — skip if already there), backs up the existing `~/.claude/settings.json` to `settings.json.bak.<timestamp>` before writing, and prints the diff before applying. You can also pass `--dry-run` to preview without writing. The kit *only* mutates `permissions.additionalDirectories` for the working-folder parent; nothing else in the file is touched.
+>
+> **If you use the kit on more than one machine** (work laptop + personal desktop, etc.), repeat the setup on each. `~/.claude/settings.json` is local user config, not part of the kit repo, so cloning the kit on a new machine won't bring it along.
 
 > **Heads-up: `<repo>/.claude/settings.local.json`.** Claude Code writes this file in every project where you grant Bash / MCP / read-path permissions interactively. It is **per-project, machine-specific, and Claude-Code-managed** — the kit doesn't create or edit it. **Add it to your `.gitignore`** so machine-specific permissions don't get committed and follow the repo around. Two equivalent forms:
 >
@@ -89,6 +94,7 @@ Flags:
 - `--force` — proceed even if the working folder is already non-empty
 - `--dry-run` — print what would be created (paths, placeholder substitutions, tracker memory, MEMORY.md index line) and exit without writing anything. Safe to re-run.
 - `--workspace` — treat `<working-folder>` as a workspace path (multi-repo mode). Bootstrap creates a per-repo subfolder for the current repo inside the workspace, and on first use also seeds `workspace-CONTEXT.md` and `tickets/`. See [Workspace mode](#workspace-mode-multi-repo-initiatives) below.
+- `--trust-working-folder-root` — opt-in: append the working folder's parent directory to `permissions.additionalDirectories` in `~/.claude/settings.json` so Claude Code stops prompting on every read of `CONTEXT.md` / `SESSION-LOG.md` / phase checklists. Backs up the existing settings.json before writing; idempotent (skip if already present); honors `--dry-run`. In interactive mode, bootstrap also asks before doing this — the flag opts in for scripted runs. See §1 above for the manual alternative.
 - `-h` / `--help` — show usage
 
 **On `--tracker other` and `--ci other`:** these are escape hatches for tools the kit doesn't have a named variant for. Picking either seeds a placeholder-rich memory file (`reference_issue_tracker.md` for trackers, `reference_ci.md` for CI) with `{{tracker URL pattern}}`, `{{ticket reference format}}`, `{{CI config location}}`, etc. that need manual fill-in before the memory is useful. The bootstrap end-of-run output flags this; if you're scanning flags to plan an invocation, plan for the follow-up edit.
