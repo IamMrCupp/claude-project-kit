@@ -22,6 +22,9 @@ send -- "\r"
 expect "CI/automation"
 send -- "atlantis\r"
 
+expect "additionalDirectories"
+send -- "\r"
+
 expect "Proceed"
 send -- "\r"
 
