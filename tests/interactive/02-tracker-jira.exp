@@ -23,6 +23,9 @@ send -- "INFRA\r"
 expect "CI/automation"
 send -- "\r"
 
+expect "additionalDirectories"
+send -- "\r"
+
 expect "Proceed"
 send -- "\r"
 

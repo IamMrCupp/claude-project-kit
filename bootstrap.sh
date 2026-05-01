@@ -76,6 +76,17 @@ Options:
                      substitutions, tracker memory, MEMORY.md index
                      line) and exit without writing anything. Safe to
                      run repeatedly to preview config before committing.
+  --trust-working-folder-root
+                     Add the working folder's parent directory to
+                     permissions.additionalDirectories in
+                     ~/.claude/settings.json so Claude Code stops
+                     prompting on every read of CONTEXT.md /
+                     SESSION-LOG.md / phase checklists. Backs up the
+                     existing settings.json before writing; idempotent
+                     (skip if already present); honors --dry-run. In
+                     interactive mode, bootstrap also asks before
+                     making this change — this flag opts in for
+                     scripted runs.
   -h, --help         Show this help and exit.
 
 Examples:
@@ -323,10 +334,159 @@ write_initial_session_log_entry() {
   } >> "$target"
 }
 
+trusted_root_for_working_folder() {
+  # Echo the directory that should be added to ~/.claude/settings.json's
+  # additionalDirectories so Claude Code stops prompting on every read of
+  # CONTEXT.md / SESSION-LOG.md / phase checklists. For workspace mode this
+  # is the parent of the workspace dir; for single-repo it's the parent of
+  # the working folder. Reads globals: WORKSPACE_MODE, WORKSPACE_DIR,
+  # WORKING_FOLDER.
+  if [ "$WORKSPACE_MODE" -eq 1 ]; then
+    dirname "$WORKSPACE_DIR"
+  else
+    dirname "$WORKING_FOLDER"
+  fi
+}
+
+add_trusted_root_to_settings() {
+  # Append a path to permissions.additionalDirectories in
+  # ~/.claude/settings.json. Idempotent — skips if already present. Creates
+  # the file if absent. Backs up to settings.json.bak.<timestamp> before
+  # any write. Honors $DRY_RUN — prints the diff and returns without
+  # writing in dry-run mode.
+  #
+  # args: trusted_root (absolute path)
+  # returns: 0 on success or no-op, 1 on Python failure / unwritable target.
+  local trusted_root="$1"
+  local settings_dir="$HOME/.claude"
+  local settings_file="$settings_dir/settings.json"
+  local mode_label=""
+  local result=""
+
+  if ! command -v python3 >/dev/null 2>&1; then
+    echo "  ! python3 not found — skipping ~/.claude/settings.json update." >&2
+    echo "    Add \"$trusted_root\" to permissions.additionalDirectories by hand." >&2
+    return 1
+  fi
+
+  # Decide current state and what would change. Python returns one of:
+  #   ALREADY_PRESENT
+  #   WOULD_CREATE
+  #   WOULD_APPEND
+  # followed by a newline-terminated diff block.
+  result="$(python3 - "$trusted_root" "$settings_file" <<'PY' 2>&1
+import json, os, sys
+
+trusted_root = sys.argv[1]
+settings_file = sys.argv[2]
+
+if os.path.exists(settings_file):
+    try:
+        with open(settings_file) as f:
+            data = json.load(f)
+        if not isinstance(data, dict):
+            print(f"ERROR existing {settings_file} is not a JSON object", file=sys.stderr)
+            sys.exit(2)
+    except json.JSONDecodeError as e:
+        print(f"ERROR could not parse {settings_file}: {e}", file=sys.stderr)
+        sys.exit(2)
+else:
+    data = None
+
+if data is None:
+    print("WOULD_CREATE")
+    print(f"  + create {settings_file} with:")
+    print(f'      permissions.additionalDirectories: ["{trusted_root}"]')
+    sys.exit(0)
+
+perms = data.get("permissions") or {}
+additional = perms.get("additionalDirectories") or []
+if not isinstance(additional, list):
+    print(f"ERROR permissions.additionalDirectories in {settings_file} is not a list", file=sys.stderr)
+    sys.exit(2)
+
+if trusted_root in additional:
+    print("ALREADY_PRESENT")
+    print(f"  ✓ {trusted_root} already in permissions.additionalDirectories")
+    sys.exit(0)
+
+print("WOULD_APPEND")
+print(f"  + append to permissions.additionalDirectories in {settings_file}:")
+print(f'      "{trusted_root}"')
+PY
+  )" || { echo "  ! settings.json inspection failed:" >&2; echo "$result" >&2; return 1; }
+
+  mode_label="$(printf '%s' "$result" | head -1)"
+
+  case "$mode_label" in
+    ALREADY_PRESENT)
+      printf '%s\n' "$result" | tail -n +2
+      return 0
+      ;;
+    WOULD_CREATE|WOULD_APPEND)
+      printf '%s\n' "$result" | tail -n +2
+      ;;
+    *)
+      echo "  ! unexpected output from settings.json inspector:" >&2
+      echo "$result" >&2
+      return 1
+      ;;
+  esac
+
+  if [ "$DRY_RUN" -eq 1 ]; then
+    echo "    (dry-run — no changes written)"
+    return 0
+  fi
+
+  mkdir -p "$settings_dir"
+
+  # Back up if the file exists, then write.
+  local backup=""
+  if [ -f "$settings_file" ]; then
+    backup="$settings_file.bak.$(date +%Y%m%d-%H%M%S)"
+    cp "$settings_file" "$backup"
+  fi
+
+  if ! python3 - "$trusted_root" "$settings_file" <<'PY'
+import json, os, sys
+
+trusted_root = sys.argv[1]
+settings_file = sys.argv[2]
+
+if os.path.exists(settings_file):
+    with open(settings_file) as f:
+        data = json.load(f)
+else:
+    data = {}
+
+perms = data.setdefault("permissions", {})
+additional = perms.setdefault("additionalDirectories", [])
+if trusted_root not in additional:
+    additional.append(trusted_root)
+
+with open(settings_file, "w") as f:
+    json.dump(data, f, indent=2)
+    f.write("\n")
+PY
+  then
+    echo "  ! settings.json update failed; restoring backup" >&2
+    [ -n "$backup" ] && [ -f "$backup" ] && cp "$backup" "$settings_file"
+    return 1
+  fi
+
+  if [ -n "$backup" ]; then
+    echo "    ✓ updated $settings_file (backup: $backup)"
+  else
+    echo "    ✓ created $settings_file"
+  fi
+  return 0
+}
+
 SKIP_MEMORY=0
 FORCE=0
 DRY_RUN=0
 WORKSPACE_MODE=0
+TRUST_WORKING_FOLDER_ROOT=0
 WORKING_FOLDER=""
 PROJECT_NAME=""
 TRACKER=""
@@ -340,6 +500,7 @@ while [ $# -gt 0 ]; do
     --force) FORCE=1; shift ;;
     --dry-run) DRY_RUN=1; shift ;;
     --workspace) WORKSPACE_MODE=1; shift ;;
+    --trust-working-folder-root) TRUST_WORKING_FOLDER_ROOT=1; shift ;;
     --project-name)
       if [ $# -lt 2 ]; then
         echo "error: --project-name requires a value" >&2
@@ -561,6 +722,19 @@ if [ "$INTERACTIVE" -eq 1 ]; then
       *) echo "error: invalid CI tool: $CI_TOOL" >&2; exit 2 ;;
     esac
   fi
+
+  if [ "$TRUST_WORKING_FOLDER_ROOT" -eq 0 ]; then
+    INTERACTIVE_TRUSTED_ROOT="$(trusted_root_for_working_folder)"
+    echo
+    echo "Add $INTERACTIVE_TRUSTED_ROOT to permissions.additionalDirectories"
+    echo "in ~/.claude/settings.json? This stops Claude Code from prompting on"
+    echo "every read of CONTEXT.md / SESSION-LOG.md / phase checklists."
+    read -r -p "[y/N]: " INPUT
+    case "$(printf '%s' "$INPUT" | tr '[:upper:]' '[:lower:]')" in
+      y|yes) TRUST_WORKING_FOLDER_ROOT=1 ;;
+    esac
+    unset INTERACTIVE_TRUSTED_ROOT
+  fi
 fi
 
 REPO_SLUG=""
@@ -767,6 +941,14 @@ fi
 
 write_initial_session_log_entry
 echo "  ✓ Wrote initial Bootstrap entry to $WORKING_FOLDER/SESSION-LOG.md"
+
+if [ "$TRUST_WORKING_FOLDER_ROOT" -eq 1 ]; then
+  TRUSTED_ROOT_PATH="$(trusted_root_for_working_folder)"
+  echo
+  echo "  Updating ~/.claude/settings.json (working-folder root trust):"
+  add_trusted_root_to_settings "$TRUSTED_ROOT_PATH" || true
+  unset TRUSTED_ROOT_PATH
+fi
 
 echo
 echo "Bootstrap complete."
