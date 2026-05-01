@@ -76,7 +76,8 @@ That kicks off interactive mode: it asks for the working-folder path, project na
 - **Phase-based planning docs** — `plan.md` + per-phase checklist + `implementation.md` give Claude scoped, numbered tasks instead of a wall of intent.
 - **SEED-PROMPT auto-fill** — point Claude at one file and it deep-reads your repo, fills `CONTEXT.md`, drafts `research.md`, flags inferences, and stops for your review.
 - **Starter agents** — `code-reviewer` (universal) and `session-summarizer` (kit-aware), staged in the working folder; copy into your repo to activate.
-- **Starter slash commands** — `/session-start`, `/refresh-context`, `/close-phase`, `/session-end`, `/pull-ticket`.
+- **Starter slash commands** — `/session-start`, `/refresh-context`, `/close-phase`, `/session-end`, `/session-handoff`, `/pull-ticket`. Install once globally with `scripts/install-commands.sh --global` (recommended) or per-repo with `--project <path>`.
+- **Upgrade helpers** — `scripts/sync-memory.sh`, `scripts/sync-templates.sh`, and `scripts/rename-workspace.sh` keep auto-memory, working-folder templates, and workspace paths in sync with the latest kit release without overwriting your filled-in content. See [SETUP.md §Upgrading](SETUP.md#upgrading-an-existing-project).
 - **Worked examples** — `examples/widget-tracker/` (fictional Go CLI, single-repo, mid-Phase 1) and `examples/acme-platform/` (fictional Terraform multi-repo workspace, JIRA-driven, with active + archived ticket scratchpads).
 - **Conventions baseline** — Conventional Commits, merge-only PRs, ticket-driven branch / PR / commit shape, test-plan format, etc. Read once, drop or keep per project.
 - **No surprises** — MIT licensed, no telemetry, no network calls, kit never modifies your target repo.
@@ -85,7 +86,7 @@ See [FEATURES.md](FEATURES.md) for one-paragraph-per-feature detail with example
 
 ## What this is / isn't
 
-- **Is:** a workflow scaffold layered on top of Claude Code — templates, memory starters, conventions, two starter agents, five starter slash commands.
+- **Is:** a workflow scaffold layered on top of Claude Code — templates, memory starters, conventions, two starter agents, six starter slash commands.
 - **Isn't:** a Claude Code plugin, a replacement for `CLAUDE.md`, or a project tracker. It complements all three.
 
 ## Why this works
@@ -151,6 +152,11 @@ Works the same for greenfield repos and ones you're adopting it on mid-stream �
 ├── LICENSE
 ├── bootstrap.sh             ← one-command setup (see SETUP.md step 2)
 ├── pull-ticket.sh           ← terminal-driven /pull-ticket equivalent (read-only)
+├── scripts/                 ← post-bootstrap helpers (idempotent, write-once by default)
+│   ├── install-commands.sh  ← install slash commands + agents (--global | --project)
+│   ├── sync-memory.sh       ← copy any newly-shipped memory templates into existing auto-memory
+│   ├── sync-templates.sh    ← refresh working-folder / workspace templates without clobbering edits
+│   └── rename-workspace.sh  ← rename a workspace folder + rewrite path refs across auto-memory
 ├── docs/adr/                ← Architecture Decision Records (see README inside)
 ├── templates/               ← copied into a new working folder
 │   ├── SEED-PROMPT.md       ← instructions for Claude to auto-fill the rest
@@ -166,7 +172,7 @@ Works the same for greenfield repos and ones you're adopting it on mid-stream �
 │   │   └── ticket.md              ← per-ticket scratchpad shape
 │   └── .claude/             ← starter agents + slash commands (staged in WF)
 │       ├── agents/          ← code-reviewer, session-summarizer
-│       ├── commands/        ← /session-start, /refresh-context, /close-phase, /session-end, /pull-ticket
+│       ├── commands/        ← /session-start, /refresh-context, /close-phase, /session-end, /session-handoff, /pull-ticket
 │       └── README.md        ← how to copy into your target repo
 ├── examples/                ← filled-in reference — read, don't copy
 │   ├── widget-tracker/      ← fictional Go CLI, single-repo, mid-Phase-1 snapshot
