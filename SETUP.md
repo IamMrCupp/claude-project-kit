@@ -271,8 +271,9 @@ If a future change is *not* backwards-compatible (rare for a docs-only kit — o
 When a single piece of work spans multiple repos (e.g. Terraform environment definitions in one repo and modules in another), use `--workspace` so bootstrap creates a workspace folder above per-repo subfolders. The model is documented in [ADR-0001](docs/adr/0001-multi-repo-folder-model.md); summary:
 
 ```
-~/<projects-root>/<initiative>/
-├── workspace-CONTEXT.md      ← cross-repo overview
+~/<projects-root>/<workspace-name>/
+├── workspace-CONTEXT.md      ← cross-repo overview + current initiative
+├── workspace-plan.md         ← initiative list (current, planned, completed)
 ├── tickets/                  ← per-ticket scratchpads
 │   ├── <KEY>-<slug>.md
 │   └── archive/
@@ -281,6 +282,17 @@ When a single piece of work spans multiple repos (e.g. Terraform environment def
 └── <repo-b>/
     └── ...
 ```
+
+### Single-initiative vs. long-running workspaces
+
+Workspace mode supports two patterns at the same layout — pick the framing that matches your work:
+
+- **Single-initiative workspace** — the workspace exists for one piece of work spanning multiple repos (e.g. "ship LX-1234 across envs + modules"). Once that work ships, the workspace's lifecycle ends. Use this for short-lived, scoped multi-repo changes.
+- **Long-running multi-initiative workspace** — the workspace is a persistent program (e.g. "fdx-infrastructure", "platform observability"), hosting a sequence of initiatives over months or years. The active initiative changes over time; past initiatives are chronicled in `workspace-CONTEXT.md`'s "Past initiatives" section and `workspace-plan.md`'s "Completed initiatives" section.
+
+The templates support both. For single-initiative use, fill in "Current Initiative" once and leave "Past initiatives" empty. For long-running use, update "Current Initiative" each time the active piece of work changes; old entries roll into "Past initiatives". `workspace-plan.md` mirrors per-repo `plan.md` at workspace scope — it's where initiative scope notes, planned-but-not-started work, and completed-initiative chronicles live.
+
+If a workspace's purpose drifts substantially (e.g. an "fdx-infrastructure" workspace that started for Terraform now becoming a general program), consider whether the right move is a new workspace rather than retrofitting the old one.
 
 ### First repo in a new workspace
 
