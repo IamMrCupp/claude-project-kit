@@ -38,7 +38,7 @@ If you'd rather scope the install to a single repo (overriding any global copies
 
 The staged copy in your working folder stays as a stable reference either way. To copy by hand instead of running the helper, the source is `<kit-dir>/templates/.claude/{commands,agents}/` — copy into `~/.claude/` (global) or `<your-repo>/.claude/` (per-project).
 
-**Caveat — kit-coupling.** All slash commands except `code-reviewer` (which is universal) assume a kit-bootstrapped project (CONTEXT.md / SESSION-LOG.md / phase-N-checklist.md). They will error in non-kit projects until [kit issue #82](https://github.com/IamMrCupp/claude-project-kit/issues/82) (graceful degradation) lands. Installing globally is still the right call if every project you work on is kit-bootstrapped.
+**On kit-coupling.** All slash commands and the `session-summarizer` agent expect a kit-bootstrapped project (CONTEXT.md / SESSION-LOG.md / phase-N-checklist.md / `reference_ai_working_folder.md` in auto-memory). When invoked in a project that isn't bootstrapped, each one **probes for the working folder up front** and bails with a friendly one-liner pointing at `bootstrap.sh` rather than crashing or doing partial work. Safe to install globally — they'll politely no-op outside kit projects. The `code-reviewer` agent is universal and works anywhere with no precheck.
 
 ## Customizing
 
