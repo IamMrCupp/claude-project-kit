@@ -11,387 +11,387 @@ See [Upgrading an existing project](SETUP.md#upgrading-an-existing-project) for 
 
 ### Refactors
 
-* **examples:** use clearly-fictional tracker key across docs and examples ([d1a71aa](https://github.com/IamMrCupp/claude-project-kit/commit/d1a71aaba856b42ad49fd2893a03263dc7a1869f))
-* **examples:** use clearly-fictional tracker key in multi-repo example ([d4a937b](https://github.com/IamMrCupp/claude-project-kit/commit/d4a937b9d1d778d682566efb90179fda815e36c2))
+* **examples:** use clearly-fictional tracker key across docs and examples
+* **examples:** use clearly-fictional tracker key in multi-repo example
 
 ## [0.29.2](https://github.com/IamMrCupp/claude-project-kit/compare/v0.29.1...v0.29.2) (2026-05-02)
 
 
 ### Documentation
 
-* genericize multi-initiative workspace examples ([000aa5b](https://github.com/IamMrCupp/claude-project-kit/commit/000aa5b9bf7bbd4529f572a2a70672ff816a2330))
-* genericize multi-initiative workspace examples ([e5bcc7f](https://github.com/IamMrCupp/claude-project-kit/commit/e5bcc7f6684d769cb9312eabf7d157f45f33dc58))
+* genericize multi-initiative workspace examples
+* genericize multi-initiative workspace examples
 
 ## [0.29.1](https://github.com/IamMrCupp/claude-project-kit/compare/v0.29.0...v0.29.1) (2026-05-01)
 
 
 ### Documentation
 
-* **readme:** catch up on v0.21-v0.29 helpers + /session-handoff ([efddabe](https://github.com/IamMrCupp/claude-project-kit/commit/efddabe83adb728fcd0cbaa039486e5366ba97a5))
-* **readme:** catch up on v0.21-v0.29 helpers + /session-handoff ([65e644b](https://github.com/IamMrCupp/claude-project-kit/commit/65e644bed684a7737f4b1d9ffcefef5308defec3))
+* **readme:** catch up on v0.21-v0.29 helpers + /session-handoff
+* **readme:** catch up on v0.21-v0.29 helpers + /session-handoff
 
 ## [0.29.0](https://github.com/IamMrCupp/claude-project-kit/compare/v0.28.0...v0.29.0) (2026-05-01)
 
 
 ### Features
 
-* **scripts:** add sync-templates.sh for working-folder + workspace template upgrades ([ee3c473](https://github.com/IamMrCupp/claude-project-kit/commit/ee3c4731dd816b0f3d2af78d52504206df2f9cd5))
-* **scripts:** add sync-templates.sh for working-folder + workspace template upgrades ([fe214cd](https://github.com/IamMrCupp/claude-project-kit/commit/fe214cd053fdab4923c1bbffa683b68757343366))
+* **scripts:** add sync-templates.sh for working-folder + workspace template upgrades
+* **scripts:** add sync-templates.sh for working-folder + workspace template upgrades
 
 ## [0.28.0](https://github.com/IamMrCupp/claude-project-kit/compare/v0.27.0...v0.28.0) (2026-05-01)
 
 
 ### Features
 
-* **commands:** graceful degradation when invoked outside a kit working folder ([f69173a](https://github.com/IamMrCupp/claude-project-kit/commit/f69173a822de25a22fcc71d30ecf6aa52978bbfc))
-* **commands:** graceful degradation when invoked outside a kit working folder ([e6404ec](https://github.com/IamMrCupp/claude-project-kit/commit/e6404eccc3e851b9aabf0074509b2c6d664c1de0))
+* **commands:** graceful degradation when invoked outside a kit working folder
+* **commands:** graceful degradation when invoked outside a kit working folder
 
 ## [0.27.0](https://github.com/IamMrCupp/claude-project-kit/compare/v0.26.0...v0.27.0) (2026-05-01)
 
 
 ### Features
 
-* **scripts:** add rename-workspace.sh helper ([910e611](https://github.com/IamMrCupp/claude-project-kit/commit/910e611a87726fd3a6a76610eedd087bea1ab95d))
+* **scripts:** add rename-workspace.sh helper
 
 ## [0.26.0](https://github.com/IamMrCupp/claude-project-kit/compare/v0.25.0...v0.26.0) (2026-05-01)
 
 
 ### Features
 
-* **workspace:** scaffold multi-initiative shape (current initiative + workspace-plan.md) ([de4ac4a](https://github.com/IamMrCupp/claude-project-kit/commit/de4ac4ae12a788a35c4ce280508549e3c9ac4389))
-* **workspace:** scaffold multi-initiative shape (current initiative + workspace-plan.md) ([48567f2](https://github.com/IamMrCupp/claude-project-kit/commit/48567f249a889eca76e5bd89c57227ef325bed9e))
+* **workspace:** scaffold multi-initiative shape (current initiative + workspace-plan.md)
+* **workspace:** scaffold multi-initiative shape (current initiative + workspace-plan.md)
 
 ## [0.25.0](https://github.com/IamMrCupp/claude-project-kit/compare/v0.24.0...v0.25.0) (2026-05-01)
 
 
 ### Features
 
-* include Next session prompt in SESSION-LOG entries on close ([e4678b7](https://github.com/IamMrCupp/claude-project-kit/commit/e4678b768e602c4d7c21fbbc0489e7d4a5acf1e3))
-* include Next session prompt in SESSION-LOG entries on close ([02435d7](https://github.com/IamMrCupp/claude-project-kit/commit/02435d74c027fa5a6bdb2ffa4eb564d5034e6478))
+* include Next session prompt in SESSION-LOG entries on close
+* include Next session prompt in SESSION-LOG entries on close
 
 ## [0.24.0](https://github.com/IamMrCupp/claude-project-kit/compare/v0.23.0...v0.24.0) (2026-05-01)
 
 
 ### Features
 
-* **scripts:** add install-commands.sh for global/per-project slash command + agent install ([e1efaa3](https://github.com/IamMrCupp/claude-project-kit/commit/e1efaa32e422421517a28fb716234633e5d48140))
-* **scripts:** add install-commands.sh for global/per-project slash command + agent install ([3a89829](https://github.com/IamMrCupp/claude-project-kit/commit/3a898295c7b4b693e810ef65196b182e61de6d99))
+* **scripts:** add install-commands.sh for global/per-project slash command + agent install
+* **scripts:** add install-commands.sh for global/per-project slash command + agent install
 
 ## [0.23.0](https://github.com/IamMrCupp/claude-project-kit/compare/v0.22.0...v0.23.0) (2026-05-01)
 
 
 ### Features
 
-* **bootstrap:** opt-in --trust-working-folder-root flag and interactive prompt ([45f7867](https://github.com/IamMrCupp/claude-project-kit/commit/45f78679b227f14b178fe208c3ef0dc53c360c25))
-* **bootstrap:** opt-in --trust-working-folder-root flag and interactive prompt ([cd6dc4d](https://github.com/IamMrCupp/claude-project-kit/commit/cd6dc4d7b09f47250c1e7370fceab1a67f176460))
+* **bootstrap:** opt-in --trust-working-folder-root flag and interactive prompt
+* **bootstrap:** opt-in --trust-working-folder-root flag and interactive prompt
 
 
 ### Tests
 
-* **interactive:** add expect for new trust-root prompt in 5 .exp tests ([c82bb8a](https://github.com/IamMrCupp/claude-project-kit/commit/c82bb8ac08603903d6ae916b618eb943b769e34e))
+* **interactive:** add expect for new trust-root prompt in 5 .exp tests
 
 ## [0.22.0](https://github.com/IamMrCupp/claude-project-kit/compare/v0.21.1...v0.22.0) (2026-05-01)
 
 
 ### Features
 
-* durable bootstrap session via SESSION-LOG entry + /session-handoff ([9e36b16](https://github.com/IamMrCupp/claude-project-kit/commit/9e36b16bbc1ab788907a9f912bdcd381c6120670))
-* durable bootstrap session via SESSION-LOG entry + /session-handoff ([118a289](https://github.com/IamMrCupp/claude-project-kit/commit/118a28937fe7e81492a0651901d5727211fa0693))
+* durable bootstrap session via SESSION-LOG entry + /session-handoff
+* durable bootstrap session via SESSION-LOG entry + /session-handoff
 
 ## [0.21.1](https://github.com/IamMrCupp/claude-project-kit/compare/v0.21.0...v0.21.1) (2026-05-01)
 
 
 ### Documentation
 
-* explain .claude/settings.local.json and recommend gitignore ([e9a5b25](https://github.com/IamMrCupp/claude-project-kit/commit/e9a5b259427b35ba97aaf6ff9b31db0e341f2d9a))
+* explain .claude/settings.local.json and recommend gitignore
 
 ## [0.21.0](https://github.com/IamMrCupp/claude-project-kit/compare/v0.20.3...v0.21.0) (2026-05-01)
 
 
 ### Features
 
-* **scripts:** add sync-memory.sh helper for kit-on-kit memory drift ([00a8923](https://github.com/IamMrCupp/claude-project-kit/commit/00a8923ebd6601ceda018888deb0af7340c18e44))
-* **scripts:** add sync-memory.sh helper for kit-on-kit memory drift ([9110d82](https://github.com/IamMrCupp/claude-project-kit/commit/9110d8266efff0f0482eff5dbeaf1f33a0de668a))
+* **scripts:** add sync-memory.sh helper for kit-on-kit memory drift
+* **scripts:** add sync-memory.sh helper for kit-on-kit memory drift
 
 ## [0.20.3](https://github.com/IamMrCupp/claude-project-kit/compare/v0.20.2...v0.20.3) (2026-04-30)
 
 
 ### Bug Fixes
 
-* **bootstrap:** surface per-repo bootstrap requirement in workspace mode ([d3b6431](https://github.com/IamMrCupp/claude-project-kit/commit/d3b6431e285d44d848212630a37b83a7be00412c))
-* **bootstrap:** surface per-repo bootstrap requirement in workspace mode ([fa5cf8a](https://github.com/IamMrCupp/claude-project-kit/commit/fa5cf8a785bba05f21883cabc0b1d4e5ba7b9a36))
+* **bootstrap:** surface per-repo bootstrap requirement in workspace mode
+* **bootstrap:** surface per-repo bootstrap requirement in workspace mode
 
 ## [0.20.2](https://github.com/IamMrCupp/claude-project-kit/compare/v0.20.1...v0.20.2) (2026-04-30)
 
 
 ### Documentation
 
-* clarify additionalDirectories setup is per-machine ([71b25e5](https://github.com/IamMrCupp/claude-project-kit/commit/71b25e511bd96f73b2400d916b68c1cd307a367e))
-* clarify additionalDirectories setup is per-machine ([20c6959](https://github.com/IamMrCupp/claude-project-kit/commit/20c6959b4e687768281567305e43283138874910))
+* clarify additionalDirectories setup is per-machine
+* clarify additionalDirectories setup is per-machine
 
 ## [0.20.1](https://github.com/IamMrCupp/claude-project-kit/compare/v0.20.0...v0.20.1) (2026-04-30)
 
 
 ### Documentation
 
-* document one-time additionalDirectories setup for working folder ([c568536](https://github.com/IamMrCupp/claude-project-kit/commit/c5685362b67631ad2e083456149f0ad540a46aae))
-* document one-time additionalDirectories setup for working folder ([329346f](https://github.com/IamMrCupp/claude-project-kit/commit/329346f78fde89b42f885bf2a3829ba9d66d9c10))
+* document one-time additionalDirectories setup for working folder
+* document one-time additionalDirectories setup for working folder
 
 ## [0.20.0](https://github.com/IamMrCupp/claude-project-kit/compare/v0.19.2...v0.20.0) (2026-04-30)
 
 
 ### Features
 
-* dogfood the kit's slash commands and agents in .claude/ with sync test ([fed3268](https://github.com/IamMrCupp/claude-project-kit/commit/fed3268fca9bbe986b4e345d432a3571455c6479))
-* dogfood the kit's slash commands and agents in .claude/ with sync test ([ace5b53](https://github.com/IamMrCupp/claude-project-kit/commit/ace5b537ffe5feea6eccaacb231301ebc688568a))
+* dogfood the kit's slash commands and agents in .claude/ with sync test
+* dogfood the kit's slash commands and agents in .claude/ with sync test
 
 ## [0.19.2](https://github.com/IamMrCupp/claude-project-kit/compare/v0.19.1...v0.19.2) (2026-04-30)
 
 
 ### Documentation
 
-* **examples:** add acme-platform multi-repo workspace exemplar (Phase 4 §G) ([8810cd8](https://github.com/IamMrCupp/claude-project-kit/commit/8810cd8ed584cf56fcc35a7513373ad8c0e4596f))
-* **examples:** add acme-platform multi-repo workspace exemplar (Phase 4 G.1) ([3c56d91](https://github.com/IamMrCupp/claude-project-kit/commit/3c56d915aa10dd0187060bb9763e35f93e2b6ec3))
-* reference acme-platform exemplar from README/SETUP/FEATURES (Phase 4 G.2) ([4437f92](https://github.com/IamMrCupp/claude-project-kit/commit/4437f9276c169f21444f92ca5f15c04d17945366))
+* **examples:** add acme-platform multi-repo workspace exemplar (Phase 4 §G)
+* **examples:** add acme-platform multi-repo workspace exemplar (Phase 4 G.1)
+* reference acme-platform exemplar from README/SETUP/FEATURES (Phase 4 G.2)
 
 ## [0.19.1](https://github.com/IamMrCupp/claude-project-kit/compare/v0.19.0...v0.19.1) (2026-04-30)
 
 
 ### Documentation
 
-* **features:** add workspace mode, per-ticket scratchpads, and tracker config sections (Phase 4 F.5) ([99c9f66](https://github.com/IamMrCupp/claude-project-kit/commit/99c9f666dc4d339076b16b02ba2ec18d0bbcb9ae))
-* **readme:** surface workspace mode and /pull-ticket in features list (Phase 4 F.1) ([45b7c34](https://github.com/IamMrCupp/claude-project-kit/commit/45b7c345b556b7b71c157374d40ce0b0916ef299))
-* **setup:** document pull-ticket flow, prune stale --workspace caveats (Phase 4 F.2) ([9bd4402](https://github.com/IamMrCupp/claude-project-kit/commit/9bd44023faeeb8c05a1ee8df6dfc1a59a9762925))
-* surface Phase 4 features (workspace, tickets, /pull-ticket) in README/SETUP/FEATURES ([bfea4a8](https://github.com/IamMrCupp/claude-project-kit/commit/bfea4a8b511f06ef55dcb7622bbeb73bf6fa874c))
+* **features:** add workspace mode, per-ticket scratchpads, and tracker config sections (Phase 4 F.5)
+* **readme:** surface workspace mode and /pull-ticket in features list (Phase 4 F.1)
+* **setup:** document pull-ticket flow, prune stale --workspace caveats (Phase 4 F.2)
+* surface Phase 4 features (workspace, tickets, /pull-ticket) in README/SETUP/FEATURES
 
 ## [0.19.0](https://github.com/IamMrCupp/claude-project-kit/compare/v0.18.0...v0.19.0) (2026-04-30)
 
 
 ### Features
 
-* **pull-ticket:** /pull-ticket command + helper script + Prompt 6 (Phase 4 §E + C.5) ([ef069d7](https://github.com/IamMrCupp/claude-project-kit/commit/ef069d77ad845df1b587bc3690d88aff3d068dc4))
-* **pull-ticket:** add /pull-ticket slash command for ticket scratchpads (Phase 4 E.1-E.3, C.5) ([2b902e5](https://github.com/IamMrCupp/claude-project-kit/commit/2b902e5d7c66067db6227731cb29983e932792f0))
-* **pull-ticket:** add pull-ticket.sh helper script with bats coverage ([247f7a1](https://github.com/IamMrCupp/claude-project-kit/commit/247f7a1cf31e84748cf6b2b2424882f1f1099805))
+* **pull-ticket:** /pull-ticket command + helper script + Prompt 6 (Phase 4 §E + C.5)
+* **pull-ticket:** add /pull-ticket slash command for ticket scratchpads (Phase 4 E.1-E.3, C.5)
+* **pull-ticket:** add pull-ticket.sh helper script with bats coverage
 
 
 ### Documentation
 
-* **prompts:** add Prompt 6 for pulling tracker tickets ([3319ff7](https://github.com/IamMrCupp/claude-project-kit/commit/3319ff76ad90ab4f81a35fb84d9b8a9c584dd407))
+* **prompts:** add Prompt 6 for pulling tracker tickets
 
 ## [0.18.0](https://github.com/IamMrCupp/claude-project-kit/compare/v0.17.0...v0.18.0) (2026-04-30)
 
 
 ### Features
 
-* **seed-prompt:** handle tracker config, workspace mode, and Terraform signals (Phase 4 C.4) ([4819eb0](https://github.com/IamMrCupp/claude-project-kit/commit/4819eb0be06afd3ba5c70d26ae5e45cf172c4577))
-* **seed-prompt:** tracker config + workspace + Terraform signals (Phase 4 §C.4) ([9decc72](https://github.com/IamMrCupp/claude-project-kit/commit/9decc7285bd4716d39182f9d95bbfc33d8ad7494))
+* **seed-prompt:** handle tracker config, workspace mode, and Terraform signals (Phase 4 C.4)
+* **seed-prompt:** tracker config + workspace + Terraform signals (Phase 4 §C.4)
 
 ## [0.17.0](https://github.com/IamMrCupp/claude-project-kit/compare/v0.16.3...v0.17.0) (2026-04-30)
 
 
 ### Features
 
-* **bootstrap:** assert kit never creates tracker resources (Phase 4 D.2) ([fe6f8c8](https://github.com/IamMrCupp/claude-project-kit/commit/fe6f8c86ab9d9f55d97e3c0da9075eff72205190))
-* **bootstrap:** fill tracker config and detect Terraform sibling repos (Phase 4 D.1, D.3, D.5) ([fe76d04](https://github.com/IamMrCupp/claude-project-kit/commit/fe76d04be6bd80c72aea5ea95ebcff661e91380b))
-* **bootstrap:** tracker config + Terraform detection (Phase 4 §D) ([374ebc4](https://github.com/IamMrCupp/claude-project-kit/commit/374ebc4857f86d6bf76e67c75c643896de358662))
+* **bootstrap:** assert kit never creates tracker resources (Phase 4 D.2)
+* **bootstrap:** fill tracker config and detect Terraform sibling repos (Phase 4 D.1, D.3, D.5)
+* **bootstrap:** tracker config + Terraform detection (Phase 4 §D)
 
 ## [0.16.3](https://github.com/IamMrCupp/claude-project-kit/compare/v0.16.2...v0.16.3) (2026-04-30)
 
 
 ### Documentation
 
-* **demo:** add VHS second-session walkthrough — daily-use demo ([1030296](https://github.com/IamMrCupp/claude-project-kit/commit/1030296c087c5f0bbeb2a6c77a38e74cc9fd4166))
-* **demo:** add VHS second-session walkthrough source ([#87](https://github.com/IamMrCupp/claude-project-kit/issues/87)) ([b4d9e4f](https://github.com/IamMrCupp/claude-project-kit/commit/b4d9e4f67652ea57a8f81093224d968149da4cce))
-* **readme:** embed second-session demo GIF ([#87](https://github.com/IamMrCupp/claude-project-kit/issues/87)) ([5dc5f0a](https://github.com/IamMrCupp/claude-project-kit/commit/5dc5f0a7134865aba0060c604f7ada2e7fe354f5))
+* **demo:** add VHS second-session walkthrough — daily-use demo
+* **demo:** add VHS second-session walkthrough source ([#87](https://github.com/IamMrCupp/claude-project-kit/issues/87))
+* **readme:** embed second-session demo GIF ([#87](https://github.com/IamMrCupp/claude-project-kit/issues/87))
 
 ## [0.16.2](https://github.com/IamMrCupp/claude-project-kit/compare/v0.16.1...v0.16.2) (2026-04-29)
 
 
 ### Documentation
 
-* **demo:** add VHS bootstrap walkthrough source ([23a81fe](https://github.com/IamMrCupp/claude-project-kit/commit/23a81fe7243e664afc1225c46159a90e477de370))
-* **demo:** add VHS bootstrap walkthrough source ([#87](https://github.com/IamMrCupp/claude-project-kit/issues/87)) ([ceeb051](https://github.com/IamMrCupp/claude-project-kit/commit/ceeb05130a45e64c5c4a6b49b27f53dd78cc7af7))
-* **readme:** embed bootstrap demo GIF ([#87](https://github.com/IamMrCupp/claude-project-kit/issues/87)) ([54083f2](https://github.com/IamMrCupp/claude-project-kit/commit/54083f226031cdb29209f583088ed1374a6759f5))
+* **demo:** add VHS bootstrap walkthrough source
+* **demo:** add VHS bootstrap walkthrough source ([#87](https://github.com/IamMrCupp/claude-project-kit/issues/87))
+* **readme:** embed bootstrap demo GIF ([#87](https://github.com/IamMrCupp/claude-project-kit/issues/87))
 
 ## [0.16.1](https://github.com/IamMrCupp/claude-project-kit/compare/v0.16.0...v0.16.1) (2026-04-29)
 
 
 ### Documentation
 
-* surface the auto-memory short-form session-start prompt ([c11130a](https://github.com/IamMrCupp/claude-project-kit/commit/c11130aecb7bb8b274a699356256429dca48d60f))
+* surface the auto-memory short-form session-start prompt
 
 ## [0.16.0](https://github.com/IamMrCupp/claude-project-kit/compare/v0.15.0...v0.16.0) (2026-04-28)
 
 
 ### Features
 
-* **memory-templates:** add four behavioral feedback starters ([d7f8d11](https://github.com/IamMrCupp/claude-project-kit/commit/d7f8d1150204ed15019599e2e7273b8cbc53f261))
-* **memory-templates:** promote four behavioral feedback starters ([f42975b](https://github.com/IamMrCupp/claude-project-kit/commit/f42975b9bea16c3167a27b50c2196ecc64c5be95))
+* **memory-templates:** add four behavioral feedback starters
+* **memory-templates:** promote four behavioral feedback starters
 
 ## [0.15.0](https://github.com/IamMrCupp/claude-project-kit/compare/v0.14.0...v0.15.0) (2026-04-28)
 
 
 ### Features
 
-* **memory-templates:** add feedback_no_push_after_merge starter ([dc9a2e9](https://github.com/IamMrCupp/claude-project-kit/commit/dc9a2e96d122f8a8f9976d3faf0a7f12664fc5b6))
-* **memory-templates:** add feedback_no_push_after_merge starter ([bf646b8](https://github.com/IamMrCupp/claude-project-kit/commit/bf646b8b4461dbea769febe485bc9415c2140ff1))
+* **memory-templates:** add feedback_no_push_after_merge starter
+* **memory-templates:** add feedback_no_push_after_merge starter
 
 ## [0.14.0](https://github.com/IamMrCupp/claude-project-kit/compare/v0.13.1...v0.14.0) (2026-04-28)
 
 
 ### Features
 
-* **bootstrap:** add --workspace flag for multi-repo initiatives ([#61](https://github.com/IamMrCupp/claude-project-kit/issues/61)) ([24c4463](https://github.com/IamMrCupp/claude-project-kit/commit/24c44636465f3a39b8f4a2f90c9441eea47b14af))
-* **bootstrap:** add --workspace flag for multi-repo initiatives ([#61](https://github.com/IamMrCupp/claude-project-kit/issues/61)) ([b6c7fb6](https://github.com/IamMrCupp/claude-project-kit/commit/b6c7fb66c4baff4b0fdb6b021e2b6ae2fc2f2780))
+* **bootstrap:** add --workspace flag for multi-repo initiatives ([#61](https://github.com/IamMrCupp/claude-project-kit/issues/61))
+* **bootstrap:** add --workspace flag for multi-repo initiatives ([#61](https://github.com/IamMrCupp/claude-project-kit/issues/61))
 
 
 ### Documentation
 
-* **setup:** document --workspace flag and workspace migration ([55a263d](https://github.com/IamMrCupp/claude-project-kit/commit/55a263d91b3779419141988b076de13d44062d04))
+* **setup:** document --workspace flag and workspace migration
 
 
 ### Tests
 
-* **bootstrap:** cover --workspace flag mechanics ([ba075f7](https://github.com/IamMrCupp/claude-project-kit/commit/ba075f7a49a35cb3e63a1514ffc2656a6b72c28b))
+* **bootstrap:** cover --workspace flag mechanics
 
 ## [0.13.1](https://github.com/IamMrCupp/claude-project-kit/compare/v0.13.0...v0.13.1) (2026-04-28)
 
 
 ### Documentation
 
-* **conventions:** reframe CI principle as 'PR not done until green' ([dfd2d9d](https://github.com/IamMrCupp/claude-project-kit/commit/dfd2d9d525c15f5c8e69f60a015c34299a5eb10f))
+* **conventions:** reframe CI principle as 'PR not done until green'
 
 ## [0.13.0](https://github.com/IamMrCupp/claude-project-kit/compare/v0.12.1...v0.13.0) (2026-04-28)
 
 
 ### Features
 
-* **templates:** add workspace + ticket templates (Phase 4 §C.1–C.3, [#61](https://github.com/IamMrCupp/claude-project-kit/issues/61)) ([2a15e84](https://github.com/IamMrCupp/claude-project-kit/commit/2a15e84db7f746eace3f99c42365adaa9a872ab3))
+* **templates:** add workspace + ticket templates (Phase 4 §C.1–C.3, [#61](https://github.com/IamMrCupp/claude-project-kit/issues/61))
 
 
 ### Bug Fixes
 
-* **link-check:** ignore {{PLACEHOLDER}} URLs and demote source-only link to code-style ([9f3cc11](https://github.com/IamMrCupp/claude-project-kit/commit/9f3cc11b77d89421419c255e02a728d38682d5e5))
+* **link-check:** ignore {{PLACEHOLDER}} URLs and demote source-only link to code-style
 
 ## [0.12.1](https://github.com/IamMrCupp/claude-project-kit/compare/v0.12.0...v0.12.1) (2026-04-28)
 
 
 ### Documentation
 
-* **adr:** add ADR-0001 multi-repo + ticket-driven folder model ([#61](https://github.com/IamMrCupp/claude-project-kit/issues/61)) ([7be788c](https://github.com/IamMrCupp/claude-project-kit/commit/7be788c312fbfcac9a1bab107d176cd8e2deb24b))
-* **adr:** add ADR-0001 multi-repo + ticket-driven folder model ([#61](https://github.com/IamMrCupp/claude-project-kit/issues/61)) ([0147bca](https://github.com/IamMrCupp/claude-project-kit/commit/0147bca4db0de1443358b1dd86c94807a51be967))
-* **adr:** set up docs/adr/ pattern and link from README ([efa94b3](https://github.com/IamMrCupp/claude-project-kit/commit/efa94b3ad6c340ae397a7c234617b15e512f2fa4))
-* **conventions:** add ticket-driven workflows section ([#61](https://github.com/IamMrCupp/claude-project-kit/issues/61)) ([9cc941f](https://github.com/IamMrCupp/claude-project-kit/commit/9cc941fc7b0e458bed7a1dfb97226307cca7fd51))
-* **conventions:** add ticket-driven workflows section ([#61](https://github.com/IamMrCupp/claude-project-kit/issues/61)) ([4920a33](https://github.com/IamMrCupp/claude-project-kit/commit/4920a33b9eca96ec6b2a1604268c6c7935755a86))
+* **adr:** add ADR-0001 multi-repo + ticket-driven folder model ([#61](https://github.com/IamMrCupp/claude-project-kit/issues/61))
+* **adr:** add ADR-0001 multi-repo + ticket-driven folder model ([#61](https://github.com/IamMrCupp/claude-project-kit/issues/61))
+* **adr:** set up docs/adr/ pattern and link from README
+* **conventions:** add ticket-driven workflows section ([#61](https://github.com/IamMrCupp/claude-project-kit/issues/61))
+* **conventions:** add ticket-driven workflows section ([#61](https://github.com/IamMrCupp/claude-project-kit/issues/61))
 
 ## [0.12.0](https://github.com/IamMrCupp/claude-project-kit/compare/v0.11.1...v0.12.0) (2026-04-28)
 
 
 ### Features
 
-* **commands:** add /session-start and /refresh-context slash command starters ([b323622](https://github.com/IamMrCupp/claude-project-kit/commit/b3236229a6079554093d732935753453d4724685))
-* **commands:** add /session-start and /refresh-context slash command starters ([e1ff6ca](https://github.com/IamMrCupp/claude-project-kit/commit/e1ff6ca434f9b5123f64a3705788f4426f0148bd))
+* **commands:** add /session-start and /refresh-context slash command starters
+* **commands:** add /session-start and /refresh-context slash command starters
 
 
 ### Documentation
 
-* **prompts:** add Prompt 5 for mid-session context refresh ([6b63656](https://github.com/IamMrCupp/claude-project-kit/commit/6b63656bfbd6884beeeb3f3439c44c25ca1dd699))
+* **prompts:** add Prompt 5 for mid-session context refresh
 
 ## [0.11.1](https://github.com/IamMrCupp/claude-project-kit/compare/v0.11.0...v0.11.1) (2026-04-28)
 
 
 ### Documentation
 
-* add Features section to README, FEATURES.md reference, and polish bootstrap.sh -h ([a89e277](https://github.com/IamMrCupp/claude-project-kit/commit/a89e2774f806939976f8619d1ba28821cd9c117a))
-* add Features section to README, FEATURES.md reference, and polish bootstrap.sh -h ([8bc1a59](https://github.com/IamMrCupp/claude-project-kit/commit/8bc1a592123d62d7e752b0de393e76963815d24a))
+* add Features section to README, FEATURES.md reference, and polish bootstrap.sh -h
+* add Features section to README, FEATURES.md reference, and polish bootstrap.sh -h
 
 ## [0.11.0](https://github.com/IamMrCupp/claude-project-kit/compare/v0.10.1...v0.11.0) (2026-04-25)
 
 
 ### Features
 
-* add .claude/ starter agents and slash commands ([f355f03](https://github.com/IamMrCupp/claude-project-kit/commit/f355f0315f6f70dcf196beed8210a9600b832386))
-* **bootstrap:** copy templates/.claude/ to working folder ([7319e9f](https://github.com/IamMrCupp/claude-project-kit/commit/7319e9fe3424c0ad5d3724b71b0155a442d2157f))
-* **templates:** add .claude/ starter agents and commands ([b12908e](https://github.com/IamMrCupp/claude-project-kit/commit/b12908ec29a42aaa4848d25621b8431a6aacfdc2))
+* add .claude/ starter agents and slash commands
+* **bootstrap:** copy templates/.claude/ to working folder
+* **templates:** add .claude/ starter agents and commands
 
 
 ### Documentation
 
-* document templates/.claude/ in README and SETUP ([4f60028](https://github.com/IamMrCupp/claude-project-kit/commit/4f60028ad85d71c3f717d4e683477d11e9a6f6c3))
+* document templates/.claude/ in README and SETUP
 
 
 ### Tests
 
-* **bootstrap:** verify .claude/ copy ([2100fb5](https://github.com/IamMrCupp/claude-project-kit/commit/2100fb52fd15569c671cd6f21d4f243b816c9dd8))
+* **bootstrap:** verify .claude/ copy
 
 ## [0.10.1](https://github.com/IamMrCupp/claude-project-kit/compare/v0.10.0...v0.10.1) (2026-04-25)
 
 
 ### Documentation
 
-* add SECURITY.md with disclosure policy ([6123e40](https://github.com/IamMrCupp/claude-project-kit/commit/6123e40f5dbf802485280496eec307bf315ffadf))
-* add SECURITY.md with disclosure policy ([9cc195d](https://github.com/IamMrCupp/claude-project-kit/commit/9cc195d635dfe9fc0ce4b32fe181cac5e1a7f4a2))
-* **tests:** document expect suite in tests/README.md ([41942c8](https://github.com/IamMrCupp/claude-project-kit/commit/41942c84e9e7e1bcb1b248f823e13201d24fc195))
+* add SECURITY.md with disclosure policy
+* add SECURITY.md with disclosure policy
+* **tests:** document expect suite in tests/README.md
 
 
 ### Tests
 
-* interactive-mode coverage with expect-based suite ([9362f59](https://github.com/IamMrCupp/claude-project-kit/commit/9362f593e59c1bdac68638901b799ac2317feba9))
-* **interactive:** add expect-based interactive-mode test suite ([ec26823](https://github.com/IamMrCupp/claude-project-kit/commit/ec26823cc46d0947f829c91fbcad8ff6ebc59c65))
+* interactive-mode coverage with expect-based suite
+* **interactive:** add expect-based interactive-mode test suite
 
 
 ### CI
 
-* run expect interactive suite alongside bats ([3d1e4b9](https://github.com/IamMrCupp/claude-project-kit/commit/3d1e4b9953ad855ed214452f4dc510331a0bad2a))
+* run expect interactive suite alongside bats
 
 ## [0.10.0](https://github.com/IamMrCupp/claude-project-kit/compare/v0.9.1...v0.10.0) (2026-04-25)
 
 
 ### Features
 
-* **bootstrap:** preview actual MEMORY.md index lines in --dry-run ([727cb7f](https://github.com/IamMrCupp/claude-project-kit/commit/727cb7fc145a2a6138d0524a06267b32d06bf1c6))
-* **bootstrap:** preview actual MEMORY.md index lines in --dry-run ([a54d618](https://github.com/IamMrCupp/claude-project-kit/commit/a54d6187b11726c8938ed01efe5ac395a1500838))
-* **prompts:** add Prompt 4 for resuming mid-PR ([9f2aabe](https://github.com/IamMrCupp/claude-project-kit/commit/9f2aabe7db79ed594a9dca42f64bb8602b3e11f1))
-* **prompts:** add Prompt 4 for resuming mid-PR ([592e2a1](https://github.com/IamMrCupp/claude-project-kit/commit/592e2a14043e86ad0b3457b38fc5c4b11d237d6b))
+* **bootstrap:** preview actual MEMORY.md index lines in --dry-run
+* **bootstrap:** preview actual MEMORY.md index lines in --dry-run
+* **prompts:** add Prompt 4 for resuming mid-PR
+* **prompts:** add Prompt 4 for resuming mid-PR
 
 
 ### Bug Fixes
 
-* scope MEMORY.md links to files present in snapshot ([7cae2e3](https://github.com/IamMrCupp/claude-project-kit/commit/7cae2e3cca4d15b4f817159c141fd53cc1d25c05))
+* scope MEMORY.md links to files present in snapshot
 
 
 ### Documentation
 
-* add CONTRIBUTING.md ([0c2a713](https://github.com/IamMrCupp/claude-project-kit/commit/0c2a713e612af3a6b0f79a3a1005e6f5ee91bfdb))
-* add issue templates ([a5a2a14](https://github.com/IamMrCupp/claude-project-kit/commit/a5a2a1454dc8ca83d9f5f0e2408b0c7f52a3d09a))
-* add pull request template ([878551d](https://github.com/IamMrCupp/claude-project-kit/commit/878551d780c78ffa0058a2c57408d8386a8341a0))
-* add widget-tracker memory-example snapshot ([af69fe7](https://github.com/IamMrCupp/claude-project-kit/commit/af69fe7825555d053ea89f9bb5eac60e7f27a264))
-* add widget-tracker memory-example snapshot ([215101d](https://github.com/IamMrCupp/claude-project-kit/commit/215101dd91fec444a0564d78c6512978acc6f759))
-* contributor onboarding (CONTRIBUTING + PR/issue templates) ([3597003](https://github.com/IamMrCupp/claude-project-kit/commit/3597003936509a988d308a4ddbe8bf8235c9c6f3))
-* flag --tracker other / --ci other follow-up in SETUP ([2b5e963](https://github.com/IamMrCupp/claude-project-kit/commit/2b5e96315d8e494dbf6ec8e0da6060f49889048b))
-* flag --tracker other / --ci other follow-up in SETUP ([aa09381](https://github.com/IamMrCupp/claude-project-kit/commit/aa0938174ab5df27f8634fd613865c0ae99279f0))
-* link memory-example from examples README ([2176734](https://github.com/IamMrCupp/claude-project-kit/commit/2176734bfc6ac6d234907d95df3a2112b0800908))
+* add CONTRIBUTING.md
+* add issue templates
+* add pull request template
+* add widget-tracker memory-example snapshot
+* add widget-tracker memory-example snapshot
+* contributor onboarding (CONTRIBUTING + PR/issue templates)
+* flag --tracker other / --ci other follow-up in SETUP
+* flag --tracker other / --ci other follow-up in SETUP
+* link memory-example from examples README
 
 
 ### Tests
 
-* **bootstrap:** verify --dry-run previews actual index lines ([df4a35c](https://github.com/IamMrCupp/claude-project-kit/commit/df4a35cd43853565783d1b968a0e60cf65cd37a3))
+* **bootstrap:** verify --dry-run previews actual index lines
 
 ## [0.9.1](https://github.com/IamMrCupp/claude-project-kit/compare/v0.9.0...v0.9.1) (2026-04-24)
 
 
 ### Documentation
 
-* add ko-fi and buymeacoffee funding links ([bc8b7c4](https://github.com/IamMrCupp/claude-project-kit/commit/bc8b7c41989d790b65d04b9669b77ba138471432))
-* add ko-fi and buymeacoffee funding links ([be15028](https://github.com/IamMrCupp/claude-project-kit/commit/be15028d250bad6498b81c31cf35257ece8944b4))
+* add ko-fi and buymeacoffee funding links
+* add ko-fi and buymeacoffee funding links
 
 ## [0.9.0](https://github.com/IamMrCupp/claude-project-kit/compare/v0.8.0...v0.9.0) (2026-04-24)
 
 
 ### Features
 
-* **ci:** automate releases with release-please ([244f976](https://github.com/IamMrCupp/claude-project-kit/commit/244f97640163031b4f4429bf78ce04025f29daef))
-* **ci:** automate releases with release-please ([64f0b1a](https://github.com/IamMrCupp/claude-project-kit/commit/64f0b1a72b42cd49dc49c6ea77aaddc7747d0658))
+* **ci:** automate releases with release-please
+* **ci:** automate releases with release-please
 
 ## 2026-04-24 — Bats test suite for `bootstrap.sh`
 
