@@ -269,6 +269,67 @@ remind me the tracker is the source of truth. Don't propose a branch — wait.
 
 ---
 
+## 7. Closing a phase
+
+Use this when the current phase is done and you want to draft all the closure paperwork — checklist tick-throughs, `plan.md` status bump, `CONTEXT.md` update, acceptance-results archive, SESSION-LOG entry. Mirrors `/close-phase`. Includes the kit's acceptance-tests-must-exist enforcement.
+
+```
+Close phase <N> of this project. (If you don't know which phase, read
+CONTEXT.md and infer the current one.)
+
+## Files to load
+
+1. `<working-folder>/CONTEXT.md` — current phase status
+2. `<working-folder>/plan.md` — phase breakdown
+3. `<working-folder>/phase-<N>-checklist.md`
+4. `<working-folder>/SESSION-LOG.md` — last entry for context
+5. `<working-folder>/acceptance-test-results.md` if it exists
+
+## Enforcement — acceptance tests must exist
+
+Before drafting anything else, verify the convention from CONVENTIONS.md →
+"Acceptance tests at phase boundaries". Refuse and stop if either check fails:
+
+1. The phase checklist contains a `## Acceptance testing` section.
+2. Either `acceptance-test-results.md` exists and is non-empty (at least one
+   Result field set to ✅ PASS or ❌ FAIL, not ⏳ Pending), OR the checklist's
+   `## Phase exit` block contains a single line matching:
+   `Acceptance tests intentionally skipped — rationale: <one sentence>`
+
+If neither is met, stop and tell me which condition failed and how to fix it.
+If a skip-rationale line is present, surface the rationale verbatim in the
+SESSION-LOG entry drafted in Step 5 below.
+
+## What to do
+
+1. Tick remaining unchecked items in the phase checklist. Find the matching
+   merged PR (`gh pr list --state merged`) for each, add PR number + merge
+   date. Flag any item without a PR for human review rather than ticking
+   blindly.
+2. Update plan.md "Status" line at the top to reflect phase closure.
+3. Update CONTEXT.md "Current Phase Status" block.
+4. Archive acceptance results: rename `acceptance-test-results.md` →
+   `acceptance-test-results-phase-<N>.md`, update CONTEXT.md Reference
+   section to point at the archive.
+5. Draft a SESSION-LOG entry covering focus, PRs landed, key decisions,
+   non-obvious findings, open threads. Include a Next session prompt as
+   a fenced code block under `**Next session prompt:**`.
+
+## Hand back
+
+Show each change as a diff. Wait for my confirmation per change before
+writing. After confirmation, echo the next-session prompt back in chat.
+Don't invoke `git commit` or push — I'll commit the working-folder updates
+separately.
+```
+
+**Notes:**
+- The `/close-phase` slash command runs this flow as a one-step invocation. Copy `templates/.claude/commands/close-phase.md` into your repo's `.claude/commands/` to enable.
+- The enforcement rules above are the same ones the slash command applies. If you're terminal-only without slash-command support, this prompt keeps the discipline in place.
+- See `CONVENTIONS.md` → "Acceptance tests at phase boundaries" for the rule and the explicit-skip escape hatch.
+
+---
+
 ## When to write a new prompt
 
 Add one here whenever you find yourself typing similar setup instructions into a fresh session for the third time. A good prompt is:
