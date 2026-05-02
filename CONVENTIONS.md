@@ -78,6 +78,18 @@ When working against an external tracker (JIRA, GitHub Issues, Linear, etc.), th
 - **End every session with a `SESSION-LOG.md` entry.** Append-only. Date, focus, branches/PRs, decisions, anything non-obvious for future-you.
 - **`CONTEXT.md` is the "read first" doc.** Keep it ≤300 lines. If it grows beyond that, the content belongs in one of the other docs and `CONTEXT.md` should link to it.
 
+## Acceptance tests at phase boundaries
+
+Acceptance tests verify *user-visible behavior* of a phase's slice. Green CI alone only proves code correctness, not feature correctness — the two diverge often enough that the kit treats acceptance tests as load-bearing, not aspirational.
+
+- **Every phase MUST have a non-empty `acceptance-test-results.md`** (or archived `acceptance-test-results-phase-N.md`) before the phase can close. The phase checklist's `## Acceptance testing` section lists the tests; the results file records Goal / Setup / Steps / Expected / Actual / Result for each.
+- **One escape hatch — explicit, documented, never silent.** If a phase legitimately has nothing to acceptance-test (e.g. pure-CI work, internal refactor with zero user-visible change), record the rationale on a single line in the phase checklist's `## Phase exit` block:
+
+  > `Acceptance tests intentionally skipped — rationale: {{one sentence}}`
+
+  The rationale gets surfaced in the SESSION-LOG entry that closes the phase. Skipping without a rationale is a convention violation, not a customization.
+- **The `/close-phase` slash command enforces both rules.** It refuses to close when neither condition is met (no non-empty results file AND no skip-rationale line), and refuses if the checklist's `## Acceptance testing` section was deleted. The convention is the source of truth; the slash command makes it operationally hard to skip silently.
+
 ## Auto-memory
 
 - **Save feedback from both corrections and confirmations.** Corrections are easy to notice; quiet "yes exactly, keep doing that" moments are what keep you from drifting away from validated approaches.

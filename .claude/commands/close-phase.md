@@ -28,6 +28,22 @@ Close phase $ARGUMENTS of this project. If no phase number was given, read `CONT
 
 The working-folder path comes from `reference_ai_working_folder.md` in auto-memory. If that's not set, ask the user before guessing.
 
+## Enforcement — acceptance tests must exist
+
+Before any of the "What to do" steps, verify the convention from `CONVENTIONS.md` → "Acceptance tests at phase boundaries". This is enforcement, not a suggestion — refuse and stop if either check fails.
+
+1. **`## Acceptance testing` section present in the closing phase's checklist.** Grep `phase-$ARGUMENTS-checklist.md` (or current `phase-N-checklist.md`) for a line matching `^## Acceptance testing`. If absent, refuse:
+   > "Phase checklist is missing the `## Acceptance testing` section. The kit requires every phase to declare acceptance tests — see CONVENTIONS.md → 'Acceptance tests at phase boundaries'. Restore the section from `templates/phase-N-checklist.md` and re-run /close-phase."
+
+2. **Results recorded OR skip explicitly documented.** Exactly one of these must be true:
+   - `acceptance-test-results.md` (or `acceptance-test-results-phase-$ARGUMENTS.md` if already archived) exists in the working folder AND is non-empty (more than the unfilled template — at least one Test section has its Result field set to `✅ PASS` or `❌ FAIL`, not `⏳ Pending`), OR
+   - the phase checklist's `## Phase exit` block contains a single line matching the literal pattern `Acceptance tests intentionally skipped — rationale: <something>`.
+
+   If neither is true, refuse:
+   > "Cannot close phase $ARGUMENTS: no acceptance test results found and no explicit skip-rationale recorded. Either fill in `acceptance-test-results.md` and re-run, or — if this phase legitimately has nothing to acceptance-test — add a single line to the checklist's `## Phase exit` block reading `Acceptance tests intentionally skipped — rationale: <one sentence>`. See CONVENTIONS.md → 'Acceptance tests at phase boundaries' for the rule."
+
+3. **If a skip-rationale line is present**, capture the rationale verbatim and surface it in the SESSION-LOG entry drafted in Step 5 below, under "Key decisions" as: `Acceptance tests intentionally skipped — <rationale>`. Do not silently elide it.
+
 ## What to do
 
 1. **Tick remaining unchecked items** in the phase checklist. For each, find the matching merged PR (`gh pr list --state merged`) and add the PR number + merge date. If no PR exists for an item, flag it for human review rather than ticking blindly.

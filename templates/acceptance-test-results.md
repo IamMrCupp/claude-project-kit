@@ -11,6 +11,7 @@
 
 ## How to use this doc
 
+- **This file is required at every phase exit.** See `CONVENTIONS.md` → "Acceptance tests at phase boundaries" for the rule. `/close-phase` will refuse to close a phase when this file is empty AND the checklist doesn't carry an explicit skip-rationale line.
 - One test per section. Number them (Test 1, Test 2, …) so PRs and follow-up work can reference them.
 - Every test has: **Goal**, **Setup**, **Steps**, **Expected**, **Actual**, **Result**.
 - When a test fails, file a bug (or PR), link it under **Actual**, then re-run and update.
