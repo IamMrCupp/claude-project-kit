@@ -233,7 +233,7 @@ These are **starters**. Edit the frontmatter (model, tool allowlist), customize 
 
 ## Starter slash commands
 
-Six slash commands stage in `<working-folder>/.claude/commands/`. Same install path as agents — `scripts/install-commands.sh --global` (recommended, covers every project) or `--project <repo-path>` (scope to one repo).
+Seven slash commands stage in `<working-folder>/.claude/commands/`. Same install path as agents — `scripts/install-commands.sh --global` (recommended, covers every project) or `--project <repo-path>` (scope to one repo).
 
 - **`/session-start`** — packages Prompt 1 from `PROMPTS.md`. Loads `CONTEXT.md`, `SESSION-LOG.md`, and the current phase checklist; hands back a 3–5 bullet grounding summary. Use at the start of a fresh session.
 - **`/refresh-context`** — re-reads the working folder mid-session, after a `/close-phase` or `/session-end` writeback or when a long session has drifted. Hands back a delta read against the latest state.
@@ -241,6 +241,7 @@ Six slash commands stage in `<working-folder>/.claude/commands/`. Same install p
 - **`/session-end`** — packages Prompt 3 from `PROMPTS.md`. Drafts the four end-of-session updates (SESSION-LOG entry, CONTEXT bump, checklist scan, memory candidates) and waits for confirmation before writing.
 - **`/session-handoff`** — same drafting work as `/session-end`, but **writes immediately** without a confirmation gate. Use when waiting risks losing work: switching to Claude desktop, context-window pressure, abrupt pause. Persistence > polish; review on the next `/session-start`. Pairs with `bootstrap.sh`'s automatic Bootstrap entry — between the two, the bootstrap-and-seed-prompt session is durable end-to-end even if the user pauses without a clean wrap-up.
 - **`/pull-ticket <KEY>`** — packages Prompt 6 from `PROMPTS.md`. Fetches a tracker ticket (JIRA / GitHub Issues / Linear / GitLab / Shortcut) via the relevant MCP, creates `tickets/<KEY>-<slug>.md` from the kit's ticket template, updates `workspace-CONTEXT.md` "Active tickets" list, stages a `SESSION-LOG.md` line. Read-only against the tracker. See [Per-ticket scratchpads](#per-ticket-scratchpads) for the full flow.
+- **`/run-acceptance [test-N | all]`** — packages Prompt 8 from `PROMPTS.md`. Runs the current phase's acceptance tests, classifying each per the run-automatically / run-with-confirmation / defer-to-human heuristic in [`CONVENTIONS.md`](CONVENTIONS.md) → "Automating acceptance tests where it makes sense". Attempts the automatable items, then proposes writebacks to **both** `acceptance-test-results.md` and the open PR body via `gh pr edit`. Posting back is the default, not opt-in. `/close-phase` will offer to run this first when ATs are pending.
 
 ---
 

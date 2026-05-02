@@ -190,9 +190,12 @@ For a scaffolded version of this pass, paste **Prompt 3 ("Wrapping up a session"
 
 When all the items in `phase-N-checklist.md` have shipped, run **`/close-phase`** (or paste **Prompt 7** from [PROMPTS.md](PROMPTS.md)) to draft the closure paperwork — checklist tick-throughs, `plan.md` status bump, `CONTEXT.md` update, acceptance-results archive, SESSION-LOG entry.
 
-> **Heads-up: `/close-phase` enforces acceptance tests.** It will refuse to close the phase if `acceptance-test-results.md` is empty AND the checklist's `## Phase exit` block doesn't carry an explicit skip-rationale line. This is by design — see [`CONVENTIONS.md`](CONVENTIONS.md) → "Acceptance tests at phase boundaries". Two paths to satisfy it:
+If acceptance tests are still pending, `/close-phase` will offer to run **`/run-acceptance`** (Prompt 8) first — it attempts the automatable items (bats / pytest / shell-script-able checks) and proposes writebacks to both `acceptance-test-results.md` and the open PR body via `gh pr edit`. Posting back is the default, not opt-in. See [`CONVENTIONS.md`](CONVENTIONS.md) → "PRs" for the heuristic and the writeback mechanics.
+
+> **Heads-up: `/close-phase` enforces acceptance tests.** It will refuse to close the phase if `acceptance-test-results.md` is empty AND the checklist's `## Phase exit` block doesn't carry an explicit skip-rationale line. This is by design — see [`CONVENTIONS.md`](CONVENTIONS.md) → "Acceptance tests at phase boundaries". Three paths to satisfy it:
 >
-> - **Run your acceptance tests** and fill in the Goal / Setup / Steps / Expected / Actual / Result fields in `acceptance-test-results.md` before invoking `/close-phase`.
+> - **Run `/run-acceptance`** to attempt the automatable tests and have Claude post results to both surfaces.
+> - **Fill in `acceptance-test-results.md` by hand** with Goal / Setup / Steps / Expected / Actual / Result for each test, then invoke `/close-phase`.
 > - **Or, if the phase has nothing to acceptance-test** (pure-CI work, internal refactor with zero user-visible change), add a single line to the checklist's `## Phase exit` block:
 >
 >   ```
