@@ -15,6 +15,7 @@ KIT_COUPLED_COMMANDS=(
   templates/.claude/commands/refresh-context.md
   templates/.claude/commands/close-phase.md
   templates/.claude/commands/pull-ticket.md
+  templates/.claude/commands/run-acceptance.md
 )
 
 # Kit-coupled agents (code-reviewer is universal — no kit dependency).

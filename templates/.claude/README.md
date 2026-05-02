@@ -1,6 +1,6 @@
 # `.claude/` starters
 
-Two agents and six slash commands that follow the kit's session-start, session-end, session-handoff, and phase-close conventions. Staged here in your working folder; copy into your target repo's `.claude/` if you want them.
+Two agents and seven slash commands that follow the kit's session-start, session-end, session-handoff, phase-close, and acceptance-test conventions. Staged here in your working folder; copy into your target repo's `.claude/` if you want them.
 
 ## What's here
 
@@ -17,6 +17,7 @@ Two agents and six slash commands that follow the kit's session-start, session-e
 - **`/session-end`** — Prompt 3 from `PROMPTS.md` packaged as a slash command. Drafts the end-of-session updates, waits for confirmation before writing.
 - **`/session-handoff`** — same drafting work as `/session-end`, but **writes immediately** without a confirmation gate. Use when waiting risks losing the session: switching to Claude desktop, context-window pressure, abrupt pause. Persistence > polish; review on the next `/session-start`.
 - **`/pull-ticket <KEY>`** — pull a tracker ticket (JIRA / GitHub Issues / Linear / GitLab / Shortcut) into a per-ticket scratchpad at `tickets/<KEY>-<slug>.md`. Reads tracker config from `CONTEXT.md` (or `../workspace-CONTEXT.md` in workspace mode), fetches via the relevant MCP, fills the kit's ticket template. Updates `workspace-CONTEXT.md` and stages a `SESSION-LOG.md` line. **Read-only against the tracker** — never creates, edits, transitions, or comments. Same flow as Prompt 6 in `PROMPTS.md`. For terminal-driven use without Claude, see `pull-ticket.sh` at the kit root.
+- **`/run-acceptance [test-N | all]`** — run the current phase's acceptance tests. Classifies each one (run-automatically / run-with-confirmation / defer-to-human) per `CONVENTIONS.md` → "Automating acceptance tests where it makes sense", attempts the automatable items, and proposes writebacks to **both** `acceptance-test-results.md` and the open PR body (via `gh pr edit`). Posting back is the default, not opt-in. Same flow as Prompt 8 in `PROMPTS.md`.
 
 ## How to activate them
 
