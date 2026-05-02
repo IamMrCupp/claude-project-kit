@@ -6,6 +6,14 @@ See [Upgrading an existing project](SETUP.md#upgrading-an-existing-project) for 
 
 ---
 
+## [0.29.3](https://github.com/IamMrCupp/claude-project-kit/compare/v0.29.2...v0.29.3) (2026-05-02)
+
+
+### Refactors
+
+* **examples:** use clearly-fictional tracker key across docs and examples ([d1a71aa](https://github.com/IamMrCupp/claude-project-kit/commit/d1a71aaba856b42ad49fd2893a03263dc7a1869f))
+* **examples:** use clearly-fictional tracker key in multi-repo example ([d4a937b](https://github.com/IamMrCupp/claude-project-kit/commit/d4a937b9d1d778d682566efb90179fda815e36c2))
+
 ## [0.29.2](https://github.com/IamMrCupp/claude-project-kit/compare/v0.29.1...v0.29.2) (2026-05-02)
 
 
