@@ -13,8 +13,6 @@ Do not treat these as canonical without reading them first — they encode one o
 - [Commit format](feedback_commit_format.md) — Conventional Commits, single line, signed off
 - [Merge strategy](feedback_merge_strategy.md) — always merge commits; never squash or rebase
 - [Push branches by default](feedback_push_branches.md) — `git push -u origin <branch>` after commit without asking
-- [PR test plans](feedback_pr_test_plans.md) — detailed numbered manual-test steps with expected logs
-- [Check off PR tests on pass](feedback_pr_check_off_on_pass.md) — edit PR body with evidence + ✅ after testing
 - [Watch CI in background](feedback_watch_ci_in_background.md) — spawn `gh run watch` in background after push
 - [Don't push after merge](feedback_no_push_after_merge.md) — once a PR merges, the branch is closed; branch off new `main` for follow-up work
 - [Use the repo's branch-name convention](feedback_branch_naming.md) — rename auto-generated worktree branches to `<type>/<slug>` before pushing
