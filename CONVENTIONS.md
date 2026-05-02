@@ -30,8 +30,38 @@ Project-agnostic habits that have proven out across real work. Start from these,
   - Steps (copy-pasteable)
   - Expected outcomes (log lines to grep for, timing thresholds, state transitions)
   - Pass / fail criteria (concrete)
-- **Check off the test plan after passing.** `gh pr edit` the body to tick checkboxes, paste measured evidence inline, mark ✅ PASS sections. This is the single best defense against "I thought we tested that."
+- **Run the automatable test-plan items + post results back, by default.** When the user asks you to run the test plan (or "verify this PR", "kick off the tests", "check the ATs"), the default workflow is:
+  1. Attempt the automatable items yourself (see *Automating acceptance tests where it makes sense* below for the heuristic).
+  2. Tick the matching checkboxes in the PR body via `gh pr edit <PR> --body-file <path>` and paste measured evidence inline (log line, timing, run ID, diff snippet — whatever proves the check passed).
+  3. If the test corresponds to an item in `acceptance-test-results.md`, update the Actual / Result fields there too.
+
+  Posting back is the **default** when the user invokes a run — not an opt-in, not a "ask if you want me to update the PR" follow-up. The single best defense against "I thought we tested that" is making the evidence durable on the PR itself.
 - **Pure-CI / docs PRs:** short plan is fine, but still explicit — "no runtime change; verification is CI alone."
+
+### Automating acceptance tests where it makes sense
+
+When running an AT plan, classify each item before reaching for the human:
+
+- **Run automatically.** Anything scriptable: bats / pytest / jest / shell commands; link-check or lint runs; CLI invocations whose expected output is grep-able; template renders that can be diffed against a fixture.
+- **Run with confirmation.** Anything that mutates external state: `gh pr edit`, `git push`, `gh release create`, hitting a real tracker, publishing to a registry. Propose the exact command, wait for the nod, then run.
+- **Defer to human.** Visual rendering on GitHub.com, behavior in a UI, anything requiring human judgment ("does this prose feel right?"). Surface explicitly with rationale — don't silently skip.
+
+When something fails, report the exact command, the exact output, and a candidate fix — not "❌ FAIL" alone. The user shouldn't have to re-run the failing command to see what broke.
+
+### How to post test results back to the PR
+
+The mechanics:
+
+1. Edit the PR body via `gh pr edit <PR> --body-file <path-to-updated-body>` (writing the full body once is more reliable than patching individual lines).
+2. Tick the corresponding checkboxes (`- [ ]` → `- [x]`) and paste evidence inline. Good evidence shapes:
+   - Log line that proves a behavior fired (e.g. `grep -c "^ok" output → 218`)
+   - Run ID + link for CI workflows (e.g. `[Run 25246443649](...) — passed`)
+   - Diff or `wc -l` output for content checks
+   - Screenshot link for UI verifications
+3. If an item failed, mark `❌ FAIL` and paste the exact failure output + your hypothesis. A failed-but-documented item is better than silence.
+4. Items the human still owns (e.g. visual GH render checks) stay unticked, with an explicit "Aaron to verify" or similar tag.
+
+Goal: any reviewer reading the PR body should be able to tell "what was tested, how, and what the result was" without rerunning anything.
 
 ## CI
 
