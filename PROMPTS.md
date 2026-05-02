@@ -330,6 +330,69 @@ separately.
 
 ---
 
+## 8. Running acceptance tests with writeback
+
+Use this when the current phase has unchecked acceptance tests and you want Claude to attempt the automatable ones and post results back to both `acceptance-test-results.md` AND the open PR body — without you having to ask "did you update the PR?" afterwards. Mirrors `/run-acceptance`.
+
+```
+Run the acceptance tests for the current phase.
+
+## Files to load
+
+1. `<working-folder>/CONTEXT.md` — confirms current phase
+2. `<working-folder>/phase-<N>-checklist.md` — the `## Acceptance testing` section
+3. `<working-folder>/acceptance-test-results.md`
+4. The open PR for the current branch:
+   `gh pr list --head $(git branch --show-current) --json number,body,title`
+
+## Classify each test (per CONVENTIONS.md → "Automating acceptance tests where it makes sense")
+
+- **Run automatically** — bats / pytest / jest / shell commands; link-check or
+  lint runs; CLI invocations whose expected output is grep-able; template
+  renders diffable against a fixture.
+- **Run with confirmation** — anything that mutates external state
+  (`gh pr edit`, `git push`, `gh release create`, hitting a real tracker).
+  Propose the command, wait for nod.
+- **Defer to human** — visual rendering on GitHub.com, behavior in a UI,
+  prose-feel judgment. Don't silently skip — surface with rationale.
+
+Print the classification table before running anything.
+
+## Execute the run-automatically items
+
+For each: run the command, capture exit code + relevant output, decide
+PASS / FAIL against the Expected field. On FAIL: capture exact command,
+exact output, and a candidate fix. Don't silently retry.
+
+## Propose writebacks — both surfaces
+
+Posting back is the default, not opt-in. After all auto items finish, draft:
+
+1. **`acceptance-test-results.md`** — fill Actual / Result for each tested item
+2. **The open PR body** — tick matching checkboxes, paste evidence inline,
+   mark deferred-to-human items "Aaron to verify" or similar
+
+Show both diffs. Wait for confirmation per writeback. Apply via
+`gh pr edit <PR> --body-file <tempfile>` (write the full body, not patches).
+
+## Hand back
+
+A summary table of test / class / result / evidence, plus:
+- Writebacks applied (paths)
+- Items still pending the user (confirms, human-deferred)
+- Failures with command + output + candidate fix
+
+Don't `git commit` or `git push` — I review and commit writebacks separately.
+```
+
+**Notes:**
+- The `/run-acceptance` slash command (in `templates/.claude/commands/`) packages this as a one-step invocation. Copy into your repo's `.claude/commands/` to enable.
+- Optionally pass `test-N` (e.g. `test-3`) to scope to a single test instead of the whole plan.
+- This is the execution counterpart to `/close-phase`'s structural enforcement — `/close-phase` checks that ATs *exist*, `/run-acceptance` checks that they *pass*. `/close-phase` will offer to run `/run-acceptance` first when ATs are pending.
+- See `CONVENTIONS.md` → "PRs" → "How to post test results back to the PR" for the writeback mechanics.
+
+---
+
 ## When to write a new prompt
 
 Add one here whenever you find yourself typing similar setup instructions into a fresh session for the third time. A good prompt is:
