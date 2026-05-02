@@ -49,7 +49,9 @@
 
 ## Acceptance testing
 
-Before marking this phase ✅ complete, run the manual test sequence and record results in `acceptance-test-results.md`. List the tests here so the checklist itself signals when testing starts:
+> **Required by convention.** Every phase MUST exit with a non-empty `acceptance-test-results.md`. See `CONVENTIONS.md` → "Acceptance tests at phase boundaries" for the rule and the one allowed escape hatch. Removing this section is a convention violation, not a customization — `/close-phase` will refuse to close if it's missing.
+
+Before marking this phase ✅ complete, run the test sequence and record results in `acceptance-test-results.md` (Goal / Setup / Steps / Expected / Actual / Result per test). List the tests here so the checklist itself signals when testing starts:
 
 - [ ] Test 1 — {{what to verify}}
 - [ ] Test 2 — {{…}}
@@ -59,7 +61,7 @@ Before marking this phase ✅ complete, run the manual test sequence and record 
 ## Phase exit
 
 - [ ] All items in all sections ticked
-- [ ] Acceptance tests pass (see `acceptance-test-results.md`)
+- [ ] Acceptance tests pass (see `acceptance-test-results.md`) — OR document the skip on a single line below this block: `Acceptance tests intentionally skipped — rationale: {{one sentence}}`
 - [ ] `plan.md` status line updated to reflect phase complete
 - [ ] `CONTEXT.md` updated — current phase, known issues, architectural decisions that landed
 - [ ] Session entry appended to `SESSION-LOG.md` describing phase completion
