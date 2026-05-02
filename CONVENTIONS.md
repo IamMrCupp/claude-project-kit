@@ -54,14 +54,14 @@ Run with `run_in_background: true` on the Bash tool. Sleep 3–5 s before grabbi
 
 ## Ticket-driven workflows
 
-When working against an external tracker (JIRA, GitHub Issues, Linear, etc.), the conventions above extend with a ticket key woven through branches, PR titles, commits, and PR bodies. Examples below use a JIRA-style key (`LX-1234`); substitute your tracker's format.
+When working against an external tracker (JIRA, GitHub Issues, Linear, etc.), the conventions above extend with a ticket key woven through branches, PR titles, commits, and PR bodies. Examples below use a JIRA-style key (`ACME-1234`); substitute your tracker's format.
 
 ### Branch / PR / commit conventions
 
-- **Branch:** `<type>/<KEY>-<short-slug>` — e.g. `feat/LX-1234-fix-lb-path-routing`. The same ticket key is reused across multiple repos when a single ticket drives work in both (e.g. a Terraform envs change + a modules change both against `LX-1234`). Multi-repo initiatives keep one key, not one per repo.
-- **PR title:** Conventional Commits with the key in parens — e.g. `feat(modules): add VPC module (LX-1234)`. **No `Closes` / `Fixes` keyword** unless your tracker has auto-transitions configured AND you want them; many orgs (including JIRA without explicit setup) don't, and the keyword does nothing useful in that case.
+- **Branch:** `<type>/<KEY>-<short-slug>` — e.g. `feat/ACME-1234-fix-lb-path-routing`. The same ticket key is reused across multiple repos when a single ticket drives work in both (e.g. a Terraform envs change + a modules change both against `ACME-1234`). Multi-repo initiatives keep one key, not one per repo.
+- **PR title:** Conventional Commits with the key in parens — e.g. `feat(modules): add VPC module (ACME-1234)`. **No `Closes` / `Fixes` keyword** unless your tracker has auto-transitions configured AND you want them; many orgs (including JIRA without explicit setup) don't, and the keyword does nothing useful in that case.
 - **PR body:** dedicated `## JIRA` (or `## Linear`, `## Issue`, etc.) section linking the ticket plus the usual Summary / Test plan sections. No transition magic — humans transition the ticket.
-- **Commits:** Conventional Commits with the key in the subject — e.g. `feat(modules): add VPC module — LX-1234`. The single-line `-m` rule from `## Git & commits` still applies; the key goes in the subject, not a body.
+- **Commits:** Conventional Commits with the key in the subject — e.g. `feat(modules): add VPC module — ACME-1234`. The single-line `-m` rule from `## Git & commits` still applies; the key goes in the subject, not a body.
 - **Smart Commits** (`#time`, `#comment`, `#transition` for trackers that support them) — **opt-in per project**, not part of the default convention. If your team uses them, document the local conventions in `CONTEXT.md` so contributors don't accidentally trigger transitions.
 
 ### What the kit does NOT do with trackers

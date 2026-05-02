@@ -25,14 +25,14 @@ Read `CONTEXT.md` in the working folder. Find the **Tracker Configuration** sect
 Pull these values:
 
 - **Tracker type** (jira / github / linear / gitlab / shortcut / other / none)
-- **Project / team key** (e.g. `LX`, `INFRA`, `ENG`)
+- **Project / team key** (e.g. `ACME`, `INFRA`, `ENG`)
 - **MCP availability**
 
 Stop and ask the user before continuing if any of these hold:
 
 - Tracker type is `none` or `other` — there's no automated path; the user can either set up tracker config first or fall back to a manual stub.
 - MCP availability says `not installed` or `unknown` — confirm the relevant MCP is available before attempting to fetch.
-- The ticket key doesn't match the project key — e.g. tracker is JIRA project `LX` but the user asked for `INFRA-42`. This is usually a typo or wrong-project mistake.
+- The ticket key doesn't match the project key — e.g. tracker is JIRA project `ACME` but the user asked for `INFRA-42`. This is usually a typo or wrong-project mistake.
 
 ## Step 2 — fetch ticket data
 
@@ -59,7 +59,7 @@ If the relevant MCP isn't available and there's no CLI fallback, stop and tell t
 - Lowercase, replace non-alphanumeric runs with `-`, trim leading/trailing dashes, cap at ~40 chars.
 - Example: title "Fix LB path-routing for /api/v2" → slug `fix-lb-path-routing-for-api-v2`.
 
-**File path:** `<tickets-dir>/<KEY>-<slug>.md` (e.g. `tickets/LX-1234-fix-lb-path-routing.md`).
+**File path:** `<tickets-dir>/<KEY>-<slug>.md` (e.g. `tickets/ACME-1234-fix-lb-path-routing.md`).
 
 **Idempotence guard:** if a file matching `<KEY>-*.md` already exists in either `tickets/` or `tickets/archive/`, stop and ask the user before overwriting. They may have an existing scratchpad with notes worth preserving.
 
@@ -104,7 +104,7 @@ If `/session-end` runs later this session, this line should be folded into the s
 
 Print:
 
-1. Path to the new ticket file (e.g. `tickets/LX-1234-fix-lb-path-routing.md`).
+1. Path to the new ticket file (e.g. `tickets/ACME-1234-fix-lb-path-routing.md`).
 2. First three lines of the file: key + title, tracker link, status.
 3. A reminder: "Tracker is source of truth — re-run `/pull-ticket <KEY>` if the tracker changes. This file is the local working scratchpad."
 

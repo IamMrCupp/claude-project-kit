@@ -27,19 +27,19 @@ Reusable Terraform modules for the Lighthouse AWS platform — VPC, ALB, ECS ser
 
 ## Tracker Configuration
 
-The tracker config lives at the workspace level (`../workspace-CONTEXT.md`) since it covers both repos in the LX initiative. See that file for tracker type, project key, MCP availability, and link.
+The tracker config lives at the workspace level (`../workspace-CONTEXT.md`) since it covers both repos in the ACME initiative. See that file for tracker type, project key, MCP availability, and link.
 
 ---
 
 ## Working Rules
 
 ### Git & commits
-- Conventional Commits, single line, signed off (`git commit -s -m "feat(modules): ... — LX-NNNN"`). JIRA key in subject after an em-dash.
-- Branch: `<type>/LX-NNNN-<short-slug>` (e.g. `feat/LX-1234-alb-v2-routing`).
+- Conventional Commits, single line, signed off (`git commit -s -m "feat(modules): ... — ACME-NNNN"`). JIRA key in subject after an em-dash.
+- Branch: `<type>/ACME-NNNN-<short-slug>` (e.g. `feat/ACME-1234-alb-v2-routing`).
 - Merge strategy: merge commits (preserves granular commits per ticket).
 
 ### PRs
-- Title: `<type>(<scope>): <summary> (LX-NNNN)`. Scope is `modules` or the specific module name.
+- Title: `<type>(<scope>): <summary> (ACME-NNNN)`. Scope is `modules` or the specific module name.
 - Body: `## JIRA` section linking the ticket, plus summary + manual test plan.
 - No `Closes` / `Fixes` keywords (org doesn't use auto-transitions).
 - Test plan must include `terraform plan` against a synthetic fixture for the changed module.
@@ -58,10 +58,10 @@ The tracker config lives at the workspace level (`../workspace-CONTEXT.md`) sinc
 
 **Phase 2 — module library buildout, in progress.** v1 of the core stack (VPC, ALB, ECS service, RDS) shipped through Phase 1; Phase 2 is hardening + adding the secondary modules (CloudFront, S3 site hosting, EventBridge wiring).
 
-**Active ticket:** [LX-1234](../tickets/LX-1234-fix-lb-routing.md) — ALB rule priority fix, merged into modules, awaiting env-side rollout.
+**Active ticket:** [ACME-1234](../tickets/ACME-1234-fix-lb-routing.md) — ALB rule priority fix, merged into modules, awaiting env-side rollout.
 
 **Known issues / open threads:**
-- ALB module's listener-rule priority handling needs documentation (added in `modules/alb/README.md` as part of LX-1234 — verify on next read).
+- ALB module's listener-rule priority handling needs documentation (added in `modules/alb/README.md` as part of ACME-1234 — verify on next read).
 - VPC module's `nat_gateway_strategy` flag is binary (single vs. per-AZ); a future ticket may want a per-subnet override but no concrete demand yet.
 
 ---

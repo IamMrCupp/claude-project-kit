@@ -133,9 +133,9 @@ teardown() { bootstrap_teardown; }
 }
 
 @test "dry-run shows tracker placeholder substitutions for CONTEXT.md" {
-  run "$BOOTSTRAP" --dry-run --tracker jira --jira-project LX "$TEST_WF"
+  run "$BOOTSTRAP" --dry-run --tracker jira --jira-project ACME "$TEST_WF"
   [ "$status" -eq 0 ]
   [[ "$output" == *"substitute tracker placeholders in CONTEXT.md"* ]]
   [[ "$output" == *"{{TRACKER_TYPE}}"*"jira"* ]]
-  [[ "$output" == *"{{TRACKER_KEY}}"*"LX"* ]]
+  [[ "$output" == *"{{TRACKER_KEY}}"*"ACME"* ]]
 }

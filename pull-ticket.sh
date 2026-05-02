@@ -32,7 +32,7 @@ For trackers without a CLI fallback, writes a placeholder stub for
 manual fill.
 
 Arguments:
-  <KEY>                  The ticket key (e.g. LX-1234, INFRA-42, 123 for
+  <KEY>                  The ticket key (e.g. ACME-1234, INFRA-42, 123 for
                          GitHub Issues).
 
 Options:
@@ -56,7 +56,7 @@ Tracker support:
 
 Examples:
   cd ~/Code/my-terraform-modules
-  ~/Code/claude-project-kit/pull-ticket.sh LX-1234
+  ~/Code/claude-project-kit/pull-ticket.sh ACME-1234
 
   ~/Code/claude-project-kit/pull-ticket.sh 42 \\
       --working-folder ~/Documents/Claude/Projects/my-project
@@ -132,7 +132,7 @@ fi
 
 # Parse tracker config from the CONTEXT file. Looking for lines like
 #   - **Tracker type:** jira
-#   - **Project / team key:** LX
+#   - **Project / team key:** ACME
 TRACKER_TYPE="$(grep -E '^- \*\*Tracker type:\*\*' "$CONTEXT_FILE" | sed -E 's/.*\*\*Tracker type:\*\*[[:space:]]+//' | head -1)"
 TRACKER_KEY="$(grep -E '^- \*\*Project / team key:\*\*' "$CONTEXT_FILE" | sed -E 's/.*\*\*Project \/ team key:\*\*[[:space:]]+//' | head -1)"
 

@@ -45,9 +45,9 @@ A workspace folder lives at `~/<projects-root>/<initiative>/`:
 
 ### D2. Tickets — workspace root, `<KEY>-<slug>.md`, archive on close
 
-Tickets live at `<initiative>/tickets/<KEY>-<slug>.md`, e.g. `tickets/LX-1234-fix-lb-routing.md`.
+Tickets live at `<initiative>/tickets/<KEY>-<slug>.md`, e.g. `tickets/ACME-1234-fix-lb-routing.md`.
 
-- **Location:** workspace root (not per-repo). One ticket lives in one place even when the work spans multiple repos — avoids duplication and "which `tickets/LX-1234.md` is current?" confusion.
+- **Location:** workspace root (not per-repo). One ticket lives in one place even when the work spans multiple repos — avoids duplication and "which `tickets/ACME-1234.md` is current?" confusion.
 - **Naming:** `<KEY>-<short-slug>.md`. The key is canonical and stable; the slug is for skim-readability when listing the directory. Either form alone wins on one axis and loses on the other; combining gets both.
 - **Lifecycle:** when the upstream tracker ticket closes, the file moves to `<initiative>/tickets/archive/`. Keeps the active list scannable; preserves history for grepping.
 

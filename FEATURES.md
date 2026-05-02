@@ -88,19 +88,19 @@ The signal list comes from [ADR-0001 §A.6](docs/adr/0001-multi-repo-folder-mode
 # First repo in a new workspace
 cd ~/Code/my-terraform-modules
 ~/Code/claude-project-kit/bootstrap.sh --workspace \
-  ~/Documents/Claude/Projects/lx-platform/ \
-  --tracker jira --jira-project LX --ci atlantis
+  ~/Documents/Claude/Projects/acme-platform/ \
+  --tracker jira --jira-project ACME --ci atlantis
 
 # Second repo joins the same workspace
 cd ~/Code/my-terraform-envs
 ~/Code/claude-project-kit/bootstrap.sh --workspace \
-  ~/Documents/Claude/Projects/lx-platform/ \
-  --tracker jira --jira-project LX --ci atlantis
+  ~/Documents/Claude/Projects/acme-platform/ \
+  --tracker jira --jira-project ACME --ci atlantis
 ```
 
 Re-running against an existing workspace (detected via `workspace-CONTEXT.md` presence) is idempotent: per-repo subfolders get added without recreating workspace files. User edits to `workspace-CONTEXT.md` survive.
 
-Tracker config flags (`--tracker jira --jira-project LX`) substitute into `workspace-CONTEXT.md`'s Tracker Configuration section AND into each per-repo `CONTEXT.md`. MCP availability and tracker link stay as prose hints for SEED-PROMPT or human fill.
+Tracker config flags (`--tracker jira --jira-project ACME`) substitute into `workspace-CONTEXT.md`'s Tracker Configuration section AND into each per-repo `CONTEXT.md`. MCP availability and tracker link stay as prose hints for SEED-PROMPT or human fill.
 
 Auto-memory keys to the repo (`~/.claude/projects/<sanitized-repo-path>/memory/`), not the workspace path. Workspace is a working-folder layout choice; memory stays per-repo.
 
@@ -143,12 +143,12 @@ Two entry points fetch tracker data and seed the scratchpad — both **read-only
 Both refuse to overwrite an existing scratchpad with the same `<KEY>-` prefix (active or archived) — your working notes survive a re-pull.
 
 ```bash
-# In Claude:  /pull-ticket LX-1234
+# In Claude:  /pull-ticket ACME-1234
 
 # In a terminal:
 cd ~/Code/my-terraform-modules
-~/Code/claude-project-kit/pull-ticket.sh LX-1234
-# → writes <workspace>/tickets/LX-1234-fix-lb-routing.md (or stub if no CLI)
+~/Code/claude-project-kit/pull-ticket.sh ACME-1234
+# → writes <workspace>/tickets/ACME-1234-fix-lb-routing.md (or stub if no CLI)
 ```
 
 `templates/workspace/ticket.md` defines the file shape: tracker link, status, summary, AC, working notes, branches/PRs across repos (for multi-repo tickets), decisions, cross-references. When the upstream ticket closes, move the file to `tickets/archive/` with a 1-2 sentence "what shipped" note — the archive becomes a grep-able record of what the team delivered for each ticket.
@@ -249,7 +249,7 @@ Six slash commands stage in `<working-folder>/.claude/commands/`. Same install p
 Two filled-in reference examples in `examples/`:
 
 - **`widget-tracker/`** — a fictional Go CLI mid-Phase 1 (single-repo working folder). `CONTEXT.md`, `plan.md`, `phase-0-checklist.md`, `phase-1-checklist.md`, `SESSION-LOG.md`, `implementation.md`, plus a `memory-example/` snapshot. Best reference for phase-driven solo work.
-- **`lx-platform/`** — a fictional AWS Terraform multi-repo workspace driven by JIRA tickets. `workspace-CONTEXT.md` + per-repo subfolders (`terraform-modules/`, `terraform-envs/`) with their own `CONTEXT.md` / `SESSION-LOG.md`, an active ticket scratchpad ([LX-1234](examples/lx-platform/tickets/LX-1234-fix-lb-routing.md)) showing branches/PRs across both repos, and an archived ticket ([LX-1100](examples/lx-platform/tickets/archive/LX-1100-add-vpc-module.md)). Best reference for ticket-driven multi-repo work.
+- **`acme-platform/`** — a fictional AWS Terraform multi-repo workspace driven by JIRA tickets. `workspace-CONTEXT.md` + per-repo subfolders (`terraform-modules/`, `terraform-envs/`) with their own `CONTEXT.md` / `SESSION-LOG.md`, an active ticket scratchpad ([ACME-1234](examples/acme-platform/tickets/ACME-1234-fix-lb-routing.md)) showing branches/PRs across both repos, and an archived ticket ([ACME-1100](examples/acme-platform/tickets/archive/ACME-1100-add-vpc-module.md)). Best reference for ticket-driven multi-repo work.
 
 Read, don't copy.
 

@@ -16,7 +16,7 @@ teardown() { bootstrap_teardown; }
 }
 
 @test "--workspace creates workspace dir, per-repo subfolder, and tickets/archive/" {
-  WS="$TEST_TMP/lx-platform"
+  WS="$TEST_TMP/acme-platform"
   run "$BOOTSTRAP" --workspace "$WS" --skip-memory
   [ "$status" -eq 0 ]
 
@@ -28,7 +28,7 @@ teardown() { bootstrap_teardown; }
 }
 
 @test "--workspace copies workspace-CONTEXT.md to workspace root" {
-  WS="$TEST_TMP/lx-platform"
+  WS="$TEST_TMP/acme-platform"
   run "$BOOTSTRAP" --workspace "$WS" --skip-memory
   [ "$status" -eq 0 ]
 
@@ -37,7 +37,7 @@ teardown() { bootstrap_teardown; }
 }
 
 @test "--workspace copies workspace-plan.md to workspace root" {
-  WS="$TEST_TMP/lx-platform"
+  WS="$TEST_TMP/acme-platform"
   run "$BOOTSTRAP" --workspace "$WS" --skip-memory
   [ "$status" -eq 0 ]
 
@@ -47,7 +47,7 @@ teardown() { bootstrap_teardown; }
 }
 
 @test "--workspace workspace-CONTEXT.md has Current Initiative + Past initiatives sections" {
-  WS="$TEST_TMP/lx-platform"
+  WS="$TEST_TMP/acme-platform"
   run "$BOOTSTRAP" --workspace "$WS" --skip-memory
   [ "$status" -eq 0 ]
 
@@ -56,7 +56,7 @@ teardown() { bootstrap_teardown; }
 }
 
 @test "--workspace populates per-repo subfolder with standard templates" {
-  WS="$TEST_TMP/lx-platform"
+  WS="$TEST_TMP/acme-platform"
   run "$BOOTSTRAP" --workspace "$WS" --skip-memory
   [ "$status" -eq 0 ]
 
@@ -69,7 +69,7 @@ teardown() { bootstrap_teardown; }
 }
 
 @test "--workspace does NOT copy workspace-only templates to per-repo subfolder" {
-  WS="$TEST_TMP/lx-platform"
+  WS="$TEST_TMP/acme-platform"
   run "$BOOTSTRAP" --workspace "$WS" --skip-memory
   [ "$status" -eq 0 ]
 
@@ -79,7 +79,7 @@ teardown() { bootstrap_teardown; }
 }
 
 @test "--workspace re-run against existing workspace adds new repo without recreating workspace files" {
-  WS="$TEST_TMP/lx-platform"
+  WS="$TEST_TMP/acme-platform"
 
   # First run — creates workspace
   run "$BOOTSTRAP" --workspace "$WS" --skip-memory
@@ -111,7 +111,7 @@ teardown() { bootstrap_teardown; }
 }
 
 @test "--workspace errors when per-repo subfolder is non-empty (without --force)" {
-  WS="$TEST_TMP/lx-platform"
+  WS="$TEST_TMP/acme-platform"
   REPO_NAME="$(basename "$TEST_REPO")"
   mkdir -p "$WS/$REPO_NAME"
   echo "leftover" > "$WS/$REPO_NAME/CONTEXT.md"
@@ -122,7 +122,7 @@ teardown() { bootstrap_teardown; }
 }
 
 @test "--workspace --force proceeds past non-empty per-repo subfolder" {
-  WS="$TEST_TMP/lx-platform"
+  WS="$TEST_TMP/acme-platform"
   REPO_NAME="$(basename "$TEST_REPO")"
   mkdir -p "$WS/$REPO_NAME"
   echo "leftover" > "$WS/$REPO_NAME/leftover.txt"
@@ -133,7 +133,7 @@ teardown() { bootstrap_teardown; }
 }
 
 @test "--workspace --dry-run previews workspace creation without writing" {
-  WS="$TEST_TMP/lx-platform"
+  WS="$TEST_TMP/acme-platform"
   run "$BOOTSTRAP" --workspace "$WS" --skip-memory --dry-run
   [ "$status" -eq 0 ]
   [[ "$output" == *"DRY RUN"* ]]
@@ -146,7 +146,7 @@ teardown() { bootstrap_teardown; }
 }
 
 @test "--workspace --dry-run against existing workspace reports no workspace-level changes" {
-  WS="$TEST_TMP/lx-platform"
+  WS="$TEST_TMP/acme-platform"
   mkdir -p "$WS"
   touch "$WS/workspace-CONTEXT.md"
 
@@ -157,7 +157,7 @@ teardown() { bootstrap_teardown; }
 }
 
 @test "--workspace summary lines reflect workspace mode" {
-  WS="$TEST_TMP/lx-platform"
+  WS="$TEST_TMP/acme-platform"
   REPO_NAME="$(basename "$TEST_REPO")"
   run "$BOOTSTRAP" --workspace "$WS" --skip-memory
   [ "$status" -eq 0 ]
@@ -168,7 +168,7 @@ teardown() { bootstrap_teardown; }
 }
 
 @test "--workspace seeds memory under repo-keyed path (not workspace-keyed)" {
-  WS="$TEST_TMP/lx-platform"
+  WS="$TEST_TMP/acme-platform"
   run "$BOOTSTRAP" --workspace "$WS"
   [ "$status" -eq 0 ]
 
@@ -181,23 +181,23 @@ teardown() { bootstrap_teardown; }
 # --- Phase 4 D.1 — tracker config substitution into workspace-CONTEXT.md ---
 
 @test "--workspace --tracker jira fills tracker config in workspace-CONTEXT.md" {
-  WS="$TEST_TMP/lx-platform"
+  WS="$TEST_TMP/acme-platform"
   REPO_NAME="$(basename "$TEST_REPO")"
-  run "$BOOTSTRAP" --workspace "$WS" --tracker jira --jira-project LX --skip-memory
+  run "$BOOTSTRAP" --workspace "$WS" --tracker jira --jira-project ACME --skip-memory
   [ "$status" -eq 0 ]
 
   grep -q '^- \*\*Tracker type:\*\* jira$' "$WS/workspace-CONTEXT.md"
-  grep -q '^- \*\*Project / team key:\*\* LX$' "$WS/workspace-CONTEXT.md"
+  grep -q '^- \*\*Project / team key:\*\* ACME$' "$WS/workspace-CONTEXT.md"
   ! grep -q '{{TRACKER_TYPE}}' "$WS/workspace-CONTEXT.md"
   ! grep -q '{{TRACKER_KEY}}' "$WS/workspace-CONTEXT.md"
 
   # Per-repo CONTEXT.md also gets the same substitution
   grep -q '^- \*\*Tracker type:\*\* jira$' "$WS/$REPO_NAME/CONTEXT.md"
-  grep -q '^- \*\*Project / team key:\*\* LX$' "$WS/$REPO_NAME/CONTEXT.md"
+  grep -q '^- \*\*Project / team key:\*\* ACME$' "$WS/$REPO_NAME/CONTEXT.md"
 }
 
 @test "--workspace first-repo run prints per-repo bootstrap guidance" {
-  WS="$TEST_TMP/lx-platform"
+  WS="$TEST_TMP/acme-platform"
   run "$BOOTSTRAP" --workspace "$WS" --skip-memory
   [ "$status" -eq 0 ]
   [[ "$output" == *"Workspace mode — per-repo bootstrap required"* ]]
@@ -207,7 +207,7 @@ teardown() { bootstrap_teardown; }
 }
 
 @test "--workspace second-repo run prints per-repo guidance with reuse framing" {
-  WS="$TEST_TMP/lx-platform"
+  WS="$TEST_TMP/acme-platform"
 
   # First run — establishes workspace
   run "$BOOTSTRAP" --workspace "$WS" --skip-memory
@@ -233,17 +233,17 @@ teardown() { bootstrap_teardown; }
 }
 
 @test "--workspace re-run against existing workspace does not re-substitute tracker config" {
-  WS="$TEST_TMP/lx-platform"
+  WS="$TEST_TMP/acme-platform"
 
-  # First run with jira/LX
-  run "$BOOTSTRAP" --workspace "$WS" --tracker jira --jira-project LX --skip-memory
+  # First run with jira/ACME
+  run "$BOOTSTRAP" --workspace "$WS" --tracker jira --jira-project ACME --skip-memory
   [ "$status" -eq 0 ]
-  grep -q '^- \*\*Project / team key:\*\* LX$' "$WS/workspace-CONTEXT.md"
+  grep -q '^- \*\*Project / team key:\*\* ACME$' "$WS/workspace-CONTEXT.md"
 
   # User manually edits workspace-CONTEXT.md
-  sed -i.bak 's/Project \/ team key:\*\* LX/Project \/ team key:\*\* LX-EDITED/' "$WS/workspace-CONTEXT.md"
+  sed -i.bak 's/Project \/ team key:\*\* ACME/Project \/ team key:\*\* ACME-EDITED/' "$WS/workspace-CONTEXT.md"
   rm -f "$WS/workspace-CONTEXT.md.bak"
-  grep -q 'LX-EDITED' "$WS/workspace-CONTEXT.md"
+  grep -q 'ACME-EDITED' "$WS/workspace-CONTEXT.md"
 
   # Bootstrap a sibling repo into the same workspace with different tracker key
   REPO2="$TEST_TMP/repo2"
@@ -255,6 +255,6 @@ teardown() { bootstrap_teardown; }
   [ "$status" -eq 0 ]
 
   # User's edit survives — workspace-CONTEXT.md was not overwritten
-  grep -q 'LX-EDITED' "$WS/workspace-CONTEXT.md"
+  grep -q 'ACME-EDITED' "$WS/workspace-CONTEXT.md"
   ! grep -q 'DIFFERENT' "$WS/workspace-CONTEXT.md"
 }

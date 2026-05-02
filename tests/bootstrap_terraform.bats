@@ -88,7 +88,7 @@ teardown() { bootstrap_teardown; }
 
 @test "--workspace mode does not emit Terraform sibling-repo hint" {
   : > "$TEST_REPO/main.tf"
-  WS="$TEST_TMP/lx-platform"
+  WS="$TEST_TMP/acme-platform"
   run "$BOOTSTRAP" --workspace "$WS" --skip-memory
   [ "$status" -eq 0 ]
   [[ "$output" != *"Terraform-shaped repo detected"* ]]

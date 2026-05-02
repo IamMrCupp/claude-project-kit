@@ -107,8 +107,8 @@ Examples:
   # Workspace mode (multi-repo initiative — adds this repo to the workspace)
   cd ~/Code/my-terraform-modules
   ~/Code/claude-project-kit/bootstrap.sh --workspace \\
-    ~/Documents/Claude/Projects/lx-platform/ \\
-    --tracker jira --jira-project LX --ci atlantis
+    ~/Documents/Claude/Projects/acme-platform/ \\
+    --tracker jira --jira-project ACME --ci atlantis
 
 After running, edit the copied files (placeholders marked {{LIKE_THIS}}).
 Most common memory placeholders are auto-filled; any that couldn't be
