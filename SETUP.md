@@ -186,6 +186,23 @@ For a scaffolded version of this pass, paste **Prompt 3 ("Wrapping up a session"
 
 ---
 
+## 8. Closing a phase
+
+When all the items in `phase-N-checklist.md` have shipped, run **`/close-phase`** (or paste **Prompt 7** from [PROMPTS.md](PROMPTS.md)) to draft the closure paperwork — checklist tick-throughs, `plan.md` status bump, `CONTEXT.md` update, acceptance-results archive, SESSION-LOG entry.
+
+> **Heads-up: `/close-phase` enforces acceptance tests.** It will refuse to close the phase if `acceptance-test-results.md` is empty AND the checklist's `## Phase exit` block doesn't carry an explicit skip-rationale line. This is by design — see [`CONVENTIONS.md`](CONVENTIONS.md) → "Acceptance tests at phase boundaries". Two paths to satisfy it:
+>
+> - **Run your acceptance tests** and fill in the Goal / Setup / Steps / Expected / Actual / Result fields in `acceptance-test-results.md` before invoking `/close-phase`.
+> - **Or, if the phase has nothing to acceptance-test** (pure-CI work, internal refactor with zero user-visible change), add a single line to the checklist's `## Phase exit` block:
+>
+>   ```
+>   Acceptance tests intentionally skipped — rationale: {{one sentence}}
+>   ```
+>
+>   `/close-phase` will surface the rationale verbatim in the SESSION-LOG entry it drafts. Skipping without a rationale is a convention violation, not a customization.
+
+---
+
 ## Manual alternative
 
 If you can't run `bootstrap.sh` (no Bash available, restricted environment, or you just want to see what it does) **or** you'd rather fill the templates by hand instead of running the seed prompt, perform the same work manually.

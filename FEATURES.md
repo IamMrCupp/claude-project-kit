@@ -193,7 +193,7 @@ The working-folder template includes a planning structure that scales from weeke
 - **`plan.md`** — phases at a high level. One section per phase, with goals and exit criteria.
 - **`phase-N-checklist.md`** — current phase's task list. Tick boxes, branch + PR per item.
 - **`implementation.md`** — running design / decision log for the active phase.
-- **`acceptance-test-results.md`** — end-of-phase verification record.
+- **`acceptance-test-results.md`** — end-of-phase verification record. **Required at every phase exit** — `/close-phase` refuses to close without it. See [`CONVENTIONS.md`](CONVENTIONS.md) → "Acceptance tests at phase boundaries" for the rule and the explicit-skip escape hatch.
 - **`research.md`** — exploratory notes, references, dead ends.
 
 Bootstrap renames the phase-N template to `phase-0-checklist.md` so you can start filling it immediately. Subsequent phases follow the `phase-1-checklist.md`, `phase-2-checklist.md` pattern — the `/close-phase` slash command handles the writeback when one wraps.
@@ -237,7 +237,7 @@ Six slash commands stage in `<working-folder>/.claude/commands/`. Same install p
 
 - **`/session-start`** — packages Prompt 1 from `PROMPTS.md`. Loads `CONTEXT.md`, `SESSION-LOG.md`, and the current phase checklist; hands back a 3–5 bullet grounding summary. Use at the start of a fresh session.
 - **`/refresh-context`** — re-reads the working folder mid-session, after a `/close-phase` or `/session-end` writeback or when a long session has drifted. Hands back a delta read against the latest state.
-- **`/close-phase`** — runs the phase-close writeback (checklist tick, `plan.md` status bump, `CONTEXT.md` update, optional acceptance-results archive). Takes a phase number or infers from `CONTEXT.md`.
+- **`/close-phase`** — packages Prompt 7 from `PROMPTS.md`. Runs the phase-close writeback (checklist tick, `plan.md` status bump, `CONTEXT.md` update, acceptance-results archive). Refuses to close without a non-empty `acceptance-test-results.md` or an explicit skip-rationale line — see [`CONVENTIONS.md`](CONVENTIONS.md) → "Acceptance tests at phase boundaries". Takes a phase number or infers from `CONTEXT.md`.
 - **`/session-end`** — packages Prompt 3 from `PROMPTS.md`. Drafts the four end-of-session updates (SESSION-LOG entry, CONTEXT bump, checklist scan, memory candidates) and waits for confirmation before writing.
 - **`/session-handoff`** — same drafting work as `/session-end`, but **writes immediately** without a confirmation gate. Use when waiting risks losing work: switching to Claude desktop, context-window pressure, abrupt pause. Persistence > polish; review on the next `/session-start`. Pairs with `bootstrap.sh`'s automatic Bootstrap entry — between the two, the bootstrap-and-seed-prompt session is durable end-to-end even if the user pauses without a clean wrap-up.
 - **`/pull-ticket <KEY>`** — packages Prompt 6 from `PROMPTS.md`. Fetches a tracker ticket (JIRA / GitHub Issues / Linear / GitLab / Shortcut) via the relevant MCP, creates `tickets/<KEY>-<slug>.md` from the kit's ticket template, updates `workspace-CONTEXT.md` "Active tickets" list, stages a `SESSION-LOG.md` line. Read-only against the tracker. See [Per-ticket scratchpads](#per-ticket-scratchpads) for the full flow.
