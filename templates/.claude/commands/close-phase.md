@@ -28,6 +28,18 @@ Close phase $ARGUMENTS of this project. If no phase number was given, read `CONT
 
 The working-folder path comes from `reference_ai_working_folder.md` in auto-memory. If that's not set, ask the user before guessing.
 
+## Optional pre-step — offer /run-acceptance
+
+Before the enforcement check, scan the phase checklist's `## Acceptance testing` section for unchecked items (`- [ ]`) and check whether `acceptance-test-results.md` has any Result fields still reading `⏳ Pending`. If either signal is present, propose running `/run-acceptance` first:
+
+> "Phase $ARGUMENTS has N acceptance test(s) still pending. Want me to run `/run-acceptance` to attempt the automatable ones and post results back to both `acceptance-test-results.md` and the open PR body before closing? (yes / no)"
+
+If the user accepts: invoke `/run-acceptance` (Prompt 8 / `templates/.claude/commands/run-acceptance.md`) first, then resume `/close-phase` at the enforcement check below — the writebacks may now satisfy it.
+
+If the user declines: continue to the enforcement check. If it fails, refuse per its rules.
+
+This is propose-don't-execute. Don't silently run `/run-acceptance` — it can mutate the PR body.
+
 ## Enforcement — acceptance tests must exist
 
 Before any of the "What to do" steps, verify the convention from `CONVENTIONS.md` → "Acceptance tests at phase boundaries". This is enforcement, not a suggestion — refuse and stop if either check fails.
@@ -40,7 +52,12 @@ Before any of the "What to do" steps, verify the convention from `CONVENTIONS.md
    - the phase checklist's `## Phase exit` block contains a single line matching the literal pattern `Acceptance tests intentionally skipped — rationale: <something>`.
 
    If neither is true, refuse:
-   > "Cannot close phase $ARGUMENTS: no acceptance test results found and no explicit skip-rationale recorded. Either fill in `acceptance-test-results.md` and re-run, or — if this phase legitimately has nothing to acceptance-test — add a single line to the checklist's `## Phase exit` block reading `Acceptance tests intentionally skipped — rationale: <one sentence>`. See CONVENTIONS.md → 'Acceptance tests at phase boundaries' for the rule."
+   > "Cannot close phase $ARGUMENTS: no acceptance test results found and no explicit skip-rationale recorded. Three paths to satisfy this:
+   > 1. Run `/run-acceptance` to attempt the automatable tests and write results to `acceptance-test-results.md` + the open PR body.
+   > 2. Fill in `acceptance-test-results.md` by hand and re-run `/close-phase`.
+   > 3. If this phase legitimately has nothing to acceptance-test, add a single line to the checklist's `## Phase exit` block reading `Acceptance tests intentionally skipped — rationale: <one sentence>`.
+   >
+   > See CONVENTIONS.md → 'Acceptance tests at phase boundaries' for the rule."
 
 3. **If a skip-rationale line is present**, capture the rationale verbatim and surface it in the SESSION-LOG entry drafted in Step 5 below, under "Key decisions" as: `Acceptance tests intentionally skipped — <rationale>`. Do not silently elide it.
 
