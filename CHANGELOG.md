@@ -6,6 +6,27 @@ See [Upgrading an existing project](SETUP.md#upgrading-an-existing-project) for 
 
 ---
 
+## [0.31.0](https://github.com/IamMrCupp/claude-project-kit/compare/v0.30.0...v0.31.0) (2026-05-02)
+
+
+### Features
+
+* /run-acceptance + PR-body writeback as kit conventions ([b4b345e](https://github.com/IamMrCupp/claude-project-kit/commit/b4b345ec2d9b29a49f2458eed3125a683c9c2536))
+* **commands:** /close-phase offers /run-acceptance when ATs pending ([da7299d](https://github.com/IamMrCupp/claude-project-kit/commit/da7299d94a752225e1b7450aa94eb3166c9c2a23))
+* **commands:** /run-acceptance attempts automatable ATs and proposes writebacks ([52288cb](https://github.com/IamMrCupp/claude-project-kit/commit/52288cbbcc52a1338423d9fb8e466e29a30bb9c8))
+
+
+### Documentation
+
+* **conventions:** add acceptance-test execution + PR-body writeback rules ([61f9743](https://github.com/IamMrCupp/claude-project-kit/commit/61f9743c7a1669f4e34037320815be36a0e61500))
+* **prompts:** add Prompt 8 mirroring /run-acceptance ([e59ab53](https://github.com/IamMrCupp/claude-project-kit/commit/e59ab534fff614fab4df4cfb57fed41fe65b01d5))
+* surface AT execution + writeback in FEATURES.md and SETUP.md ([d0895a9](https://github.com/IamMrCupp/claude-project-kit/commit/d0895a9b10ca98042ba92afe29670009853b4d7d))
+
+
+### Tests
+
+* bats coverage for /run-acceptance + writeback conventions ([d7fcbac](https://github.com/IamMrCupp/claude-project-kit/commit/d7fcbacd3780181c673f7425bb5c3b4e35bd5769))
+
 ## [0.30.0](https://github.com/IamMrCupp/claude-project-kit/compare/v0.29.3...v0.30.0) (2026-05-02)
 
 
