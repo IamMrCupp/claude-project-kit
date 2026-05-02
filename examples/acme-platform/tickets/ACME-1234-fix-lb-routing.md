@@ -1,6 +1,6 @@
-# LX-1234 — Fix ALB host-header routing for /api/v2
+# ACME-1234 — Fix ALB host-header routing for /api/v2
 
-- **Tracker:** [LX-1234](https://example.atlassian.net/browse/LX-1234)
+- **Tracker:** [ACME-1234](https://example.atlassian.net/browse/ACME-1234)
 - **Status:** In progress — sync with tracker periodically; tracker is source of truth.
 - **Created:** 2026-04-23
 - **Last touched:** 2026-04-25
@@ -40,17 +40,17 @@ Multi-repo tickets accumulate work across repos. List branches and PRs here so t
 
 | Repo | Branch | PR | Status |
 |---|---|---|---|
-| `terraform-modules` | `feat/LX-1234-alb-v2-routing` | #218 | merged 2026-04-24, tagged `v1.4.0` |
-| `terraform-envs` | `chore/LX-1234-bump-alb-staging` | #495 | merged 2026-04-24, applied via Atlantis |
-| `terraform-envs` | `chore/LX-1234-bump-alb-prod` | #501 | open — soak window ends 2026-04-25 17:00 UTC |
+| `terraform-modules` | `feat/ACME-1234-alb-v2-routing` | #218 | merged 2026-04-24, tagged `v1.4.0` |
+| `terraform-envs` | `chore/ACME-1234-bump-alb-staging` | #495 | merged 2026-04-24, applied via Atlantis |
+| `terraform-envs` | `chore/ACME-1234-bump-alb-prod` | #501 | open — soak window ends 2026-04-25 17:00 UTC |
 
 Commit examples (for reference when tickets reuse the same JIRA key across repos):
 
-- `feat(modules): add v2 routing rule to ALB module — LX-1234` (in `terraform-modules`)
-- `chore(envs): bump alb module to v1.4.0 in staging — LX-1234` (in `terraform-envs`)
-- `chore(envs): bump alb module to v1.4.0 in prod — LX-1234` (in `terraform-envs`)
+- `feat(modules): add v2 routing rule to ALB module — ACME-1234` (in `terraform-modules`)
+- `chore(envs): bump alb module to v1.4.0 in staging — ACME-1234` (in `terraform-envs`)
+- `chore(envs): bump alb module to v1.4.0 in prod — ACME-1234` (in `terraform-envs`)
 
-PR title pattern: `feat(modules): add v2 routing rule to ALB module (LX-1234)`. JIRA key in parens at the end of the conventional-commits subject. PR body has a `## JIRA` section linking the ticket; no `Closes` / `Fixes` keywords (this org doesn't use auto-transitions).
+PR title pattern: `feat(modules): add v2 routing rule to ALB module (ACME-1234)`. JIRA key in parens at the end of the conventional-commits subject. PR body has a `## JIRA` section linking the ticket; no `Closes` / `Fixes` keywords (this org doesn't use auto-transitions).
 
 ---
 
@@ -67,13 +67,13 @@ PR title pattern: `feat(modules): add v2 routing rule to ALB module (LX-1234)`. 
   - `terraform-modules/SESSION-LOG.md` — 2026-04-23 (root-cause + fix), 2026-04-24 (PR review feedback + tag)
   - `terraform-envs/SESSION-LOG.md` — 2026-04-24 (staging bump), 2026-04-25 (prod bump PR opened)
 - **Related tickets:**
-  - LX-1180 — original API v2 cutover (root issue masked the priority bug; surfaced once v1 fallback stopped being acceptable).
+  - ACME-1180 — original API v2 cutover (root issue masked the priority bug; surfaced once v1 fallback stopped being acceptable).
 - **Workspace context:** `../workspace-CONTEXT.md` (sibling of the `tickets/` directory after deployment)
 
 ---
 
 ## Archive note
 
-When the upstream tracker ticket closes, move this file to `../tickets/archive/`. Add a 1–2 sentence "what shipped" note here before archiving so the archive is grep-able for "what did we do for LX-1234".
+When the upstream tracker ticket closes, move this file to `../tickets/archive/`. Add a 1–2 sentence "what shipped" note here before archiving so the archive is grep-able for "what did we do for ACME-1234".
 
 (Pre-archive note goes here once the prod soak completes and the ticket is closed in JIRA.)

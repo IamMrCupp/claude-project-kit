@@ -100,7 +100,7 @@ EOF
 }
 
 @test "--trust-working-folder-root with workspace mode uses workspace parent dir" {
-  WS="$TEST_TMP/lx-platform"
+  WS="$TEST_TMP/acme-platform"
   run "$BOOTSTRAP" --workspace "$WS" --skip-memory --trust-working-folder-root
   [ "$status" -eq 0 ]
 

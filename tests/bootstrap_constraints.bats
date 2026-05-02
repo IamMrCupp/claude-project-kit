@@ -74,7 +74,7 @@ teardown() { bootstrap_teardown; }
 }
 
 @test "dry-run output never previews tracker resource creation" {
-  run "$BOOTSTRAP" --dry-run --tracker jira --jira-project LX "$TEST_WF"
+  run "$BOOTSTRAP" --dry-run --tracker jira --jira-project ACME "$TEST_WF"
   [ "$status" -eq 0 ]
   [[ "$output" != *"create issue"* ]]
   [[ "$output" != *"create label"* ]]

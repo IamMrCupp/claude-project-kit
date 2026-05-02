@@ -89,7 +89,7 @@ teardown() { bootstrap_teardown; }
 }
 
 @test "workspace first-repo bootstrap entry records workspace mode + sibling-repo step" {
-  WS="$TEST_TMP/lx-platform"
+  WS="$TEST_TMP/acme-platform"
   REPO_NAME="$(basename "$TEST_REPO")"
   run "$BOOTSTRAP" --workspace "$WS" --skip-memory
   [ "$status" -eq 0 ]
@@ -102,7 +102,7 @@ teardown() { bootstrap_teardown; }
 }
 
 @test "workspace second-repo bootstrap entry records added-repo mode" {
-  WS="$TEST_TMP/lx-platform"
+  WS="$TEST_TMP/acme-platform"
 
   # First run establishes workspace
   run "$BOOTSTRAP" --workspace "$WS" --skip-memory

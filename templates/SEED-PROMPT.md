@@ -63,7 +63,7 @@ Read in order:
    - If you see a manifest or config file you don't recognize, note it as a `[HUMAN-CONFIRM]` question rather than guessing.
 5. **CI config:** `.github/workflows/*.yml`, `.gitlab-ci.yml`, `.circleci/config.yml`, `Jenkinsfile`, `azure-pipelines.yml`.
 6. **Top-level directory layout** (one level deep) and main source tree (one or two levels — whatever the repo uses: `src/`, `lib/`, `pkg/`, `cmd/`, `internal/`, `app/`, `modules/`, `manifests/`, `roles/`, `environments/`, `terraform/`, `live/`, or the repo's own convention).
-7. **Recent git activity:** `git log --oneline -20`, `git branch -a`, `git remote -v`. **Tracker-key signal:** if commit subjects or branch names contain a JIRA-style key pattern (`[A-Z]+-\d+`, e.g. `LX-1234`, `INFRA-42`), the project is ticket-driven even if `Tracker Configuration` shows `none` — flag this for the user (see Step 2).
+7. **Recent git activity:** `git log --oneline -20`, `git branch -a`, `git remote -v`. **Tracker-key signal:** if commit subjects or branch names contain a JIRA-style key pattern (`[A-Z]+-\d+`, e.g. `ACME-1234`, `INFRA-42`), the project is ticket-driven even if `Tracker Configuration` shows `none` — flag this for the user (see Step 2).
 
 Do not read lockfiles in full (only enough to confirm ecosystem and note pinned major-version deps), `node_modules/`, `vendor/`, `.terraform/`, generated code, or files over ~1000 lines unless a specific field requires it.
 
@@ -83,7 +83,7 @@ Every field falls into exactly one of three buckets. Fill accordingly:
 - Merge strategy (from merge-commit shape in recent history)
 - Platform targets if declared in config (e.g. `engines` in package.json, `targets` in Cargo.toml)
 - **Folder shape** (single-repo vs per-repo subfolder of a workspace) — from the existence of `../workspace-CONTEXT.md`
-- **Tracker Configuration → Tracker type and Project / team key** if bootstrap.sh substituted them already (look for non-placeholder values like `jira` / `LX`); leave them as-is when correct
+- **Tracker Configuration → Tracker type and Project / team key** if bootstrap.sh substituted them already (look for non-placeholder values like `jira` / `ACME`); leave them as-is when correct
 
 **Inferable — fill with `[CLAUDE-INFERRED: <one-line reasoning>]`.** Fields that follow from code but require interpretation:
 
@@ -102,7 +102,7 @@ Every field falls into exactly one of three buckets. Fill accordingly:
 - Open questions, risks, known incidents
 - Recent decisions not visible in commits
 - **Tracker Configuration → MCP availability** — whether the relevant tracker MCP (JIRA, GitHub Issues, Linear, etc.) is installed in the user's Claude environment. Ask: "Is the {{TRACKER_TYPE}} MCP installed and authenticated for this project?"
-- **Tracker Configuration → Tracker type / project key** when bootstrap shows `none` BUT git history contains JIRA-style ticket keys (`[A-Z]+-\d+`) — the project IS ticket-driven and the user likely skipped the `--tracker` flag. Ask: "Commits reference what looks like ticket keys (e.g. `LX-1234`) — what tracker is this and what's the project key?"
+- **Tracker Configuration → Tracker type / project key** when bootstrap shows `none` BUT git history contains JIRA-style ticket keys (`[A-Z]+-\d+`) — the project IS ticket-driven and the user likely skipped the `--tracker` flag. Ask: "Commits reference what looks like ticket keys (e.g. `ACME-1234`) — what tracker is this and what's the project key?"
 - **Sibling-repo presence** — if Terraform / Terragrunt signals are present AND you're in single-repo mode (no `../workspace-CONTEXT.md`), this may indicate a sibling envs/modules repo for the same initiative. Ask: "Is there a sibling envs/modules repo for this initiative? If yes, consider re-running bootstrap with `--workspace`."
 
 If a `{{PLACEHOLDER}}` maps cleanly to a derivable fact, fill it. Otherwise replace with a `[HUMAN-CONFIRM]` marker carrying a specific question — not a generic "what is this?"

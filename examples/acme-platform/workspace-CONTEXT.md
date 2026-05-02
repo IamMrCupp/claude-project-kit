@@ -1,4 +1,4 @@
-# Workspace — lx-platform
+# Workspace — acme-platform
 **Last updated:** 2026-04-25
 
 ---
@@ -16,9 +16,9 @@ This file is private — never commit it to any repo.
 
 ## Initiative Overview
 
-The LX platform initiative builds the AWS infrastructure for the **Lighthouse** product line. It spans two repos: `terraform-modules` (reusable building blocks — VPC, ALB, ECS service, RDS, etc.) and `terraform-envs` (per-environment composition — `dev/`, `staging/`, `prod/`). Modules ship as versioned tags; envs pin specific tags via `?ref=v1.2.3` source URLs. Atlantis applies plans on PR merge.
+The ACME platform initiative builds the AWS infrastructure for the **Lighthouse** product line. It spans two repos: `terraform-modules` (reusable building blocks — VPC, ALB, ECS service, RDS, etc.) and `terraform-envs` (per-environment composition — `dev/`, `staging/`, `prod/`). Modules ship as versioned tags; envs pin specific tags via `?ref=v1.2.3` source URLs. Atlantis applies plans on PR merge.
 
-- **Initiative key (if applicable):** LX (JIRA project)
+- **Initiative key (if applicable):** ACME (JIRA project)
 - **Status:** active
 
 ---
@@ -28,9 +28,9 @@ The LX platform initiative builds the AWS infrastructure for the **Lighthouse** 
 Shared tracker config for the initiative. If a single tracker covers all repos, capture it here once instead of duplicating in each `<repo>/CONTEXT.md`.
 
 - **Tracker type:** jira
-- **Project / team key:** LX
+- **Project / team key:** ACME
 - **MCP availability:** installed
-- **Tracker link:** https://example.atlassian.net/browse/LX
+- **Tracker link:** https://example.atlassian.net/browse/ACME
 
 See `CONVENTIONS.md` (kit-level — `## Ticket-driven workflows`) for the branch / PR / commit conventions to use against a tracker.
 
@@ -50,16 +50,16 @@ See `CONVENTIONS.md` (kit-level — `## Ticket-driven workflows`) for the branch
 Active per-ticket scratchpads live under `tickets/<KEY>-<slug>.md`. Closed ticket files move to `tickets/archive/`.
 
 **Active:**
-- [LX-1234](tickets/LX-1234-fix-lb-routing.md) — ALB host-header routing breaks for `/api/v2`; fix in `modules/alb` + bump pin in `envs/staging` and `envs/prod`. Touches both repos.
+- [ACME-1234](tickets/ACME-1234-fix-lb-routing.md) — ALB host-header routing breaks for `/api/v2`; fix in `modules/alb` + bump pin in `envs/staging` and `envs/prod`. Touches both repos.
 
 **Recently archived:**
-- [LX-1100](tickets/archive/LX-1100-add-vpc-module.md) — New VPC module with reusable subnet/NAT layout. Shipped as `modules/vpc@v1.0.0`; `envs/dev` migrated as the first consumer.
+- [ACME-1100](tickets/archive/ACME-1100-add-vpc-module.md) — New VPC module with reusable subnet/NAT layout. Shipped as `modules/vpc@v1.0.0`; `envs/dev` migrated as the first consumer.
 
 ---
 
 ## Cross-repo notes
 
-- **Module → env pin convention.** Envs source modules via `git::https://...?ref=vX.Y.Z` — never `ref=main`. This means a modules change is a two-PR sequence: (1) merge + tag in `terraform-modules`, (2) bump the pin in `terraform-envs`. Same JIRA key on both PRs (e.g. `LX-1234`); commit subjects differ in scope tag (`feat(modules):` vs. `chore(envs):`).
+- **Module → env pin convention.** Envs source modules via `git::https://...?ref=vX.Y.Z` — never `ref=main`. This means a modules change is a two-PR sequence: (1) merge + tag in `terraform-modules`, (2) bump the pin in `terraform-envs`. Same JIRA key on both PRs (e.g. `ACME-1234`); commit subjects differ in scope tag (`feat(modules):` vs. `chore(envs):`).
 - **Atlantis plan on PR; apply on merge.** Both repos are wired to the same Atlantis instance. PR comments show the `terraform plan` output. Apply is gated on PR merge; rollback = revert PR → re-merge.
 - **Naming.** Modules use `lighthouse-<resource>` prefix (`lighthouse-vpc`, `lighthouse-alb`). Envs use `lighthouse-<env>-<resource>` (`lighthouse-staging-alb`).
 - **Smart Commits NOT enabled.** This org doesn't use auto-transitions; PR descriptions reference the JIRA key but don't include `Closes` / `Fixes`. Tickets are moved manually.

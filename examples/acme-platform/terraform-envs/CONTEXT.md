@@ -27,7 +27,7 @@ Per-environment composition of the Lighthouse AWS platform — `dev/`, `staging/
 
 ## Tracker Configuration
 
-The tracker config lives at the workspace level (`../workspace-CONTEXT.md`) since it covers both repos in the LX initiative. See that file for tracker type, project key, MCP availability, and link.
+The tracker config lives at the workspace level (`../workspace-CONTEXT.md`) since it covers both repos in the ACME initiative. See that file for tracker type, project key, MCP availability, and link.
 
 ---
 
@@ -35,11 +35,11 @@ The tracker config lives at the workspace level (`../workspace-CONTEXT.md`) sinc
 
 ### Git & commits
 - Conventional Commits, single line, signed off. Module-bump commits use `chore(envs):` (not `feat:` — the change is a pin, not a feature). JIRA key in subject after an em-dash.
-- Branch: `<type>/LX-NNNN-<short-slug>`. Same JIRA key as the matching `terraform-modules` PR when bumping a pin (LX-1234 in both repos).
+- Branch: `<type>/ACME-NNNN-<short-slug>`. Same JIRA key as the matching `terraform-modules` PR when bumping a pin (ACME-1234 in both repos).
 - Merge strategy: merge commits.
 
 ### PRs
-- Title: `chore(envs): bump <module> module to <vX.Y.Z> in <env> (LX-NNNN)`.
+- Title: `chore(envs): bump <module> module to <vX.Y.Z> in <env> (ACME-NNNN)`.
 - Body: `## JIRA` section linking the ticket + Atlantis plan output (auto-pasted by the bot) + a short summary.
 - Apply order: `dev` → `staging` → soak ≥ 24h → `prod`. Hard rule for any change touching ALB, IAM, or RDS.
 
@@ -58,10 +58,10 @@ The tracker config lives at the workspace level (`../workspace-CONTEXT.md`) sinc
 
 **Steady state — apply per ticket.** This repo doesn't run on phases; it runs on tickets. Each ticket touches one or more env directories; merge → Atlantis applies → next ticket.
 
-**Active ticket:** [LX-1234](../tickets/LX-1234-fix-lb-routing.md) — staging bump merged + applied 2026-04-24; prod bump PR open, soak window ends 2026-04-25 17:00 UTC.
+**Active ticket:** [ACME-1234](../tickets/ACME-1234-fix-lb-routing.md) — staging bump merged + applied 2026-04-24; prod bump PR open, soak window ends 2026-04-25 17:00 UTC.
 
 **Known issues / open threads:**
-- `prod-dr/` (us-west-2 DR setup) is still on `lighthouse-vpc@v1.0.0` — needs the `v1.0.1` CIDR-default fix from LX-1100. Low priority since DR doesn't see real traffic, but the divergence will eventually bite.
+- `prod-dr/` (us-west-2 DR setup) is still on `lighthouse-vpc@v1.0.0` — needs the `v1.0.1` CIDR-default fix from ACME-1100. Low priority since DR doesn't see real traffic, but the divergence will eventually bite.
 
 ---
 

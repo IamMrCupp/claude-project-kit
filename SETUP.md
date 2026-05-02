@@ -227,7 +227,7 @@ Every template uses `{{PLACEHOLDER}}` markers. Search-and-replace in your editor
 - `{{ONE_PARAGRAPH_DESCRIPTION}}` — what the project is, in plain English
 - `{{PLATFORM_TARGETS}}` — macOS / Linux / Windows / web / etc.
 
-For fully filled-in references, see [`examples/widget-tracker/CONTEXT.md`](examples/widget-tracker/CONTEXT.md) (a fictional Go CLI single-repo project, mid-Phase 1) and [`examples/lx-platform/`](examples/lx-platform/) (a fictional Terraform multi-repo workspace driven by JIRA tickets, with active + archived ticket scratchpads).
+For fully filled-in references, see [`examples/widget-tracker/CONTEXT.md`](examples/widget-tracker/CONTEXT.md) (a fictional Go CLI single-repo project, mid-Phase 1) and [`examples/acme-platform/`](examples/acme-platform/) (a fictional Terraform multi-repo workspace driven by JIRA tickets, with active + archived ticket scratchpads).
 
 ---
 
@@ -295,7 +295,7 @@ When a single piece of work spans multiple repos (e.g. Terraform environment def
 
 Workspace mode supports two patterns at the same layout — pick the framing that matches your work:
 
-- **Single-initiative workspace** — the workspace exists for one piece of work spanning multiple repos (e.g. "ship LX-1234 across envs + modules"). Once that work ships, the workspace's lifecycle ends. Use this for short-lived, scoped multi-repo changes.
+- **Single-initiative workspace** — the workspace exists for one piece of work spanning multiple repos (e.g. "ship ACME-1234 across envs + modules"). Once that work ships, the workspace's lifecycle ends. Use this for short-lived, scoped multi-repo changes.
 - **Long-running multi-initiative workspace** — the workspace is a persistent program (e.g. "platform-infra", "platform observability"), hosting a sequence of initiatives over months or years. The active initiative changes over time; past initiatives are chronicled in `workspace-CONTEXT.md`'s "Past initiatives" section and `workspace-plan.md`'s "Completed initiatives" section.
 
 The templates support both. For single-initiative use, fill in "Current Initiative" once and leave "Past initiatives" empty. For long-running use, update "Current Initiative" each time the active piece of work changes; old entries roll into "Past initiatives". `workspace-plan.md` mirrors per-repo `plan.md` at workspace scope — it's where initiative scope notes, planned-but-not-started work, and completed-initiative chronicles live.
@@ -323,12 +323,12 @@ Bootstrap detects the existing workspace (via the presence of `workspace-CONTEXT
 
 ### Pulling a ticket into the workspace
 
-Once a workspace is set up with tracker config (`--tracker jira --jira-project LX`), the `/pull-ticket <KEY>` slash command (in `templates/.claude/commands/`) or the `pull-ticket.sh <KEY>` helper script at the kit root fetch ticket data from the configured tracker and seed `tickets/<KEY>-<slug>.md`. Read-only against the tracker — fetches summary / AC / status; never creates, edits, transitions, or comments.
+Once a workspace is set up with tracker config (`--tracker jira --jira-project ACME`), the `/pull-ticket <KEY>` slash command (in `templates/.claude/commands/`) or the `pull-ticket.sh <KEY>` helper script at the kit root fetch ticket data from the configured tracker and seed `tickets/<KEY>-<slug>.md`. Read-only against the tracker — fetches summary / AC / status; never creates, edits, transitions, or comments.
 
 ```bash
-# In Claude:  /pull-ticket LX-1234
+# In Claude:  /pull-ticket ACME-1234
 # In a terminal:
-~/Code/claude-project-kit/pull-ticket.sh LX-1234
+~/Code/claude-project-kit/pull-ticket.sh ACME-1234
 ```
 
 Idempotence: both refuse to overwrite an existing scratchpad with the same `<KEY>-` prefix (active or archived). Re-pull by removing or archiving the old file first, or do it from Claude (the slash command can re-pull if you confirm).
@@ -387,7 +387,7 @@ Target shape per [ADR-0001](docs/adr/0001-multi-repo-folder-model.md):
 ### Steps
 
 ```bash
-INITIATIVE=<initiative-name>                   # e.g. lx-platform
+INITIATIVE=<initiative-name>                   # e.g. acme-platform
 PROJECTS_ROOT=~/Documents/Claude/Projects      # wherever you keep working folders
 REPO_A=<existing-folder-name>                  # the working folder you're upgrading
 
