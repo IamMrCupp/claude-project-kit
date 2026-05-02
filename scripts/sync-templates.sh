@@ -55,11 +55,11 @@ Examples:
   sync-templates.sh ~/Documents/Claude/Projects/my-project
 
   # Sync workspace-level templates (workspace-CONTEXT.md, workspace-plan.md)
-  sync-templates.sh --workspace ~/Documents/Claude/Projects/fdx-infrastructure
+  sync-templates.sh --workspace ~/Documents/Claude/Projects/platform-infra
 
   # Sync a per-repo subfolder under a workspace (use default mode, point
   # at the repo subfolder, NOT --workspace)
-  sync-templates.sh ~/Documents/Claude/Projects/fdx-infrastructure/terraform-envs
+  sync-templates.sh ~/Documents/Claude/Projects/platform-infra/terraform-envs
 
   # Preview without writing
   sync-templates.sh --dry-run ~/Documents/Claude/Projects/my-project
