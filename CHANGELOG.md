@@ -6,6 +6,14 @@ See [Upgrading an existing project](SETUP.md#upgrading-an-existing-project) for 
 
 ---
 
+## [0.29.2](https://github.com/IamMrCupp/claude-project-kit/compare/v0.29.1...v0.29.2) (2026-05-02)
+
+
+### Documentation
+
+* genericize multi-initiative workspace examples ([000aa5b](https://github.com/IamMrCupp/claude-project-kit/commit/000aa5b9bf7bbd4529f572a2a70672ff816a2330))
+* genericize multi-initiative workspace examples ([e5bcc7f](https://github.com/IamMrCupp/claude-project-kit/commit/e5bcc7f6684d769cb9312eabf7d157f45f33dc58))
+
 ## [0.29.1](https://github.com/IamMrCupp/claude-project-kit/compare/v0.29.0...v0.29.1) (2026-05-01)
 
 
