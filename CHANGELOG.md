@@ -6,6 +6,26 @@ See [Upgrading an existing project](SETUP.md#upgrading-an-existing-project) for 
 
 ---
 
+## [0.30.0](https://github.com/IamMrCupp/claude-project-kit/compare/v0.29.3...v0.30.0) (2026-05-02)
+
+
+### Features
+
+* **commands:** /close-phase refuses without acceptance results ([bd6bcb2](https://github.com/IamMrCupp/claude-project-kit/commit/bd6bcb2a823ad1f2e69cd3463bc9adc0650ad88f))
+* enforce acceptance tests as a mandatory phase exit criterion ([800b9b5](https://github.com/IamMrCupp/claude-project-kit/commit/800b9b53a30faf1e42561a2508fe13dac26e14dd))
+
+
+### Documentation
+
+* **conventions:** require acceptance tests at every phase exit ([aa5ecf5](https://github.com/IamMrCupp/claude-project-kit/commit/aa5ecf5e9429c42d4acf9152630777a8ff08e94a))
+* surface acceptance-tests rule in FEATURES.md and SETUP.md ([1530d9b](https://github.com/IamMrCupp/claude-project-kit/commit/1530d9bfce6030bfe1e15733969da7d279042df0))
+* **templates:** reinforce acceptance-tests section in phase-N-checklist ([07fb6f0](https://github.com/IamMrCupp/claude-project-kit/commit/07fb6f0b90eb00062a8a76dc2420e0f59f3cde2a))
+
+
+### Tests
+
+* bats coverage for phase-exit acceptance enforcement ([8a0f25f](https://github.com/IamMrCupp/claude-project-kit/commit/8a0f25f27a057c32b5a42603fdb30f6a8c385772))
+
 ## [0.29.3](https://github.com/IamMrCupp/claude-project-kit/compare/v0.29.2...v0.29.3) (2026-05-02)
 
 
