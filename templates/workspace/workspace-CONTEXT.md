@@ -18,7 +18,7 @@ This file is private — never commit it to any repo.
 
 {{ONE_PARAGRAPH_DESCRIPTION — what this workspace is, the program/team/scope it represents, and why these repos belong together. Persists across initiatives — write the workspace's enduring purpose, not the current piece of work.}}
 
-- **Program / team:** {{e.g. Platform, Internal Infrastructure, Data}}
+- **Program / team:** {{e.g. Platform, Cloud Infrastructure, Data}}
 - **Stakeholders:** {{teams / leads / on-call rotations involved across initiatives}}
 - **Started:** {{YYYY-MM-DD}}
 
