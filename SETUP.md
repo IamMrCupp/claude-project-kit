@@ -300,7 +300,7 @@ Workspace mode supports two patterns at the same layout — pick the framing tha
 
 The templates support both. For single-initiative use, fill in "Current Initiative" once and leave "Past initiatives" empty. For long-running use, update "Current Initiative" each time the active piece of work changes; old entries roll into "Past initiatives". `workspace-plan.md` mirrors per-repo `plan.md` at workspace scope — it's where initiative scope notes, planned-but-not-started work, and completed-initiative chronicles live.
 
-If a workspace's purpose drifts substantially (e.g. an "platform-infra" workspace that started for Terraform now becoming a general program), consider whether the right move is a new workspace rather than retrofitting the old one.
+If a workspace's purpose drifts substantially (e.g. a "platform-infra" workspace that started for Terraform now becoming a general program), consider whether the right move is a new workspace rather than retrofitting the old one.
 
 ### First repo in a new workspace
 
