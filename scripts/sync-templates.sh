@@ -25,44 +25,48 @@ fi
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 KIT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 
+# shellcheck source=lib/infer.sh
+. "$SCRIPT_DIR/lib/infer.sh"
+
 usage() {
   cat <<EOF
-Usage: sync-templates.sh [options] <target-folder>
+Usage: sync-templates.sh [options] [target-folder]
 
-Sync missing kit templates into <target-folder>. Never overwrites existing
+Sync missing kit templates into the target. Never overwrites existing
 files. Reports files that exist but differ from the kit's current template
 ("outdated") so you can review and merge by hand if desired.
 
 Modes:
-  Default            Sync templates/*.md from the kit into <target-folder>.
-                     Use this on a per-repo working folder (or per-repo
-                     subfolder of a workspace).
-  --workspace        Sync templates/workspace/*.md from the kit into
-                     <target-folder>. Use this on a workspace root
-                     (the directory that contains workspace-CONTEXT.md).
+  Default            Sync templates/*.md into a working folder.
+  --workspace        Sync templates/workspace/*.md into a workspace root
+                     (directory containing workspace-CONTEXT.md).
 
 Other options:
   --dry-run          Print what would be copied; write nothing.
   -h, --help         Show this help and exit.
 
 Arguments:
-  <target-folder>    Absolute path to the target. For default mode, this is
-                     a working folder (per-repo). For --workspace mode,
-                     this is the workspace root.
+  [target-folder]    Optional. Absolute path to the target.
+                     - Default mode: working folder (per-repo).
+                     - --workspace mode: workspace root.
+
+                     If omitted, inferred from \$PWD by reading the repo's
+                     auto-memory (reference_ai_working_folder.md). Pass
+                     explicitly when not inside a kit-bootstrapped repo.
 
 Examples:
-  # Sync new templates into a single-repo working folder
-  sync-templates.sh ~/Documents/Claude/Projects/my-project
+  # Inferred mode (default) — run from a kit-bootstrapped repo
+  cd ~/Code/some-project && sync-templates.sh
 
-  # Sync workspace-level templates (workspace-CONTEXT.md, workspace-plan.md)
+  # Inferred mode (workspace) — run from anywhere inside the workspace
+  cd ~/Code/some-project && sync-templates.sh --workspace
+
+  # Explicit forms still work
+  sync-templates.sh ~/Documents/Claude/Projects/my-project
   sync-templates.sh --workspace ~/Documents/Claude/Projects/platform-infra
 
-  # Sync a per-repo subfolder under a workspace (use default mode, point
-  # at the repo subfolder, NOT --workspace)
-  sync-templates.sh ~/Documents/Claude/Projects/platform-infra/terraform-envs
-
   # Preview without writing
-  sync-templates.sh --dry-run ~/Documents/Claude/Projects/my-project
+  sync-templates.sh --dry-run
 
 Notes:
   - Default mode skips templates/.claude/ (use scripts/install-commands.sh
@@ -95,10 +99,29 @@ while [ $# -gt 0 ]; do
   esac
 done
 
+INFERRED=0
 if [ -z "$TARGET" ]; then
-  echo "error: missing <target-folder> argument" >&2
-  usage >&2
-  exit 2
+  if [ "$WORKSPACE_MODE" -eq 1 ]; then
+    TARGET="$(infer_workspace_root)"
+    if [ -z "$TARGET" ]; then
+      echo "error: couldn't find a workspace root from \$PWD." >&2
+      echo "       Either cd into a workspace (or a repo whose working folder" >&2
+      echo "       lives inside one), or pass the path explicitly:" >&2
+      echo "       sync-templates.sh --workspace <path>" >&2
+      exit 1
+    fi
+  else
+    TARGET="$(infer_working_folder)"
+    if [ -z "$TARGET" ]; then
+      echo "error: couldn't infer a working folder from \$PWD." >&2
+      echo "       Either cd into a kit-bootstrapped repo first (its" >&2
+      echo "       auto-memory must contain reference_ai_working_folder.md)," >&2
+      echo "       or pass the working-folder path explicitly:" >&2
+      echo "       sync-templates.sh <path>" >&2
+      exit 1
+    fi
+  fi
+  INFERRED=1
 fi
 
 case "$TARGET" in
@@ -108,7 +131,7 @@ esac
 
 case "$TARGET" in
   /*) ;;
-  *) echo "error: <target-folder> must be an absolute path (got: $TARGET)" >&2; exit 2 ;;
+  *) echo "error: target-folder must be an absolute path (got: $TARGET)" >&2; exit 2 ;;
 esac
 
 if [ ! -d "$TARGET" ]; then
@@ -134,7 +157,11 @@ if [ "$DRY_RUN" -eq 1 ]; then
 fi
 echo "Mode:   $MODE_LABEL"
 echo "Source: $SRC_DIR"
-echo "Target: $TARGET"
+if [ "$INFERRED" -eq 1 ]; then
+  echo "Target: $TARGET  (inferred from \$PWD)"
+else
+  echo "Target: $TARGET"
+fi
 echo
 
 COPIED=()

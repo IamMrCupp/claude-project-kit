@@ -20,13 +20,21 @@ if [ -z "${BASH_VERSION:-}" ]; then
   exit 1
 fi
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# shellcheck source=lib/infer.sh
+. "$SCRIPT_DIR/lib/infer.sh"
+
 usage() {
   cat <<EOF
-Usage: rename-workspace.sh [options] <old-workspace-path> <new-workspace-path>
+Usage: rename-workspace.sh [options] [old-workspace-path] <new-workspace-path>
 
-Rename a kit workspace folder. Both paths must be absolute. The old path must
-exist and contain workspace-CONTEXT.md (i.e. it must have been bootstrapped
-with --workspace). The new path must NOT already exist.
+Rename a kit workspace folder. The new path must NOT already exist.
+
+The old path is optional — if omitted, inferred from \$PWD (must be inside
+a workspace, or a kit-bootstrapped repo whose working folder lives inside
+one). The new path is always required since there's no good way to infer a
+destination.
 
 What happens:
   1. mv <old-workspace-path> <new-workspace-path>
@@ -42,21 +50,23 @@ Options:
   -h, --help    Show this help and exit.
 
 Examples:
-  # Rename ~/Documents/Claude/Projects/old-name to ...new-name
+  # Inferred old — run from inside the workspace or a member repo
+  cd ~/Code/some-repo && rename-workspace.sh \\
+    ~/Documents/Claude/Projects/new-name
+
+  # Explicit form — works from anywhere
   rename-workspace.sh \\
     ~/Documents/Claude/Projects/old-name \\
     ~/Documents/Claude/Projects/new-name
 
   # Preview without writing
   rename-workspace.sh --dry-run \\
-    ~/Documents/Claude/Projects/old-name \\
     ~/Documents/Claude/Projects/new-name
 EOF
 }
 
 DRY_RUN=0
-OLD=""
-NEW=""
+POSITIONAL=()
 
 while [ $# -gt 0 ]; do
   case "$1" in
@@ -64,25 +74,45 @@ while [ $# -gt 0 ]; do
     -h|--help) usage; exit 0 ;;
     --*) echo "error: unknown option: $1" >&2; usage >&2; exit 2 ;;
     *)
-      if [ -z "$OLD" ]; then
-        OLD="$1"
-      elif [ -z "$NEW" ]; then
-        NEW="$1"
-      else
-        echo "error: unexpected extra argument: $1" >&2
-        usage >&2
-        exit 2
-      fi
+      POSITIONAL+=("$1")
       shift
       ;;
   esac
 done
 
-if [ -z "$OLD" ] || [ -z "$NEW" ]; then
-  echo "error: both <old-workspace-path> and <new-workspace-path> are required" >&2
-  usage >&2
-  exit 2
-fi
+OLD=""
+NEW=""
+INFERRED_OLD=0
+
+case "${#POSITIONAL[@]}" in
+  0)
+    echo "error: <new-workspace-path> is required" >&2
+    usage >&2
+    exit 2
+    ;;
+  1)
+    # Single positional → it's NEW. OLD must be inferred.
+    NEW="${POSITIONAL[0]}"
+    OLD="$(infer_workspace_root)"
+    INFERRED_OLD=1
+    if [ -z "$OLD" ]; then
+      echo "error: couldn't infer a workspace root from \$PWD." >&2
+      echo "       Either cd into a workspace (or a repo whose working folder" >&2
+      echo "       lives inside one), or pass both paths explicitly:" >&2
+      echo "       rename-workspace.sh <old> <new>" >&2
+      exit 1
+    fi
+    ;;
+  2)
+    OLD="${POSITIONAL[0]}"
+    NEW="${POSITIONAL[1]}"
+    ;;
+  *)
+    echo "error: unexpected extra positional argument: ${POSITIONAL[2]}" >&2
+    usage >&2
+    exit 2
+    ;;
+esac
 
 # Tilde expansion (in case argument was literal "~/...")
 case "$OLD" in
@@ -133,7 +163,11 @@ if [ -d "$MEMORY_ROOT" ]; then
 fi
 
 echo "Workspace rename plan"
-echo "  Old: $OLD"
+if [ "$INFERRED_OLD" -eq 1 ]; then
+  echo "  Old: $OLD  (inferred from \$PWD)"
+else
+  echo "  Old: $OLD"
+fi
 echo "  New: $NEW"
 echo
 

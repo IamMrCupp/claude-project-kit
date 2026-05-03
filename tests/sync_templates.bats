@@ -25,12 +25,6 @@ teardown() {
   [[ "$output" == *"--dry-run"* ]]
 }
 
-@test "sync-templates.sh errors when no target arg" {
-  run "$SYNC"
-  [ "$status" -ne 0 ]
-  [[ "$output" == *"missing <target-folder> argument"* ]]
-}
-
 @test "sync-templates.sh errors on relative path" {
   run "$SYNC" relative/path
   [ "$status" -ne 0 ]
@@ -164,4 +158,112 @@ teardown() {
   [[ "$output" != *"copied SESSION-LOG.md"* ]]
   # Other files DID get copied
   [[ "$output" == *"copied plan.md"* ]] || [[ "$output" == *"copied SEED-PROMPT.md"* ]]
+}
+
+# ─── Inference tests (issue #163) ─────────────────────────────────────────
+
+# Set up an isolated $HOME with a kit-bootstrapped fake repo + working folder
+# + auto-memory whose reference_ai_working_folder.md points at the working
+# folder. Tests run sync-templates.sh from the repo with no positional arg.
+inferred_setup() {
+  TEST_HOME="$TEST_TMP/home"
+  TEST_REPO="$TEST_TMP/repo"
+  TEST_WF="$TEST_TMP/wf"
+  mkdir -p "$TEST_HOME" "$TEST_REPO" "$TEST_WF"
+  git -C "$TEST_REPO" init -q
+  export HOME="$TEST_HOME"
+  local sanitized
+  sanitized="$(echo "$TEST_REPO" | sed 's|/|-|g')"
+  INFERRED_MEMORY="$HOME/.claude/projects/${sanitized}/memory"
+  mkdir -p "$INFERRED_MEMORY"
+  cat > "$INFERRED_MEMORY/reference_ai_working_folder.md" <<REF
+---
+name: AI working folder for test
+type: reference
+---
+
+At the start of every session for this project, read these two files first:
+
+- \`$TEST_WF/CONTEXT.md\` — project overview
+- \`$TEST_WF/SESSION-LOG.md\` — chronological history
+REF
+  touch "$TEST_WF/CONTEXT.md"
+}
+
+@test "sync-templates.sh inferred default mode reads working folder from auto-memory" {
+  HOME_BACKUP="$HOME"
+  inferred_setup
+
+  cd "$TEST_REPO"
+  run "$SYNC"
+
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"(inferred from \$PWD)"* ]]
+  # Working folder got templates
+  [ -f "$TEST_WF/plan.md" ]
+  [ -f "$TEST_WF/SEED-PROMPT.md" ]
+
+  export HOME="$HOME_BACKUP"
+}
+
+@test "sync-templates.sh inferred --workspace mode finds workspace root via working folder" {
+  HOME_BACKUP="$HOME"
+  inferred_setup
+  # Create a workspace root one level above the working folder
+  mkdir -p "$TEST_TMP/workspace"
+  mv "$TEST_WF" "$TEST_TMP/workspace/repo-wf"
+  TEST_WF="$TEST_TMP/workspace/repo-wf"
+  touch "$TEST_TMP/workspace/workspace-CONTEXT.md"
+  # Rewrite the memory pointer to the new working folder location
+  cat > "$INFERRED_MEMORY/reference_ai_working_folder.md" <<REF
+---
+type: reference
+---
+
+- \`$TEST_WF/CONTEXT.md\` — project overview
+- \`$TEST_WF/SESSION-LOG.md\` — chronological history
+REF
+
+  cd "$TEST_REPO"
+  run "$SYNC" --workspace
+
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"(inferred from \$PWD)"* ]]
+  # Workspace root got workspace-template files
+  [ -f "$TEST_TMP/workspace/workspace-plan.md" ]
+
+  export HOME="$HOME_BACKUP"
+}
+
+@test "sync-templates.sh inferred default mode errors when no auto-memory" {
+  HOME_BACKUP="$HOME"
+  TEST_HOME="$TEST_TMP/home"
+  NON_KIT="$TEST_TMP/random"
+  mkdir -p "$TEST_HOME" "$NON_KIT"
+  export HOME="$TEST_HOME"
+
+  cd "$NON_KIT"
+  run "$SYNC"
+
+  [ "$status" -ne 0 ]
+  [[ "$output" == *"couldn't infer a working folder"* ]]
+  [[ "$output" == *"sync-templates.sh <path>"* ]]
+
+  export HOME="$HOME_BACKUP"
+}
+
+@test "sync-templates.sh inferred --workspace mode errors when not in a workspace" {
+  HOME_BACKUP="$HOME"
+  TEST_HOME="$TEST_TMP/home"
+  NON_KIT="$TEST_TMP/random"
+  mkdir -p "$TEST_HOME" "$NON_KIT"
+  export HOME="$TEST_HOME"
+
+  cd "$NON_KIT"
+  run "$SYNC" --workspace
+
+  [ "$status" -ne 0 ]
+  [[ "$output" == *"couldn't find a workspace root"* ]]
+
+  export HOME="$HOME_BACKUP"
 }
