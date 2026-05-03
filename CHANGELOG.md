@@ -6,6 +6,25 @@ See [Upgrading an existing project](SETUP.md#upgrading-an-existing-project) for 
 
 ---
 
+## [0.35.0](https://github.com/IamMrCupp/claude-project-kit/compare/v0.34.0...v0.35.0) (2026-05-03)
+
+
+### Features
+
+* **scripts:** --force-update flag for install-commands.sh + --force-commands for upgrade.sh ([dd05a2c](https://github.com/IamMrCupp/claude-project-kit/commit/dd05a2c6ee89aaf6daf818c2018c06de46014678))
+* **scripts:** install-commands.sh --force-update flag ([#170](https://github.com/IamMrCupp/claude-project-kit/issues/170)) ([376d218](https://github.com/IamMrCupp/claude-project-kit/commit/376d2184ef69e962c23f0d5b9669919a6038b3c7))
+* **scripts:** upgrade.sh --force-commands propagates to install-commands ([#170](https://github.com/IamMrCupp/claude-project-kit/issues/170)) ([cdd7291](https://github.com/IamMrCupp/claude-project-kit/commit/cdd729190e8e4ad552c976e2d04ec19cc2f63292))
+
+
+### Documentation
+
+* surface --force-commands path in SETUP + FEATURES ([#170](https://github.com/IamMrCupp/claude-project-kit/issues/170)) ([b984b25](https://github.com/IamMrCupp/claude-project-kit/commit/b984b250e384e9a3c285a65da0c52be428c2abcd))
+
+
+### Tests
+
+* **scripts:** bats coverage for --force-update + --force-commands ([#170](https://github.com/IamMrCupp/claude-project-kit/issues/170)) ([8982e90](https://github.com/IamMrCupp/claude-project-kit/commit/8982e90f3d2b5e1691377100d9a110a3547d7a05))
+
 ## [0.34.0](https://github.com/IamMrCupp/claude-project-kit/compare/v0.33.0...v0.34.0) (2026-05-03)
 
 
