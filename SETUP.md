@@ -256,19 +256,27 @@ For fully filled-in references, see [`examples/widget-tracker/CONTEXT.md`](examp
 `bootstrap.sh` is deliberately **write-once** — it won't touch a working folder or auto-memory dir that's already populated. When the kit evolves, existing adopters upgrade manually:
 
 1. Check [`CHANGELOG.md`](CHANGELOG.md) to see what's landed since your bootstrap SHA (or since the last time you upgraded). Each entry has a **For existing adopters** section with specifics.
-2. **New files in `templates/`** — easiest path is the sync helper, which copies any missing templates into a working folder without overwriting existing files (and reports any *outdated* files for you to merge by hand):
+2. **New files in `templates/`** — easiest path is the sync helper. From inside the kit-bootstrapped repo, paths are inferred automatically:
    ```bash
-   # For a single-repo working folder (or a per-repo subfolder of a workspace)
+   # cd into the bootstrapped repo, then:
+   <kit-dir>/scripts/sync-templates.sh                  # working-folder mode
+   <kit-dir>/scripts/sync-templates.sh --workspace      # workspace-root mode
+   ```
+   The helper reads `reference_ai_working_folder.md` from the repo's auto-memory to find the right target. Pass an explicit path if you'd rather, or if you're not inside the repo:
+   ```bash
    <kit-dir>/scripts/sync-templates.sh <working-folder>
-
-   # For workspace-level files (workspace-CONTEXT.md, workspace-plan.md)
    <kit-dir>/scripts/sync-templates.sh --workspace <workspace-root>
    ```
    Pass `--dry-run` first to preview. The helper never overwrites — when an existing file differs from the kit's current template, it reports "outdated; review and merge by hand if desired" rather than clobbering your filled-in content. To copy a single file by hand instead:
    ```bash
    cp <kit-dir>/templates/<NEW_FILE>.md <working-folder>/
    ```
-3. **New files in `memory-templates/`** — easiest path is the sync helper, which copies any missing templates into your auto-memory without overwriting existing files:
+3. **New files in `memory-templates/`** — same pattern: from inside the bootstrapped repo, the auto-memory dir is inferred from `$PWD`:
+   ```bash
+   # cd into the bootstrapped repo, then:
+   <kit-dir>/scripts/sync-memory.sh
+   ```
+   Or pass the path explicitly:
    ```bash
    <kit-dir>/scripts/sync-memory.sh ~/.claude/projects/<sanitized-path>/memory
    ```
@@ -358,6 +366,10 @@ Idempotence: both refuse to overwrite an existing scratchpad with the same `<KEY
 A naive `mv` of the workspace folder works for the directory tree, but **leaves stale references** in per-repo auto-memory at `~/.claude/projects/<sanitized-repo-path>/memory/reference_ai_working_folder.md` (which pins the workspace path baked in at bootstrap time). Use the rename helper instead:
 
 ```bash
+# From inside the workspace (or a member repo) — old path is inferred:
+<framework-dir>/scripts/rename-workspace.sh ~/Documents/Claude/Projects/<new-name>/
+
+# Or explicit form, works from anywhere:
 <framework-dir>/scripts/rename-workspace.sh \
   ~/Documents/Claude/Projects/<old-name>/ \
   ~/Documents/Claude/Projects/<new-name>/
