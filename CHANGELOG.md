@@ -6,6 +6,26 @@ See [Upgrading an existing project](SETUP.md#upgrading-an-existing-project) for 
 
 ---
 
+## [0.36.0](https://github.com/IamMrCupp/claude-project-kit/compare/v0.35.0...v0.36.0) (2026-05-03)
+
+
+### Features
+
+* **bootstrap:** copy workspace-phase-N-checklist.md on workspace creation ([#133](https://github.com/IamMrCupp/claude-project-kit/issues/133)) ([94a1a82](https://github.com/IamMrCupp/claude-project-kit/commit/94a1a821ea4d5a96753ec7291a2f0df5d9fa46e2))
+* **commands:** /session-start loads workspace-phase-N-checklist.md ([#133](https://github.com/IamMrCupp/claude-project-kit/issues/133)) ([cf27a52](https://github.com/IamMrCupp/claude-project-kit/commit/cf27a523571c5c8c09681027b357c7a8dcff2a65))
+* **workspace:** add workspace-phase-N-checklist.md template ([#133](https://github.com/IamMrCupp/claude-project-kit/issues/133)) ([ec08881](https://github.com/IamMrCupp/claude-project-kit/commit/ec08881b330a67f34f7bfe7319c1d1738817671d))
+* **workspace:** workspace-phase-N-checklist.md + long-running workspace docs (PR A of [#133](https://github.com/IamMrCupp/claude-project-kit/issues/133)) ([880277d](https://github.com/IamMrCupp/claude-project-kit/commit/880277d674fd0a4da7f8e671e676f4e83b8fb261))
+
+
+### Documentation
+
+* long-running workspace layout in SETUP + Prompt 11 in PROMPTS ([#133](https://github.com/IamMrCupp/claude-project-kit/issues/133)) ([aaefb12](https://github.com/IamMrCupp/claude-project-kit/commit/aaefb12c91c810f4eeb22c8a0dac31aaa02bcce8))
+
+
+### Tests
+
+* **bootstrap:** assert workspace-phase-N-checklist.md is created ([#133](https://github.com/IamMrCupp/claude-project-kit/issues/133)) ([cf6bdf1](https://github.com/IamMrCupp/claude-project-kit/commit/cf6bdf1253c3a774160cc5fc119d406114360dac))
+
 ## [0.35.0](https://github.com/IamMrCupp/claude-project-kit/compare/v0.34.0...v0.35.0) (2026-05-03)
 
 
