@@ -18,17 +18,25 @@ teardown() {
   [ -n "${TEST_TMP:-}" ] && rm -rf "$TEST_TMP"
 }
 
+# Set up an isolated $HOME with a kit-bootstrapped fake repo so inference
+# tests can run sync-memory.sh without an explicit path arg.
+inferred_setup() {
+  TEST_HOME="$TEST_TMP/home"
+  TEST_REPO="$TEST_TMP/repo"
+  mkdir -p "$TEST_HOME" "$TEST_REPO"
+  git -C "$TEST_REPO" init -q
+  export HOME="$TEST_HOME"
+  local sanitized
+  sanitized="$(echo "$TEST_REPO" | sed 's|/|-|g')"
+  INFERRED_MEMORY="$HOME/.claude/projects/${sanitized}/memory"
+  mkdir -p "$INFERRED_MEMORY"
+}
+
 @test "sync-memory.sh -h prints usage" {
   run "$SYNC" -h
   [ "$status" -eq 0 ]
   [[ "$output" == *"Usage: sync-memory.sh"* ]]
   [[ "$output" == *"--dry-run"* ]]
-}
-
-@test "sync-memory.sh errors when no memory-dir arg" {
-  run "$SYNC"
-  [ "$status" -ne 0 ]
-  [[ "$output" == *"missing <memory-dir> argument"* ]]
 }
 
 @test "sync-memory.sh errors on unknown flag" {
@@ -144,4 +152,52 @@ EOF
   [[ "$output" != *"copied feedback_merge_strategy.md"* ]]
   # Other files DID get copied
   [[ "$output" == *"copied feedback_push_branches.md"* ]]
+}
+
+# ─── Inference tests (issue #163) ─────────────────────────────────────────
+
+@test "sync-memory.sh inferred mode works when run from a kit-bootstrapped repo" {
+  HOME_BACKUP="$HOME"
+  inferred_setup
+
+  cd "$TEST_REPO"
+  run "$SYNC"
+
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"(inferred from \$PWD)"* ]]
+  [ -f "$INFERRED_MEMORY/feedback_commit_format.md" ]
+
+  export HOME="$HOME_BACKUP"
+}
+
+@test "sync-memory.sh inferred mode walks up to find repo root from a subdir" {
+  HOME_BACKUP="$HOME"
+  inferred_setup
+  mkdir -p "$TEST_REPO/src/deep"
+
+  cd "$TEST_REPO/src/deep"
+  run "$SYNC"
+
+  [ "$status" -eq 0 ]
+  # Inferred memory should be the repo's, NOT a subdirectory's
+  [ -f "$INFERRED_MEMORY/feedback_commit_format.md" ]
+
+  export HOME="$HOME_BACKUP"
+}
+
+@test "sync-memory.sh inferred mode errors when not in a kit-bootstrapped repo" {
+  HOME_BACKUP="$HOME"
+  TEST_HOME="$TEST_TMP/home"
+  NON_KIT="$TEST_TMP/random"
+  mkdir -p "$TEST_HOME" "$NON_KIT"
+  export HOME="$TEST_HOME"
+
+  cd "$NON_KIT"
+  run "$SYNC"
+
+  [ "$status" -ne 0 ]
+  [[ "$output" == *"couldn't find an auto-memory dir"* ]]
+  [[ "$output" == *"cd into a kit-bootstrapped repo"* ]]
+
+  export HOME="$HOME_BACKUP"
 }

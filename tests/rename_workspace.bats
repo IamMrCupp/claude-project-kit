@@ -31,10 +31,10 @@ setup_workspace_with_one_repo() {
   [[ "$output" == *"<new-workspace-path>"* ]]
 }
 
-@test "rename-workspace.sh errors when args missing" {
+@test "rename-workspace.sh errors when no args" {
   run "$RENAME"
   [ "$status" -ne 0 ]
-  [[ "$output" == *"both <old-workspace-path> and <new-workspace-path> are required"* ]]
+  [[ "$output" == *"<new-workspace-path> is required"* ]]
 }
 
 @test "rename-workspace.sh errors on relative paths" {
@@ -168,4 +168,53 @@ setup_workspace_with_one_repo() {
   [ ! -d "$HOME/old-ws" ]
 
   export HOME="$HOME_BACKUP"
+}
+
+# ─── Inference tests (issue #163) ─────────────────────────────────────────
+
+@test "rename-workspace.sh single arg infers OLD from \$PWD when inside a workspace" {
+  WS="$TEST_TMP/old-ws"
+  NEW="$TEST_TMP/new-ws"
+  mkdir -p "$WS"
+  touch "$WS/workspace-CONTEXT.md"
+
+  cd "$WS"
+  run "$RENAME" "$NEW"
+
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"(inferred from \$PWD)"* ]]
+  [ -d "$NEW" ]
+  [ ! -d "$WS" ]
+}
+
+@test "rename-workspace.sh single arg errors with friendly message when not in workspace" {
+  HOME_BACKUP="$HOME"
+  TEST_HOME="$TEST_TMP/home"
+  NON_KIT="$TEST_TMP/random"
+  mkdir -p "$TEST_HOME" "$NON_KIT"
+  export HOME="$TEST_HOME"
+
+  cd "$NON_KIT"
+  run "$RENAME" "$TEST_TMP/new-ws"
+
+  [ "$status" -ne 0 ]
+  [[ "$output" == *"couldn't infer a workspace root"* ]]
+  [[ "$output" == *"rename-workspace.sh <old> <new>"* ]]
+
+  export HOME="$HOME_BACKUP"
+}
+
+@test "rename-workspace.sh single arg infers via parent dir from a member repo" {
+  WS="$TEST_TMP/parent-ws"
+  REPO_WF="$WS/repo-a"
+  NEW="$TEST_TMP/parent-ws-renamed"
+  mkdir -p "$REPO_WF"
+  touch "$WS/workspace-CONTEXT.md"
+
+  cd "$REPO_WF"
+  run "$RENAME" --dry-run "$NEW"
+
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"(inferred from \$PWD)"* ]]
+  [[ "$output" == *"$WS"* ]]
 }
