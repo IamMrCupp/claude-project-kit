@@ -6,6 +6,20 @@ See [Upgrading an existing project](SETUP.md#upgrading-an-existing-project) for 
 
 ---
 
+## [0.33.0](https://github.com/IamMrCupp/claude-project-kit/compare/v0.32.0...v0.33.0) (2026-05-03)
+
+
+### Features
+
+* **commands:** /research + /plan slash commands (Boris Tane-inspired) ([1792255](https://github.com/IamMrCupp/claude-project-kit/commit/179225530e93ede9d89dbd91c9e03b13b5bde818))
+* **commands:** add /research + /plan slash commands ([#166](https://github.com/IamMrCupp/claude-project-kit/issues/166)) ([b9ed16b](https://github.com/IamMrCupp/claude-project-kit/commit/b9ed16bc9e47c918ca97dcaa14013cc07921ec11))
+
+
+### Documentation
+
+* bump slash-command counts to 9 + future-proof count regex ([#166](https://github.com/IamMrCupp/claude-project-kit/issues/166)) ([7c04530](https://github.com/IamMrCupp/claude-project-kit/commit/7c045303db84a399f31289722c9849be8c2e6f53))
+* **prompts:** add Prompt 9 (research) + Prompt 10 (plan) ([#166](https://github.com/IamMrCupp/claude-project-kit/issues/166)) ([9791023](https://github.com/IamMrCupp/claude-project-kit/commit/9791023edc850f862fcab46caf3ab93ff7dc6a63))
+
 ## [0.32.0](https://github.com/IamMrCupp/claude-project-kit/compare/v0.31.0...v0.32.0) (2026-05-03)
 
 
