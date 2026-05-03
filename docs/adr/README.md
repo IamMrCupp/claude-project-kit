@@ -31,3 +31,4 @@ If the decision can be captured in a single CONVENTIONS.md bullet, it doesn't ne
 | # | Title | Status | Date |
 |---|---|---|---|
 | [0001](0001-multi-repo-folder-model.md) | Multi-repo + ticket-driven folder model | Accepted | 2026-04-27 |
+| [0002](0002-multi-initiative-workspace-tracking.md) | Multi-initiative workspace tracking | Accepted | 2026-05-03 |
