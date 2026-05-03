@@ -789,6 +789,7 @@ if [ "$DRY_RUN" -eq 1 ]; then
       echo "  + create workspace dir + tickets/archive/"
       echo "  + copy $KIT_ROOT/templates/workspace/workspace-CONTEXT.md → workspace-CONTEXT.md"
       echo "  + copy $KIT_ROOT/templates/workspace/workspace-plan.md → workspace-plan.md"
+      echo "  + copy $KIT_ROOT/templates/workspace/workspace-phase-N-checklist.md → workspace-phase-N-checklist.md"
     fi
     echo
   fi
@@ -884,7 +885,8 @@ if [ "$WORKSPACE_MODE" -eq 1 ]; then
   if [ ! -f "$WORKSPACE_DIR/workspace-CONTEXT.md" ]; then
     cp "$KIT_ROOT/templates/workspace/workspace-CONTEXT.md" "$WORKSPACE_DIR/"
     cp "$KIT_ROOT/templates/workspace/workspace-plan.md" "$WORKSPACE_DIR/"
-    echo "  ✓ Created workspace at $WORKSPACE_DIR (workspace-CONTEXT.md, workspace-plan.md, tickets/archive/)"
+    cp "$KIT_ROOT/templates/workspace/workspace-phase-N-checklist.md" "$WORKSPACE_DIR/"
+    echo "  ✓ Created workspace at $WORKSPACE_DIR (workspace-CONTEXT.md, workspace-plan.md, workspace-phase-N-checklist.md, tickets/archive/)"
     WORKSPACE_FIRST_REPO=1
   else
     echo "  ✓ Existing workspace at $WORKSPACE_DIR — adding repo subfolder $WORKSPACE_REPO_NAME"

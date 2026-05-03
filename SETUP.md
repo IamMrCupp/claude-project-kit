@@ -347,6 +347,25 @@ The templates support both. For single-initiative use, fill in "Current Initiati
 
 If a workspace's purpose drifts substantially (e.g. a "platform-infra" workspace that started for Terraform now becoming a general program), consider whether the right move is a new workspace rather than retrofitting the old one.
 
+#### Long-running workspace layout
+
+When a workspace hosts many initiatives over time, three workspace-scope files do the heavy lifting (each mirrors a per-repo file at workspace scope):
+
+| File | Purpose | Per-repo counterpart |
+|---|---|---|
+| `workspace-CONTEXT.md` | Workspace overview, working rules, "Current Initiative" pointer | `CONTEXT.md` |
+| `workspace-plan.md` | Initiative roster — Active / Planned-or-on-deck / Completed | `plan.md` |
+| `workspace-phase-N-checklist.md` | Phase tracking for the **active initiative**'s current phase. One file at a time; archive when the initiative wraps. | `phase-N-checklist.md` |
+
+Per-repo working folders live as subfolders under the workspace root, each with their own `CONTEXT.md`, `SESSION-LOG.md`, and per-repo `plan.md` / `phase-N-checklist.md` for repo-internal phases. The workspace-level checklist tracks the **cross-repo arc** of an initiative; per-repo checklists track repo-internal phases that may have nothing to do with the active initiative.
+
+**When the active initiative wraps:**
+
+1. Move it from "Active initiative" to "Completed initiatives" in `workspace-plan.md` with a one-paragraph outcome.
+2. Archive the workspace phase checklist — either rename `workspace-phase-N-checklist.md` → `<initiative-slug>-phase-{{N}}-checklist.md`, or move all the initiative's phase checklists into an `archive/` subfolder. The next initiative starts with a fresh `workspace-phase-N-checklist.md` (renumbering from 1).
+3. Archive any active tickets for the initiative — see [Per-ticket scratchpads](#pulling-a-ticket-into-the-workspace).
+4. Append a `workspace-SESSION-LOG.md` entry summarizing the initiative arc (or update the per-repo SESSION-LOG entries that touched it — your call which lives where).
+
 ### First repo in a new workspace
 
 ```bash
