@@ -46,6 +46,18 @@ teardown() { bootstrap_teardown; }
   grep -q "Active initiative" "$WS/workspace-plan.md"
 }
 
+@test "--workspace copies workspace-phase-N-checklist.md to workspace root" {
+  WS="$TEST_TMP/acme-platform"
+  run "$BOOTSTRAP" --workspace "$WS" --skip-memory
+  [ "$status" -eq 0 ]
+
+  [ -f "$WS/workspace-phase-N-checklist.md" ]
+  grep -q "Workspace Phase" "$WS/workspace-phase-N-checklist.md"
+  grep -q "Active initiative" "$WS/workspace-phase-N-checklist.md"
+  grep -q "Acceptance testing" "$WS/workspace-phase-N-checklist.md"
+  grep -q "Phase exit" "$WS/workspace-phase-N-checklist.md"
+}
+
 @test "--workspace workspace-CONTEXT.md has Current Initiative + Past initiatives sections" {
   WS="$TEST_TMP/acme-platform"
   run "$BOOTSTRAP" --workspace "$WS" --skip-memory
