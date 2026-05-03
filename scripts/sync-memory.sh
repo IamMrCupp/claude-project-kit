@@ -20,6 +20,9 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 KIT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 TEMPLATES_DIR="$KIT_ROOT/memory-templates"
 
+# shellcheck source=lib/infer.sh
+. "$SCRIPT_DIR/lib/infer.sh"
+
 # Files in memory-templates/ that are user-customized scaffolds (not generic
 # rules) and must NEVER be auto-synced — overwriting them would clobber the
 # user's project notes / role profile / curated index.
@@ -27,26 +30,30 @@ SKIP_FILES=(MEMORY.md project_current.md user_role.md)
 
 usage() {
   cat <<EOF
-Usage: sync-memory.sh [options] <memory-dir>
+Usage: sync-memory.sh [options] [memory-dir]
 
-Sync missing memory-templates/*.md into <memory-dir>. Never overwrites
-existing files. Never touches MEMORY.md, project_current.md, or
-user_role.md (those are user-customized).
+Sync missing memory-templates/*.md into the auto-memory directory. Never
+overwrites existing files. Never touches MEMORY.md, project_current.md,
+or user_role.md (those are user-customized).
 
 Arguments:
-  <memory-dir>   Absolute path to an auto-memory directory.
-                 Typically ~/.claude/projects/<sanitized-repo-path>/memory/.
+  [memory-dir]   Optional. Absolute path to an auto-memory directory.
+                 If omitted, inferred from \$PWD: walks up to find the
+                 repo root, then derives ~/.claude/projects/<sanitized>/memory.
 
 Options:
   --dry-run      Print what would be copied; write nothing.
   -h, --help     Show this help and exit.
 
 Examples:
-  # Sync the kit's own dogfood memory after pulling kit updates
-  sync-memory.sh ~/.claude/projects/-Users-you-Code-claude-project-kit/memory
+  # Inferred mode — run from inside any kit-bootstrapped repo
+  cd ~/Code/some-project && sync-memory.sh
+
+  # Explicit mode — useful for scripting or when not inside the repo
+  sync-memory.sh ~/.claude/projects/-Users-you-Code-some-project/memory
 
   # Preview without writing
-  sync-memory.sh --dry-run ~/.claude/projects/.../memory
+  sync-memory.sh --dry-run
 
 After files copy, the script prints suggested MEMORY.md index lines for
 the new entries — paste the ones you want into your MEMORY.md. The
@@ -94,10 +101,10 @@ while [ $# -gt 0 ]; do
   esac
 done
 
+INFERRED=0
 if [ -z "$TARGET" ]; then
-  echo "error: missing <memory-dir> argument" >&2
-  usage >&2
-  exit 2
+  TARGET="$(infer_memory_dir)"
+  INFERRED=1
 fi
 
 case "$TARGET" in
@@ -107,7 +114,7 @@ esac
 
 case "$TARGET" in
   /*) ;;
-  *) echo "error: <memory-dir> must be an absolute path (got: $TARGET)" >&2; exit 2 ;;
+  *) echo "error: memory-dir must be an absolute path (got: $TARGET)" >&2; exit 2 ;;
 esac
 
 if [ ! -d "$TEMPLATES_DIR" ]; then
@@ -116,8 +123,15 @@ if [ ! -d "$TEMPLATES_DIR" ]; then
 fi
 
 if [ ! -d "$TARGET" ]; then
-  echo "error: target memory dir does not exist: $TARGET" >&2
-  echo "       Run bootstrap.sh first to seed initial memory." >&2
+  if [ "$INFERRED" -eq 1 ]; then
+    echo "error: couldn't find an auto-memory dir for \$PWD." >&2
+    echo "       Inferred path: $TARGET" >&2
+    echo "       Either cd into a kit-bootstrapped repo first, or pass the" >&2
+    echo "       memory-dir explicitly: sync-memory.sh <path>" >&2
+  else
+    echo "error: target memory dir does not exist: $TARGET" >&2
+    echo "       Run bootstrap.sh first to seed initial memory." >&2
+  fi
   exit 1
 fi
 
@@ -125,7 +139,11 @@ if [ "$DRY_RUN" -eq 1 ]; then
   echo "=== DRY RUN — no files will be written ==="
 fi
 echo "Source:  $TEMPLATES_DIR"
-echo "Target:  $TARGET"
+if [ "$INFERRED" -eq 1 ]; then
+  echo "Target:  $TARGET  (inferred from \$PWD)"
+else
+  echo "Target:  $TARGET"
+fi
 echo
 
 COPIED=()
