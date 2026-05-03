@@ -182,7 +182,9 @@ Anything that can't be derived stays as `{{PLACEHOLDER}}` so it's grep-able. The
 
 The memory files are **starters**, not commandments. Prune what doesn't apply, add your own, keep `MEMORY.md` (the index) in sync. The harness loads `MEMORY.md` into context every session, so it stays small (under ~150 lines is a reasonable target).
 
-When the kit ships new starter rules, `scripts/sync-memory.sh` copies any missing templates into an existing auto-memory dir without overwriting customized files. Skips `MEMORY.md`, `project_current.md`, and `user_role.md` (user-curated). When run from inside a kit-bootstrapped repo, paths are inferred from `$PWD` — pass an explicit memory-dir arg only if you're not in the repo. The companion helper for working-folder and workspace templates is `scripts/sync-templates.sh`, with the same write-once shape and the same `$PWD`-based inference (see [SETUP.md §Upgrading an existing project](SETUP.md#upgrading-an-existing-project)).
+When the kit ships new starter rules, `scripts/sync-memory.sh` copies any missing templates into an existing auto-memory dir without overwriting customized files. Skips `MEMORY.md`, `project_current.md`, and `user_role.md` (user-curated). When run from inside a kit-bootstrapped repo, paths are inferred from `$PWD` — pass an explicit memory-dir arg only if you're not in the repo. The companion helper for working-folder and workspace templates is `scripts/sync-templates.sh`, with the same write-once shape and the same `$PWD`-based inference.
+
+Both feed into **`scripts/upgrade.sh`**, the one-command orchestrator that runs the full kit upgrade flow end-to-end: pulls the kit checkout, runs the sync helpers (auto-detecting workspace mode if applicable), installs any new global slash commands, prints a clean summary. Refuses to run if the kit checkout is dirty so you don't upgrade against in-flight kit work. Flags: `--dry-run`, `--skip-pull`, `--skip-commands`. See [SETUP.md §Upgrading an existing project](SETUP.md#upgrading-an-existing-project) for the orchestrator's place in the flow plus the manual fallback steps.
 
 ---
 

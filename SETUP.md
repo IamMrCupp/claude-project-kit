@@ -253,7 +253,18 @@ For fully filled-in references, see [`examples/widget-tracker/CONTEXT.md`](examp
 
 ## Upgrading an existing project
 
-`bootstrap.sh` is deliberately **write-once** — it won't touch a working folder or auto-memory dir that's already populated. When the kit evolves, existing adopters upgrade manually:
+`bootstrap.sh` is deliberately **write-once** — it won't touch a working folder or auto-memory dir that's already populated. When the kit evolves, existing adopters upgrade with one command:
+
+```bash
+cd ~/Code/<your-project>
+~/Code/claude-project-kit/scripts/upgrade.sh
+```
+
+That runs the full flow end-to-end: pulls the kit, syncs auto-memory, syncs working-folder templates, runs workspace-mode sync if the project is in a workspace, and installs any new global slash commands. Pass `--dry-run` first to preview, `--skip-pull` if you've already pulled the kit, or `--skip-commands` to skip the global slash-command install. After completion, restart Claude.app (Cmd+Q + reopen) to pick up new slash commands.
+
+**One known limitation:** `install-commands.sh` (and the orchestrator's Step 5) is write-once — it adds *missing* command files but does NOT overwrite existing ones. If a kit release ships an *updated* version of a command you already have installed, you currently need to manually `rm` it before `upgrade.sh` will reinstall the new copy. A `--force-update` flag is tracked in [#170](https://github.com/IamMrCupp/claude-project-kit/issues/170) and will land the orchestrator-friendly version of this fix.
+
+If you'd rather run the steps manually (or want to understand exactly what the orchestrator does), here they are:
 
 1. Check [`CHANGELOG.md`](CHANGELOG.md) to see what's landed since your bootstrap SHA (or since the last time you upgraded). Each entry has a **For existing adopters** section with specifics.
 2. **New files in `templates/`** — easiest path is the sync helper. From inside the kit-bootstrapped repo, paths are inferred automatically:
