@@ -17,7 +17,9 @@ If the precheck passes, continue.
 
 Before we start, read these files in my AI working folder, in order:
 
-1. **In workspace mode only** — if `<working-folder>/../workspace-CONTEXT.md` exists, read it FIRST. It tells you the current initiative so the per-repo load below makes sense in context. Also read `<working-folder>/../workspace-plan.md` if it exists for the broader initiative arc.
+1. **In workspace mode only** — if `<working-folder>/../workspace-CONTEXT.md` exists, read it FIRST. It tells you the current initiative so the per-repo load below makes sense in context. Also read:
+   - `<working-folder>/../workspace-plan.md` if it exists — initiative roster (Active / Planned / Completed) for the broader initiative arc.
+   - `<working-folder>/../workspace-phase-N-checklist.md` if it exists — current phase of the active initiative at workspace scope. May span multiple repos.
 2. `<working-folder>/CONTEXT.md` — project overview, working rules, current phase
 3. `<working-folder>/SESSION-LOG.md` — chronological session history
 4. The current phase's checklist (e.g. `<working-folder>/phase-<N>-checklist.md`)
