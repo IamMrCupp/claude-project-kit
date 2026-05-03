@@ -477,6 +477,50 @@ the plan only. Still no implementation.
 
 ---
 
+## 11. Starting a session in a long-running multi-initiative workspace
+
+Use this when opening a fresh Claude session in a workspace that hosts many initiatives over time. Loads workspace-level context first (which initiative is active, what phase it's in), then drills into per-repo state for the repo you're working in today.
+
+Distinct from Prompt 1 — that one targets a single-repo (or single-initiative) working folder. Use this when the active initiative changes from session to session and you want to surface that arc up front.
+
+### Verbose form (or first-session)
+
+```
+Before we start, read these files in my AI workspace, in order:
+
+1. `<workspace-root>/workspace-CONTEXT.md` — workspace overview, "Current Initiative" pointer
+2. `<workspace-root>/workspace-plan.md` — initiative roster (Active / Planned / Completed)
+3. `<workspace-root>/workspace-phase-N-checklist.md` — current phase of the active initiative
+4. (If working in a specific repo today) `<workspace-root>/<repo>/CONTEXT.md` and
+   `<workspace-root>/<repo>/SESSION-LOG.md` — that repo's per-repo context
+
+These hold both the cross-cutting workspace state and the active initiative's status.
+
+Once read, give me a 4–5 bullet summary of:
+- What the workspace is for (one line, from `workspace-CONTEXT.md`)
+- Which initiative is currently active and where it stands
+- What landed most recently (most recent `workspace-SESSION-LOG.md` entry, or per-repo if more relevant)
+- Any open threads from the latest log entry
+- The likely starting point for this session
+
+Then wait for my next instruction. Don't propose changes or start coding yet.
+```
+
+### Short form
+
+If `reference_ai_working_folder.md` in auto-memory points at the workspace working folder, this collapses to:
+
+```
+Load workspace context and give me a 4-bullet summary of where we are.
+```
+
+**Notes:**
+- The `/session-start` slash command (in `templates/.claude/commands/`) automatically loads workspace-level files first when `workspace-CONTEXT.md` is present in the working folder's parent — same pattern as this prompt, packaged as a one-step invocation.
+- Use Prompt 1 for single-repo (or single-initiative) working folders.
+- Use Prompt 4 (resuming mid-PR) when you have a branch in flight; it adds branch + PR + CI assessment on top of context loading.
+
+---
+
 ## When to write a new prompt
 
 Add one here whenever you find yourself typing similar setup instructions into a fresh session for the third time. A good prompt is:
