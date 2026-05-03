@@ -6,6 +6,27 @@ See [Upgrading an existing project](SETUP.md#upgrading-an-existing-project) for 
 
 ---
 
+## [0.32.0](https://github.com/IamMrCupp/claude-project-kit/compare/v0.31.0...v0.32.0) (2026-05-03)
+
+
+### Features
+
+* **scripts:** $PWD-inferred paths for sync-memory / sync-templates / rename-workspace ([2411a5d](https://github.com/IamMrCupp/claude-project-kit/commit/2411a5d0a1d200d44eb85257763faaf1753144a3))
+* **scripts:** add lib/infer.sh shared inference helpers ([#163](https://github.com/IamMrCupp/claude-project-kit/issues/163)) ([3e43ab3](https://github.com/IamMrCupp/claude-project-kit/commit/3e43ab3370c83083d126703ef58abf75b1373b63))
+* **scripts:** rename-workspace.sh infers OLD from $PWD when omitted ([#163](https://github.com/IamMrCupp/claude-project-kit/issues/163)) ([e918f41](https://github.com/IamMrCupp/claude-project-kit/commit/e918f41df23812e6a22fdbe50a3f365c9205910f))
+* **scripts:** sync-memory.sh infers memory-dir from $PWD when omitted ([#163](https://github.com/IamMrCupp/claude-project-kit/issues/163)) ([911821a](https://github.com/IamMrCupp/claude-project-kit/commit/911821ad4abff95558250ad80671d9a0cf2cdd64))
+* **scripts:** sync-templates.sh infers target from $PWD when omitted ([#163](https://github.com/IamMrCupp/claude-project-kit/issues/163)) ([e400e66](https://github.com/IamMrCupp/claude-project-kit/commit/e400e66bf783bd3a5d8a70ff3df1f1cf69bff585))
+
+
+### Documentation
+
+* surface $PWD-inferred upgrade flow in SETUP + FEATURES ([#163](https://github.com/IamMrCupp/claude-project-kit/issues/163)) ([2f5d9b1](https://github.com/IamMrCupp/claude-project-kit/commit/2f5d9b17b2b833ddaa9ed58a9d90c8a907ac3c89))
+
+
+### Tests
+
+* **scripts:** bats coverage for $PWD-inference modes ([#163](https://github.com/IamMrCupp/claude-project-kit/issues/163)) ([b95110a](https://github.com/IamMrCupp/claude-project-kit/commit/b95110a3d3d933602da32163a93bf5efb07fdf08))
+
 ## [0.31.0](https://github.com/IamMrCupp/claude-project-kit/compare/v0.30.0...v0.31.0) (2026-05-02)
 
 
