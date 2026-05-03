@@ -393,6 +393,90 @@ Don't `git commit` or `git push` — I review and commit writebacks separately.
 
 ---
 
+## 9. Researching an area before planning
+
+Use this when you want a detailed read on a specific codebase area or topic *before* you plan changes against it — auth flow, an existing service, a third-party integration, the part of the repo you've never touched. The output is a written artifact in the working folder; the rule is **read + write artifact, never propose code changes**.
+
+Inspired by [Boris Tane's "How I use Claude Code"](https://boristane.com/blog/how-i-use-claude-code/) — the research phase that produces a report before any planning or implementation.
+
+```
+Research <topic-or-area> for me. Read deeply — follow imports, understand
+control flow, note edge cases, conventions, ordering constraints, anything
+non-obvious that a new contributor would trip over.
+
+Then write a report:
+- If we're working in a ticket scratchpad (<working-folder>/tickets/<KEY>-<slug>.md),
+  append a `## Research: <topic>  (YYYY-MM-DD)` section to it.
+- Otherwise write to <working-folder>/research-<slug>.md (slugify the topic).
+  Append a dated section if the file already exists.
+
+Sections to include:
+1. What this is — one paragraph, high level
+2. Entry points — where to put a breakpoint to follow execution
+3. Key components — bullets with file paths
+4. Specificities — non-obvious patterns, gotchas, ordering rules
+5. Open questions — things you couldn't resolve from reading alone
+6. References — file paths cited
+
+Hand back a 3–5 bullet summary plus the artifact's file path. Then wait.
+Don't propose changes, don't implement. This is read + write-an-artifact only.
+```
+
+**Notes:**
+- The `/research` slash command (in `templates/.claude/commands/`) packages this as a one-step invocation. Copy into your repo's `.claude/commands/` to enable.
+- This is task-scoped, distinct from `SEED-PROMPT.md` which deep-reads the *whole* repo at bootstrap time.
+- Pairs with `/plan` (Prompt 10) — research first, then plan against the artifact.
+
+---
+
+## 10. Planning a feature before implementing
+
+Use this once you have enough context (often after Prompt 9 or `/research`) to outline how to ship a feature. The output is a feature-scoped plan in the working folder; the rule is **plan-and-stop, never implement**. Refinement happens by you adding inline notes to the plan and re-invoking — Claude addresses notes, still doesn't write code.
+
+Inspired by [Boris Tane's "How I use Claude Code"](https://boristane.com/blog/how-i-use-claude-code/) — the planning phase with the load-bearing "don't implement yet" guard.
+
+```
+Plan <feature> for me.
+
+First, gather context:
+1. If a recent /research or research-<slug>.md artifact exists for this
+   topic, read it.
+2. Read the current phase-N-checklist so the plan slots into existing structure.
+3. Read CONVENTIONS.md — apply the project's commit / branch / PR
+   conventions to the work breakdown.
+
+If I haven't given you enough context to write a plan with confidence,
+stop and suggest running research first rather than planning blind.
+
+Then write a plan:
+- Inside an active ticket scratchpad: append `## Plan: <feature>  (YYYY-MM-DD)`.
+- Otherwise: <working-folder>/plan-<slug>.md (slugify the feature). Append
+  a dated section if the file exists.
+
+Required sections in this order:
+1. Goal — 1–2 sentences. The outcome, not the activities.
+2. Approach — ordered steps; each is a unit of work, not a single line of code.
+3. Code snippets — only for the tricky bits. Skip boilerplate.
+4. Open questions / risks — be specific. "What if input is empty?" beats
+   "edge cases."
+5. Todo list — numbered, one item per branch / PR. Imperative phrasing.
+
+Hand back the file path plus a 3–5 bullet summary (goal in one sentence,
+major approach steps, riskiest open question, todo count). Then wait.
+Don't ask "should I implement?" — assume no until I tell you yes.
+
+If I add inline notes to the plan file later (lines like `> NOTE: ...`
+or annotated text) and ask you to refine, address the notes by editing
+the plan only. Still no implementation.
+```
+
+**Notes:**
+- The `/plan` slash command (in `templates/.claude/commands/`) packages this as a one-step invocation. Copy into your repo's `.claude/commands/` to enable.
+- The kit deliberately doesn't ship a `/implement` slash command — the right execution loop ("don't stop, run typecheck, mark done as you go") is per-project (`go test ./...` vs. `pytest` vs. `npm test`), better as a Makefile target or a per-project prompt.
+- Pairs with Prompt 9 (or `/research`) — research first when the area is unfamiliar.
+
+---
+
 ## When to write a new prompt
 
 Add one here whenever you find yourself typing similar setup instructions into a fresh session for the third time. A good prompt is:

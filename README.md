@@ -76,7 +76,7 @@ That kicks off interactive mode: it asks for the working-folder path, project na
 - **Phase-based planning docs** — `plan.md` + per-phase checklist + `implementation.md` give Claude scoped, numbered tasks instead of a wall of intent.
 - **SEED-PROMPT auto-fill** — point Claude at one file and it deep-reads your repo, fills `CONTEXT.md`, drafts `research.md`, flags inferences, and stops for your review.
 - **Starter agents** — `code-reviewer` (universal) and `session-summarizer` (kit-aware), staged in the working folder; copy into your repo to activate.
-- **Starter slash commands** — `/session-start`, `/refresh-context`, `/close-phase`, `/session-end`, `/session-handoff`, `/pull-ticket`. Install once globally with `scripts/install-commands.sh --global` (recommended) or per-repo with `--project <path>`.
+- **Starter slash commands** — `/session-start`, `/refresh-context`, `/close-phase`, `/session-end`, `/session-handoff`, `/pull-ticket`, `/run-acceptance`, `/research`, `/plan`. Install once globally with `scripts/install-commands.sh --global` (recommended) or per-repo with `--project <path>`.
 - **Upgrade helpers** — `scripts/sync-memory.sh`, `scripts/sync-templates.sh`, and `scripts/rename-workspace.sh` keep auto-memory, working-folder templates, and workspace paths in sync with the latest kit release without overwriting your filled-in content. See [SETUP.md §Upgrading](SETUP.md#upgrading-an-existing-project).
 - **Worked examples** — `examples/widget-tracker/` (fictional Go CLI, single-repo, mid-Phase 1) and `examples/acme-platform/` (fictional Terraform multi-repo workspace, JIRA-driven, with active + archived ticket scratchpads).
 - **Conventions baseline** — Conventional Commits, merge-only PRs, ticket-driven branch / PR / commit shape, test-plan format, etc. Read once, drop or keep per project.
@@ -172,7 +172,7 @@ Works the same for greenfield repos and ones you're adopting it on mid-stream �
 │   │   └── ticket.md              ← per-ticket scratchpad shape
 │   └── .claude/             ← starter agents + slash commands (staged in WF)
 │       ├── agents/          ← code-reviewer, session-summarizer
-│       ├── commands/        ← /session-start, /refresh-context, /close-phase, /session-end, /session-handoff, /pull-ticket
+│       ├── commands/        ← /session-start, /refresh-context, /close-phase, /session-end, /session-handoff, /pull-ticket, /run-acceptance, /research, /plan
 │       └── README.md        ← how to copy into your target repo
 ├── examples/                ← filled-in reference — read, don't copy
 │   ├── widget-tracker/      ← fictional Go CLI, single-repo, mid-Phase-1 snapshot
