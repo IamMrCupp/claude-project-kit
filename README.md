@@ -78,7 +78,7 @@ That kicks off interactive mode: it asks for the working-folder path, project na
 - **Starter agents** — `code-reviewer` (universal) and `session-summarizer` (kit-aware), staged in the working folder; copy into your repo to activate.
 - **Starter slash commands** — `/session-start`, `/refresh-context`, `/close-phase`, `/session-end`, `/session-handoff`, `/pull-ticket`, `/run-acceptance`, `/research`, `/plan`. Install once globally with `scripts/install-commands.sh --global` (recommended) or per-repo with `--project <path>`.
 - **Upgrade helpers** — `scripts/sync-memory.sh`, `scripts/sync-templates.sh`, and `scripts/rename-workspace.sh` keep auto-memory, working-folder templates, and workspace paths in sync with the latest kit release without overwriting your filled-in content. See [SETUP.md §Upgrading](SETUP.md#upgrading-an-existing-project).
-- **Worked examples** — `examples/widget-tracker/` (fictional Go CLI, single-repo, mid-Phase 1) and `examples/acme-platform/` (fictional Terraform multi-repo workspace, JIRA-driven, with active + archived ticket scratchpads).
+- **Worked examples** — `examples/widget-tracker/` (fictional Go CLI, single-repo, mid-Phase 1) and `examples/acme-platform/` (fictional Terraform multi-repo workspace, JIRA-driven, **long-running with multiple initiatives** — one completed, one active — plus `workspace-plan.md`, `workspace-phase-N-checklist.md`, and active + archived ticket scratchpads).
 - **Conventions baseline** — Conventional Commits, merge-only PRs, ticket-driven branch / PR / commit shape, test-plan format, etc. Read once, drop or keep per project.
 - **No surprises** — MIT licensed, no telemetry, no network calls, kit never modifies your target repo.
 
