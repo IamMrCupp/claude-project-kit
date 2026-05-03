@@ -6,6 +6,24 @@ See [Upgrading an existing project](SETUP.md#upgrading-an-existing-project) for 
 
 ---
 
+## [0.34.0](https://github.com/IamMrCupp/claude-project-kit/compare/v0.33.0...v0.34.0) (2026-05-03)
+
+
+### Features
+
+* **scripts:** upgrade.sh — one-command kit + project upgrade orchestrator ([e9a4546](https://github.com/IamMrCupp/claude-project-kit/commit/e9a45468c1fc13897163f5563d60edb77413e9c2))
+* **scripts:** upgrade.sh orchestrator — one-command kit + project upgrade ([#169](https://github.com/IamMrCupp/claude-project-kit/issues/169)) ([62c2937](https://github.com/IamMrCupp/claude-project-kit/commit/62c2937cafd4621c718a30c10f41784144af642b))
+
+
+### Documentation
+
+* surface upgrade.sh as the upgrade front-door ([#169](https://github.com/IamMrCupp/claude-project-kit/issues/169)) ([227a78a](https://github.com/IamMrCupp/claude-project-kit/commit/227a78ae342e3e19cd968afe4a3b4bccc6f112e2))
+
+
+### Tests
+
+* **scripts:** bats coverage for upgrade.sh orchestrator ([#169](https://github.com/IamMrCupp/claude-project-kit/issues/169)) ([8438ad0](https://github.com/IamMrCupp/claude-project-kit/commit/8438ad0ec6806cb7f41fd5a426e4b1978e88395f))
+
 ## [0.33.0](https://github.com/IamMrCupp/claude-project-kit/compare/v0.32.0...v0.33.0) (2026-05-03)
 
 
