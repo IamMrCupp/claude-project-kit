@@ -6,6 +6,19 @@ See [Upgrading an existing project](SETUP.md#upgrading-an-existing-project) for 
 
 ---
 
+## [0.37.0](https://github.com/IamMrCupp/claude-project-kit/compare/v0.36.0...v0.37.0) (2026-05-03)
+
+
+### Features
+
+* **examples:** multi-initiative workspace exemplar in acme-platform (PR B of [#133](https://github.com/IamMrCupp/claude-project-kit/issues/133)) ([727d7c6](https://github.com/IamMrCupp/claude-project-kit/commit/727d7c684bfe3f5f74dec3faa0098bc8b2cc783a))
+* **examples:** turn acme-platform into a multi-initiative workspace exemplar ([#133](https://github.com/IamMrCupp/claude-project-kit/issues/133)) ([f85c369](https://github.com/IamMrCupp/claude-project-kit/commit/f85c36953cc498e6f76b0dad6e14c19f2c159530))
+
+
+### Documentation
+
+* surface acme-platform's multi-initiative shape in README + FEATURES ([#133](https://github.com/IamMrCupp/claude-project-kit/issues/133)) ([da9dcb1](https://github.com/IamMrCupp/claude-project-kit/commit/da9dcb194a7627b4ebd16ea9631dd65a976fb614))
+
 ## [0.36.0](https://github.com/IamMrCupp/claude-project-kit/compare/v0.35.0...v0.36.0) (2026-05-03)
 
 
