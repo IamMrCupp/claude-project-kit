@@ -57,6 +57,14 @@ Options:
   --skip-pull       Don't git-pull the kit; assume already current.
                     Also bypasses the kit-checkout-clean pre-flight check.
   --skip-commands   Don't install/update global slash commands or agents.
+  --force-commands  Pass --force-update --yes through to install-commands.sh
+                    in Step 5. Overwrites kit-shipped commands / agents in
+                    the target with the kit's current templates (with
+                    .bak.<timestamp> backups). Files NOT in the kit's
+                    templates are still preserved. Use after a kit release
+                    that updated existing commands you already have
+                    installed (the install-commands.sh write-once default
+                    won't pick those changes up).
   -h, --help        Show this help and exit.
 
 Examples:
@@ -79,17 +87,24 @@ EOF
 DRY_RUN=0
 SKIP_PULL=0
 SKIP_COMMANDS=0
+FORCE_COMMANDS=0
 
 while [ $# -gt 0 ]; do
   case "$1" in
     --dry-run) DRY_RUN=1; shift ;;
     --skip-pull) SKIP_PULL=1; shift ;;
     --skip-commands) SKIP_COMMANDS=1; shift ;;
+    --force-commands) FORCE_COMMANDS=1; shift ;;
     -h|--help) usage; exit 0 ;;
     --*) echo "error: unknown option: $1" >&2; usage >&2; exit 2 ;;
     *) echo "error: unexpected positional argument: $1" >&2; usage >&2; exit 2 ;;
   esac
 done
+
+if [ "$FORCE_COMMANDS" -eq 1 ] && [ "$SKIP_COMMANDS" -eq 1 ]; then
+  echo "error: --force-commands and --skip-commands are mutually exclusive" >&2
+  exit 2
+fi
 
 # ─── Pre-flight 1: kit checkout cleanliness ────────────────────────────────
 if [ "$SKIP_PULL" -eq 0 ]; then
@@ -145,6 +160,8 @@ else
 fi
 if [ "$SKIP_COMMANDS" -eq 1 ]; then
   echo "  Step 5 (commands):   SKIPPED (--skip-commands)"
+elif [ "$FORCE_COMMANDS" -eq 1 ]; then
+  echo "  Step 5 (commands):   install-commands.sh --global --force-update --yes"
 else
   echo "  Step 5 (commands):   install-commands.sh --global"
 fi
@@ -186,8 +203,13 @@ fi
 
 # ─── Step 5 — install commands ────────────────────────────────────────────
 if [ "$SKIP_COMMANDS" -eq 0 ]; then
-  echo "── Step 5 — installing global slash commands + agents ──"
-  "$SCRIPT_DIR/install-commands.sh" --global
+  if [ "$FORCE_COMMANDS" -eq 1 ]; then
+    echo "── Step 5 — installing/updating global slash commands + agents (--force-update) ──"
+    "$SCRIPT_DIR/install-commands.sh" --global --force-update --yes
+  else
+    echo "── Step 5 — installing global slash commands + agents ──"
+    "$SCRIPT_DIR/install-commands.sh" --global
+  fi
   echo
 fi
 
@@ -195,5 +217,7 @@ echo "✓ Upgrade complete."
 echo
 echo "Next steps:"
 echo "  • Restart Claude.app (Cmd+Q + reopen) to pick up new slash commands."
-echo "  • Existing commands are preserved (write-once invariant). To update"
-echo "    changed commands, see install-commands.sh --force-update once #170 ships."
+if [ "$FORCE_COMMANDS" -eq 0 ]; then
+  echo "  • Existing commands were preserved (write-once invariant). To update"
+  echo "    changed commands to the kit's current templates, re-run with --force-commands."
+fi

@@ -134,3 +134,48 @@ teardown() { bootstrap_teardown; }
   [ "$status" -eq 0 ]
   [[ "$output" == *"Step 5 (commands):   SKIPPED (--skip-commands)"* ]]
 }
+
+# ─── --force-commands tests (issue #170) ──────────────────────────────────
+
+@test "upgrade.sh -h documents --force-commands flag" {
+  run "$UPGRADE" -h
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"--force-commands"* ]]
+  [[ "$output" == *"--force-update --yes"* ]]
+}
+
+@test "upgrade.sh --force-commands and --skip-commands are mutually exclusive" {
+  run "$UPGRADE" --skip-pull --force-commands --skip-commands
+  [ "$status" -ne 0 ]
+  [[ "$output" == *"mutually exclusive"* ]]
+}
+
+@test "upgrade.sh --force-commands shows the force-update plan in dry-run" {
+  run "$BOOTSTRAP" "$TEST_WF"
+  [ "$status" -eq 0 ]
+
+  run "$UPGRADE" --skip-pull --force-commands --dry-run
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"install-commands.sh --global --force-update --yes"* ]]
+}
+
+@test "upgrade.sh --force-commands overwrites changed kit-shipped commands" {
+  run "$BOOTSTRAP" "$TEST_WF"
+  [ "$status" -eq 0 ]
+
+  # Pre-install commands, then customize one
+  "$KIT_ROOT/scripts/install-commands.sh" --global >/dev/null
+  echo "USER_CUSTOMIZATION" > "$TEST_HOME/.claude/commands/session-start.md"
+
+  # Run upgrade with --force-commands
+  run "$UPGRADE" --skip-pull --force-commands
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"--force-update"* ]]
+
+  # File now matches kit's template
+  ! grep -q "USER_CUSTOMIZATION" "$TEST_HOME/.claude/commands/session-start.md"
+  cmp -s "$KIT_ROOT/templates/.claude/commands/session-start.md" \
+         "$TEST_HOME/.claude/commands/session-start.md"
+  # Backup created
+  ls "$TEST_HOME/.claude/commands/session-start.md.bak."* >/dev/null
+}

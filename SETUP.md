@@ -262,7 +262,13 @@ cd ~/Code/<your-project>
 
 That runs the full flow end-to-end: pulls the kit, syncs auto-memory, syncs working-folder templates, runs workspace-mode sync if the project is in a workspace, and installs any new global slash commands. Pass `--dry-run` first to preview, `--skip-pull` if you've already pulled the kit, or `--skip-commands` to skip the global slash-command install. After completion, restart Claude.app (Cmd+Q + reopen) to pick up new slash commands.
 
-**One known limitation:** `install-commands.sh` (and the orchestrator's Step 5) is write-once — it adds *missing* command files but does NOT overwrite existing ones. If a kit release ships an *updated* version of a command you already have installed, you currently need to manually `rm` it before `upgrade.sh` will reinstall the new copy. A `--force-update` flag is tracked in [#170](https://github.com/IamMrCupp/claude-project-kit/issues/170) and will land the orchestrator-friendly version of this fix.
+**Updating *changed* kit-shipped commands** — `upgrade.sh` (and `install-commands.sh` underneath it) is **write-once by default**: existing files in your global `~/.claude/{commands,agents}/` stay untouched. When a kit release ships an updated version of a command you already have installed (e.g. `/close-phase` got new behavior between v0.30 and v0.31), pass `--force-commands` to overwrite kit-shipped files with the kit's current templates:
+
+```bash
+~/Code/claude-project-kit/scripts/upgrade.sh --force-commands
+```
+
+`--force-commands` is safe in two ways: every overwritten file gets a `.bak.<timestamp>` backup so local edits are recoverable, and **commands you added that aren't in the kit's templates are never touched** — only kit-shipped files are candidates for overwrite. Skip the flag for the conservative default; opt in when you actually want the latest kit versions.
 
 If you'd rather run the steps manually (or want to understand exactly what the orchestrator does), here they are:
 
