@@ -6,6 +6,14 @@ See [Upgrading an existing project](SETUP.md#upgrading-an-existing-project) for 
 
 ---
 
+## [0.37.1](https://github.com/IamMrCupp/claude-project-kit/compare/v0.37.0...v0.37.1) (2026-05-03)
+
+
+### Documentation
+
+* **adr:** ADR-0002 multi-initiative workspace tracking (PR C of [#133](https://github.com/IamMrCupp/claude-project-kit/issues/133)) ([1ea78e3](https://github.com/IamMrCupp/claude-project-kit/commit/1ea78e35009fcaf28af40acb04aa0830ed314f68))
+* **adr:** record multi-initiative workspace tracking design ([#133](https://github.com/IamMrCupp/claude-project-kit/issues/133)) ([f8a4008](https://github.com/IamMrCupp/claude-project-kit/commit/f8a40089c0e84ab7e2a8b3d158d56ac7d05830dc))
+
 ## [0.37.0](https://github.com/IamMrCupp/claude-project-kit/compare/v0.36.0...v0.37.0) (2026-05-03)
 
 
