@@ -6,6 +6,14 @@ See [Upgrading an existing project](SETUP.md#upgrading-an-existing-project) for 
 
 ---
 
+## [0.38.3](https://github.com/IamMrCupp/claude-project-kit/compare/v0.38.2...v0.38.3) (2026-05-04)
+
+
+### Bug Fixes
+
+* **commands:** resolve absolute path via Bash before Read ([44a61d4](https://github.com/IamMrCupp/claude-project-kit/commit/44a61d462aaedc18d45b24e948aa7b32147d29f3))
+* **commands:** resolve absolute path via Bash before Read ([01fbf02](https://github.com/IamMrCupp/claude-project-kit/commit/01fbf02e5f2d8ff99576a8bdb28dbcbd3fc51f29))
+
 ## [0.38.2](https://github.com/IamMrCupp/claude-project-kit/compare/v0.38.1...v0.38.2) (2026-05-04)
 
 
