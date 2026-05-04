@@ -6,6 +6,14 @@ See [Upgrading an existing project](SETUP.md#upgrading-an-existing-project) for 
 
 ---
 
+## [0.38.1](https://github.com/IamMrCupp/claude-project-kit/compare/v0.38.0...v0.38.1) (2026-05-04)
+
+
+### Bug Fixes
+
+* **bootstrap:** stamp working-folder path into MEMORY.md index line ([df57be5](https://github.com/IamMrCupp/claude-project-kit/commit/df57be5d848c4f3f783cec93267025e68d9c625b))
+* **bootstrap:** stamp working-folder path into MEMORY.md index line ([2498002](https://github.com/IamMrCupp/claude-project-kit/commit/2498002e9f963bf8ad1dbc1065febd349d2503da))
+
 ## [0.38.0](https://github.com/IamMrCupp/claude-project-kit/compare/v0.37.1...v0.38.0) (2026-05-04)
 
 
