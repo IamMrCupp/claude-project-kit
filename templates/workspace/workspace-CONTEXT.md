@@ -57,8 +57,9 @@ Shared tracker config for the workspace. If a single tracker covers all repos, c
 - **Project / team key:** {{TRACKER_KEY}}
 - **MCP availability:** {{installed | not installed | unknown}}
 - **Tracker link:** {{URL}}
+- **Tracker authority:** {{user-owned | externally-owned | unknown}} — *user-owned* triggers issue-first defaults; *externally-owned* trackers (work JIRA, upstream OSS) stay read-only.
 
-See `CONVENTIONS.md` (kit-level — `## Ticket-driven workflows`) for the branch / PR / commit conventions to use against a tracker.
+See `CONVENTIONS.md` (kit-level — `## Ticket-driven workflows`) for the branch / PR / commit conventions to use against a tracker, and `## Ticket-driven workflows → Issue-first when you own the tracker` for the issue-creation defaults.
 
 ---
 

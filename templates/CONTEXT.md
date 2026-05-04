@@ -33,6 +33,7 @@ The external tracker for this project, used when work is ticket-driven. See `CON
 - **Project / team key:** {{TRACKER_KEY}}
 - **MCP availability:** {{installed | not installed | unknown}}
 - **Tracker link:** {{URL — leave blank if none}}
+- **Tracker authority:** {{user-owned | externally-owned | unknown}} — *user-owned* triggers issue-first defaults (see `CONVENTIONS.md` → *Ticket-driven workflows* → *Issue-first when you own the tracker*). *Externally-owned* trackers (work JIRA, upstream OSS) stay read-only.
 
 If this folder lives in a workspace (multi-repo initiative), tracker config commonly lives at the workspace level (`../workspace-CONTEXT.md`) instead of duplicated here. Leave this section as-is or remove it as appropriate.
 
