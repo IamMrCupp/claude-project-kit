@@ -521,6 +521,84 @@ Load workspace context and give me a 4-bullet summary of where we are.
 
 ---
 
+## 12. Carving a phase checklist into issues
+
+Use this when you've drafted a `phase-N-checklist.md` and the project's tracker is **yours to own** (your personal GitHub repo's Issues, your own Linear team, etc.) — the kit's default for user-owned trackers is to mirror trackable work as issues so the public/durable view of the work matches the local checklist. Read + propose only — never bulk-creates without explicit confirmation.
+
+For trackers you **don't** own (work JIRA, upstream OSS), don't run this — use [Prompt 6](#6-pulling-a-ticket-into-a-per-ticket-scratchpad) to *pull* existing tickets into local scratchpads instead. See `CONVENTIONS.md` → *Ticket-driven workflows* → *Issue-first when you own the tracker* for the rule.
+
+```
+Carve the current phase checklist into issues.
+
+## Step 1 — confirm tracker authority
+
+Read <working-folder>/CONTEXT.md. Find the **Tracker Configuration** section.
+
+Stop and ask before proceeding if:
+- Tracker authority is `externally-owned` or `unknown` — issue-first defaults don't
+  apply; this prompt is for user-owned trackers only.
+- Tracker type is `none` or `other` without a clear creation path.
+
+If `<working-folder>/../workspace-CONTEXT.md` exists, read that too for workspace-level
+tracker config — it takes precedence in workspace mode.
+
+## Step 2 — read the phase checklist
+
+Read <working-folder>/phase-<N>-checklist.md. Identify each unticked item that doesn't
+already have an `Issue:` value filled in.
+
+## Step 3 — propose the issue list
+
+For each unticked, issueless item, propose:
+
+- **Title** — derived from the item's task title (kept under 70 chars; matches a
+  Conventional Commits–shaped phrasing where it fits, e.g. `feat: …` / `docs: …`)
+- **Body** — the item's goal in 1-2 sentences, plus a reference to the implementation
+  spec section (e.g. `See implementation.md §A.2`) and the phase checklist file
+- **Labels** — only if the project has an established label set; otherwise leave blank
+  (don't invent labels — that's tracker structural change, which the kit avoids)
+
+For working-folder-only items (local sanity checks, internal verifications with no
+matching PR), call them out explicitly — title or body should signal "no PR expected"
+so the issue is closed manually after the verification.
+
+Print the proposed list as a table or numbered list. **Do not run any
+`gh issue create` / `glab issue create` / equivalent yet.**
+
+## Step 4 — confirm and create
+
+Wait for explicit confirmation before bulk-creating. Once confirmed, create the issues
+in order using the platform's CLI:
+
+- GitHub: `gh issue create --title "…" --body "…" [--label "…"]`
+- GitLab: `glab issue create --title "…" --description "…" [--label "…"]`
+- Linear / others: use the relevant MCP if available
+
+After each creates successfully, capture the issue number.
+
+## Step 5 — write back to the checklist
+
+Update <working-folder>/phase-<N>-checklist.md so each item's `Issue:` field
+records the issue number (`#N`) created in Step 4. Show the diff.
+
+## Hand back
+
+A short report:
+- N issues created (numbers + titles)
+- Items that didn't get an issue and why (already had one, working-folder-only
+  with explicit skip, etc.)
+- The updated checklist diff for the user to review
+
+Don't `git commit` — the user reviews the checklist diff and commits separately.
+```
+
+**Notes:**
+- Issue creation is **not** an automated default — even for user-owned trackers, the bulk-create step always waits for confirmation. Single ad-hoc issue creation during a session is fine without going through this prompt.
+- For trackers where someone else owns the project (work JIRA, upstream OSS), use Prompt 6 (or `/pull-ticket`) to *pull* existing tickets into local scratchpads. The kit stays read-only for externally-owned trackers — see `feedback_no_tracker_creation.md` and `CONVENTIONS.md`.
+- No paired slash command yet — the convention has to land first to motivate the command. If usage proves the flow out, packaging it as `/carve-issues` is a natural follow-up.
+
+---
+
 ## When to write a new prompt
 
 Add one here whenever you find yourself typing similar setup instructions into a fresh session for the third time. A good prompt is:
