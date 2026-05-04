@@ -56,21 +56,36 @@ KIT_COUPLED_AGENTS=(
   done
 }
 
-# Regression guard for #187 — the precheck must instruct the model to use
-# the Read tool against the auto-memory pointer file directly. The earlier
-# wording ("Look up `reference_ai_working_folder.md` in this project's
-# auto-memory") was ambiguous — models sometimes read it as "check the
-# session-reminder", which only contains MEMORY.md, and bailed on properly
-# bootstrapped projects.
-@test "every kit-coupled command Precheck uses unambiguous Read-tool wording" {
+# Regression guard for #187 / #190 — the precheck must instruct the model to
+# resolve the auto-memory pointer path via Bash ($HOME + $PWD-derived key)
+# and then Read the resolved absolute path. Earlier wordings either:
+#   - "Look up `reference_ai_working_folder.md` in this project's auto-memory"
+#     was ambiguous — models read it as "check the session reminder", which
+#     only contains MEMORY.md, and bailed on properly bootstrapped projects.
+#   - "Use the `Read` tool to load `~/.claude/projects/...`" — the Read tool
+#     does not expand `~/`, so passing the literal `~/...` string fails with
+#     "file not found" and the precheck bails the same way.
+@test "every kit-coupled command Precheck resolves absolute path via Bash before Read" {
   for cmd in "${KIT_COUPLED_COMMANDS[@]}"; do
     f="$KIT_ROOT/$cmd"
-    if ! grep -q 'Use the `Read` tool to load `~/\.claude/projects/' "$f"; then
-      echo "missing explicit Read-tool wording in: $cmd"
+    # Must include the $HOME-based echo command for path resolution.
+    if ! grep -q 'echo "\$HOME/\.claude/projects/' "$f"; then
+      echo "missing \$HOME-based path resolution Bash command in: $cmd"
       return 1
     fi
+    # Must explicitly direct the model to NOT pass ~/ to Read.
+    if ! grep -q 'do not pass `~/` to Read' "$f"; then
+      echo "missing 'do not pass ~/ to Read' guidance in: $cmd"
+      return 1
+    fi
+    # Old ambiguous wording must be gone.
     if grep -q "Look up \`reference_ai_working_folder\.md\` in this project's auto-memory" "$f"; then
-      echo "regression — old ambiguous wording still present in: $cmd"
+      echo "regression — original ambiguous wording still present in: $cmd"
+      return 1
+    fi
+    # Old tilde-passing wording must also be gone.
+    if grep -q 'Use the `Read` tool to load `~/\.claude/projects/' "$f"; then
+      echo "regression — tilde-path wording still present in: $cmd"
       return 1
     fi
   done
@@ -87,11 +102,15 @@ KIT_COUPLED_AGENTS=(
   done
 }
 
-@test "kit-coupled agents Precheck uses unambiguous Read-tool wording" {
+@test "kit-coupled agents Precheck resolves absolute path via Bash before Read" {
   for agent in "${KIT_COUPLED_AGENTS[@]}"; do
     f="$KIT_ROOT/$agent"
-    if ! grep -q 'Use the `Read` tool to load `~/\.claude/projects/' "$f"; then
-      echo "missing explicit Read-tool wording in: $agent"
+    if ! grep -q 'echo "\$HOME/\.claude/projects/' "$f"; then
+      echo "missing \$HOME-based path resolution Bash command in: $agent"
+      return 1
+    fi
+    if grep -q 'Use the `Read` tool to load `~/\.claude/projects/' "$f"; then
+      echo "regression — tilde-path wording still present in: $agent"
       return 1
     fi
   done
