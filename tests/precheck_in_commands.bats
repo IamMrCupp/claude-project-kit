@@ -16,6 +16,8 @@ KIT_COUPLED_COMMANDS=(
   templates/.claude/commands/close-phase.md
   templates/.claude/commands/pull-ticket.md
   templates/.claude/commands/run-acceptance.md
+  templates/.claude/commands/plan.md
+  templates/.claude/commands/research.md
 )
 
 # Kit-coupled agents (code-reviewer is universal — no kit dependency).
@@ -54,12 +56,42 @@ KIT_COUPLED_AGENTS=(
   done
 }
 
+# Regression guard for #187 — the precheck must instruct the model to use
+# the Read tool against the auto-memory pointer file directly. The earlier
+# wording ("Look up `reference_ai_working_folder.md` in this project's
+# auto-memory") was ambiguous — models sometimes read it as "check the
+# session-reminder", which only contains MEMORY.md, and bailed on properly
+# bootstrapped projects.
+@test "every kit-coupled command Precheck uses unambiguous Read-tool wording" {
+  for cmd in "${KIT_COUPLED_COMMANDS[@]}"; do
+    f="$KIT_ROOT/$cmd"
+    if ! grep -q 'Use the `Read` tool to load `~/\.claude/projects/' "$f"; then
+      echo "missing explicit Read-tool wording in: $cmd"
+      return 1
+    fi
+    if grep -q "Look up \`reference_ai_working_folder\.md\` in this project's auto-memory" "$f"; then
+      echo "regression — old ambiguous wording still present in: $cmd"
+      return 1
+    fi
+  done
+}
+
 @test "kit-coupled agents include a Precheck block" {
   for agent in "${KIT_COUPLED_AGENTS[@]}"; do
     f="$KIT_ROOT/$agent"
     [ -f "$f" ]
     if ! grep -q "^## Precheck — is this a kit project?$" "$f"; then
       echo "missing Precheck block: $agent"
+      return 1
+    fi
+  done
+}
+
+@test "kit-coupled agents Precheck uses unambiguous Read-tool wording" {
+  for agent in "${KIT_COUPLED_AGENTS[@]}"; do
+    f="$KIT_ROOT/$agent"
+    if ! grep -q 'Use the `Read` tool to load `~/\.claude/projects/' "$f"; then
+      echo "missing explicit Read-tool wording in: $agent"
       return 1
     fi
   done
