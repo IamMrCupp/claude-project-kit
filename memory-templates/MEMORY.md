@@ -17,7 +17,7 @@ Do not treat these as canonical without reading them first — they encode one o
 - [Don't push after merge](feedback_no_push_after_merge.md) — once a PR merges, the branch is closed; branch off new `main` for follow-up work
 - [Use the repo's branch-name convention](feedback_branch_naming.md) — rename auto-generated worktree branches to `<type>/<slug>` before pushing
 - [Prefer automated tests over manual smoke](feedback_automated_tests_preferred.md) — default to bats / expect / integration runners; don't ship manual procedures as steady state
-- [Never create tracker projects](feedback_no_tracker_creation.md) — read/reference only for business-owned trackers; let PMs handle creation
+- [Tracker authority decides the default](feedback_no_tracker_creation.md) — issue-first when you own the tracker; read/reference only for externally-owned trackers
 - [Don't manually tag when release automation is configured](feedback_release_per_pr.md) — release-please etc. handle tagging; do nothing release-wise after a normal PR merge
 - [Keep planning docs in sync](feedback_docs_in_sync.md) — update plan / checklist / implementation as work lands
 - [Current project context](project_current.md) — what's being built, why, timeline

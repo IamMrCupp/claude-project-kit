@@ -94,10 +94,36 @@ When working against an external tracker (JIRA, GitHub Issues, Linear, etc.), th
 - **Commits:** Conventional Commits with the key in the subject — e.g. `feat(modules): add VPC module — ACME-1234`. The single-line `-m` rule from `## Git & commits` still applies; the key goes in the subject, not a body.
 - **Smart Commits** (`#time`, `#comment`, `#transition` for trackers that support them) — **opt-in per project**, not part of the default convention. If your team uses them, document the local conventions in `CONTEXT.md` so contributors don't accidentally trigger transitions.
 
+### Issue-first when you own the tracker
+
+**Bright line: tracker authority decides the default.**
+
+- **You own the tracker** (your personal GitHub repo's Issues, your own Linear team, etc.) → **issue-first by default**. Trackable work gets an issue *before* you start. The local `phase-N-checklist.md` is the working view; the tracker is the public/durable view. Both should agree.
+- **Someone else owns the tracker** (work JIRA, upstream OSS) → read-only. See *What the kit does NOT do with trackers* below — the rule is unchanged for externally-owned trackers.
+
+When in doubt about who owns it, ask. Default to assuming externally-owned.
+
+#### Mechanics — when you own the tracker
+
+- **Granularity:** one issue ≈ one phase-checklist item. Phase-level umbrella issues are optional — only worth creating when the phase has 5+ items or spans multiple repos.
+- **Cross-linking:**
+  - Phase checklist items record `Issue:` + `Branch:` + `PR:` so all three views point at each other.
+  - PR body includes `Closes #N` (or your tracker's auto-close keyword) so merge auto-closes the issue.
+  - Commits may reference the issue (`feat(svg): regenerate from brand.toml (#12)`) but it isn't required — the PR body carries the link.
+- **Working-folder-only items** (local sanity checks, internal verifications with no PR) still get an issue when the tracker is yours. Title or label them so it's obvious no PR is expected; close manually after the verification lands in `SESSION-LOG.md`.
+- **Confirm before bulk-create.** When carving a phase checklist into issues, propose the full list (titles + bodies + labels if any) and wait for the nod before running `gh issue create` (or equivalent). Don't auto-create silently — the user's seeing the proposed shape *before* it lands in their tracker is the load-bearing step.
+- **Verify auto-close.** After a PR merges, check the linked issue actually closed. If the auto-close keyword didn't fire (wrong keyword, cross-repo edge case, branch protection quirk), close the issue manually with a one-line summary.
+
+#### Why
+
+- **Survives loss of the working folder.** The local checklist is durable for you; the tracker is durable for everyone — future-you, collaborators, anyone reading the repo without your private working folder.
+- **Visible to the world.** A populated Issues tab signals "this project is alive and being worked on" in a way `phase-N-checklist.md` can't.
+- **Native cross-linking.** GitHub / Linear / JIRA all link issues ↔ commits ↔ PRs natively in their UI. You get that integration for free once the issue exists.
+
 ### What the kit does NOT do with trackers
 
 - **Never creates tracker projects, labels, workflows, or sprint scaffolding** on your behalf. JIRA projects, GitHub Project boards, Linear teams, etc. are owned by PMs and the business — bootstrap captures *references* to projects that already exist (project key, MCP availability, link), never creates them.
-- **Creating individual issues/tickets inside an existing project** is only on the table when you explicitly ask for it. The kit's own GitHub repo is the exception (a personal project), not the rule.
+- **Creating individual issues/tickets inside an existing project** depends on tracker authority — see *Issue-first when you own the tracker* above. For trackers you own, issue creation is the default (with confirmation before bulk-create). For externally-owned trackers, it's only on the table when you explicitly ask, and never structural artifacts (labels, workflows, sprint config).
 
 ## Documentation (in the working folder)
 

@@ -10,9 +10,10 @@
 
 - One item ≈ one branch ≈ one PR.
 - Organize items into sections (A, B, C, …) with checkpoints between major chunks. Helps you pause and re-orient.
-- Each item records branch name, commit message(s), and PR number once merged.
+- Each item records issue number (when applicable), branch name, commit message(s), and PR number once merged.
 - Reference `implementation.md` specs by number (`see §1.4`) rather than duplicating.
 - Tick items ✅ the moment the PR merges — not at end of phase.
+- **Issue-first when you own the tracker:** when the tracker is yours (e.g. GitHub Issues on your own repo), open an issue *before* starting trackable work and record `#N` in the `Issue:` field below. PRs use `Closes #N` so the issue auto-closes on merge. See `CONVENTIONS.md` → *Ticket-driven workflows* → *Issue-first when you own the tracker* for the full rule. For externally-owned trackers (work JIRA, upstream OSS), leave `Issue:` blank or remove the field — read-only is the default there.
 
 ---
 
@@ -21,6 +22,7 @@
 ### A.1 {{Task title}}
 
 - **Spec:** `implementation.md` §{{X.Y}}
+- **Issue:** #{{N}} — {{leave blank if tracker is externally-owned or no issue applies}}
 - **Branch:** `{{type/name}}`
 - **Commits:**
   - `{{type(scope): message}}`
