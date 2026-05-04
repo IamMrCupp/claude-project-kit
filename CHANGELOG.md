@@ -6,6 +6,14 @@ See [Upgrading an existing project](SETUP.md#upgrading-an-existing-project) for 
 
 ---
 
+## [0.38.2](https://github.com/IamMrCupp/claude-project-kit/compare/v0.38.1...v0.38.2) (2026-05-04)
+
+
+### Bug Fixes
+
+* **commands:** rewrite precheck to read pointer file directly ([d02a887](https://github.com/IamMrCupp/claude-project-kit/commit/d02a88750415e2edad1b6006cc5c195be32d9a37))
+* **commands:** rewrite precheck to read pointer file directly ([b1744ae](https://github.com/IamMrCupp/claude-project-kit/commit/b1744aeaea5b68e30eb1fffadb71a7ce7c628b7e))
+
 ## [0.38.1](https://github.com/IamMrCupp/claude-project-kit/compare/v0.38.0...v0.38.1) (2026-05-04)
 
 
