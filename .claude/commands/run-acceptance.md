@@ -7,7 +7,7 @@ argument-hint: [test-N | all]
 
 Before doing anything else:
 
-1. Look up `reference_ai_working_folder.md` in this project's auto-memory.
+1. Use the `Read` tool to load `~/.claude/projects/<KEY>/memory/reference_ai_working_folder.md`, where `<KEY>` is the absolute current working directory with `/` replaced by `-` (compute via `echo "$PWD" | sed 's|/|-|g'` — e.g. `/Users/foo/Code/bar` → `-Users-foo-Code-bar`). Do not rely on auto-memory recall — auto-memory loads only `MEMORY.md` into the session reminder, not the files it links to.
 2. If it isn't there, OR the working-folder path it points to doesn't have a `CONTEXT.md` file, **stop** and tell me:
    > "No kit working folder found for this project. To use this command, either run `bootstrap.sh` from the kit (https://github.com/IamMrCupp/claude-project-kit) to create one, or `cd` into a kit-bootstrapped repo. If a working folder exists at a non-default path, tell me and I'll load from there."
 3. Don't load partial state. If any required file is missing, treat the project as not-bootstrapped and bail with the message above.
