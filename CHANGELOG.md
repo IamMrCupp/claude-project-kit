@@ -6,6 +6,27 @@ See [Upgrading an existing project](SETUP.md#upgrading-an-existing-project) for 
 
 ---
 
+## [0.38.0](https://github.com/IamMrCupp/claude-project-kit/compare/v0.37.1...v0.38.0) (2026-05-04)
+
+
+### Features
+
+* **conventions:** add issue-first sub-section for user-owned trackers ([83208f2](https://github.com/IamMrCupp/claude-project-kit/commit/83208f27be9db6134010285a1f0e1a4788144061))
+* issue-first defaults when you own the tracker ([f1131d7](https://github.com/IamMrCupp/claude-project-kit/commit/f1131d7cd493eabc8f5eeb2ed88ba2a7064c7fe3))
+* **memory:** graduate personally-owned tracker carve-out to issue-first default ([db604aa](https://github.com/IamMrCupp/claude-project-kit/commit/db604aa019873348d0213ba1755b40b48684d02e))
+* **templates:** add Tracker authority field and Issue: per checklist item ([5130c3f](https://github.com/IamMrCupp/claude-project-kit/commit/5130c3f36c851879e530986b05a90be40bef4c2c))
+
+
+### Documentation
+
+* **prompts:** add Prompt 12 — carve a phase checklist into issues ([99e9f11](https://github.com/IamMrCupp/claude-project-kit/commit/99e9f11545854967d018554ed4efb5e6f1de760d))
+* surface issue-first defaults in FEATURES and SETUP ([fe9fb94](https://github.com/IamMrCupp/claude-project-kit/commit/fe9fb945cf5b614699503fc85a3ca66c2f6acf25))
+
+
+### Tests
+
+* cover issue-first defaults across kit surfaces ([f645d14](https://github.com/IamMrCupp/claude-project-kit/commit/f645d144bcbf9f0e93c9741a83c92e7095f4dd4b))
+
 ## [0.37.1](https://github.com/IamMrCupp/claude-project-kit/compare/v0.37.0...v0.37.1) (2026-05-03)
 
 
