@@ -81,6 +81,17 @@ teardown() { bootstrap_teardown; }
   ! grep -q '{{REPO_PATH}}' "$(memory_dir)/reference_ai_working_folder.md"
 }
 
+@test "AI working folder index line in MEMORY.md is stamped with absolute path" {
+  run "$BOOTSTRAP" "$TEST_WF"
+  [ "$status" -eq 0 ]
+  # Bug fix: the [AI working folder location] index line must embed the actual
+  # working-folder path, because /session-start's precheck only sees MEMORY.md
+  # content (not the linked reference_ai_working_folder.md file). A generic
+  # description like "at session start" makes the precheck bail.
+  grep -q "AI working folder location.*$TEST_WF" "$(memory_dir)/MEMORY.md"
+  ! grep -q '{{WORKING_FOLDER}}' "$(memory_dir)/MEMORY.md"
+}
+
 @test "placeholder substitution fills {{REPO_SLUG}} when git remote exists" {
   run "$BOOTSTRAP" "$TEST_WF"
   [ "$status" -eq 0 ]
