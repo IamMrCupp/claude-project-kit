@@ -302,6 +302,7 @@ If you'd rather run the steps manually (or want to understand exactly what the o
    ```bash
    cp <kit-dir>/memory-templates/<NEW_FILE>.md ~/.claude/projects/<sanitized-path>/memory/
    ```
+   **One-time fix for projects bootstrapped before v0.39:** the `[AI working folder location]` line in those `MEMORY.md` files reads `at session start` instead of the absolute working-folder path. `/session-start`'s precheck only sees `MEMORY.md` content, so the missing path makes the precheck bail. Hand-edit the line to end with `at <absolute-working-folder-path>/ before work` — sync-memory leaves `MEMORY.md` alone by design, so this is a one-shot manual edit.
 4. **New files in `templates/.claude/`** — easiest path is to re-run the install helper, which adds any missing commands or agents without overwriting existing files:
    ```bash
    <kit-dir>/scripts/install-commands.sh --global   # or --project <repo-path>

@@ -190,6 +190,18 @@ teardown() { bootstrap_teardown; }
   [ -f "$MEM/MEMORY.md" ]
 }
 
+@test "--workspace stamps per-repo path (not workspace root) into MEMORY.md AI working folder line" {
+  WS="$TEST_TMP/acme-platform"
+  REPO_NAME="$(basename "$TEST_REPO")"
+  run "$BOOTSTRAP" --workspace "$WS"
+  [ "$status" -eq 0 ]
+
+  MEM="$(memory_dir)"
+  # Line must reference the per-repo subfolder, not the workspace root
+  grep -q "AI working folder location.*$WS/$REPO_NAME" "$MEM/MEMORY.md"
+  ! grep -q '{{WORKING_FOLDER}}' "$MEM/MEMORY.md"
+}
+
 # --- Phase 4 D.1 — tracker config substitution into workspace-CONTEXT.md ---
 
 @test "--workspace --tracker jira fills tracker config in workspace-CONTEXT.md" {

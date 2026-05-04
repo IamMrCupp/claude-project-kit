@@ -9,7 +9,7 @@ Starter index. Every file in this folder is a **starting point** — copy them i
 Do not treat these as canonical without reading them first — they encode one opinionated way of working.
 
 - [User role and background](user_role.md) — who you're collaborating with, how to calibrate explanations
-- [AI working folder location](reference_ai_working_folder.md) — read CONTEXT.md + SESSION-LOG.md at session start
+- [AI working folder location](reference_ai_working_folder.md) — read CONTEXT.md + SESSION-LOG.md at {{WORKING_FOLDER}}/ before work
 - [Commit format](feedback_commit_format.md) — Conventional Commits, single line, signed off
 - [Merge strategy](feedback_merge_strategy.md) — always merge commits; never squash or rebase
 - [Push branches by default](feedback_push_branches.md) — `git push -u origin <branch>` after commit without asking
