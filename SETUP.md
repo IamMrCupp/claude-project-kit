@@ -164,8 +164,9 @@ From there, the normal flow:
 
 1. **Plan** — flesh out `plan.md` into phases. Ask Claude to help if the scope is fuzzy.
 2. **Phase 0** — scaffold the phase-0 checklist (repo setup, CI, license, initial build).
-3. **Iterate** — branch → commit → PR → merge → tick the checklist.
-4. **At session end** — append a `SESSION-LOG.md` entry describing what happened.
+3. **Carve issues (if you own the tracker)** — once the phase checklist is drafted and the tracker is yours, run [Prompt 12](PROMPTS.md#12-carving-a-phase-checklist-into-issues) to mirror the checklist into issues. Claude proposes titles + bodies, you confirm before bulk-create. Skip this step if the tracker is externally-owned (work JIRA, upstream OSS) — those stay read-only.
+4. **Iterate** — branch → commit → PR → merge → tick the checklist (and let `Closes #N` auto-close the linked issue).
+5. **At session end** — append a `SESSION-LOG.md` entry describing what happened.
 
 ---
 
