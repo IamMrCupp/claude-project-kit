@@ -50,6 +50,14 @@ Options:
                      See ADR-0001 in the kit for the workspace folder model.
   --skip-memory      Skip copying memory-templates/ into the auto-memory
                      folder. Only the working folder will be seeded.
+  --no-gitignore     Skip appending the kit-managed block to the repo's
+                     .gitignore. By default bootstrap appends a block
+                     covering .claude/ (local-only Claude Code state),
+                     macOS junk (.DS_Store etc.), and common editor / IDE
+                     files (.vscode/, .idea/, *.swp, ...). Idempotent —
+                     re-runs detect the existing block and skip. The kit's
+                     stance: .claude/ stays local to the user, never
+                     committed to the source-code repo.
   --project-name NAME
                      Override the auto-derived project name used to fill
                      {{PROJECT_NAME}} placeholders in seeded memory files.
@@ -488,7 +496,75 @@ PY
   return 0
 }
 
+gitignore_block_start_marker() { echo "# claude-project-kit — managed block START"; }
+gitignore_block_end_marker()   { echo "# claude-project-kit — managed block END"; }
+
+emit_gitignore_block() {
+  # Emit the managed block contents (markers + entries) to stdout. Single
+  # source of truth so the real-write path and the dry-run preview can't drift.
+  gitignore_block_start_marker
+  echo "# Local-only Claude Code state — installed globally via install-commands.sh"
+  echo "# or scoped per-project, but never committed to the source-code repo."
+  echo ".claude/"
+  echo
+  echo "# macOS"
+  echo ".DS_Store"
+  echo "._*"
+  echo ".AppleDouble"
+  echo ".LSOverride"
+  echo
+  echo "# Editors / IDEs"
+  echo ".vscode/"
+  echo ".idea/"
+  echo "*.swp"
+  echo "*.swo"
+  echo "*~"
+  gitignore_block_end_marker
+}
+
+update_repo_gitignore() {
+  # Append a managed block to <repo>/.gitignore covering local-only Claude
+  # Code state (.claude/), macOS junk, and common editor/IDE files. Idempotent
+  # — re-runs detect the existing block via marker comments and skip.
+  # Creates .gitignore if absent. Caller is responsible for honoring
+  # --no-gitignore and --dry-run; this function only does the real write.
+  #
+  # args: repo_root
+  local repo="$1"
+  local gitignore="$repo/.gitignore"
+  local marker
+  marker="$(gitignore_block_start_marker)"
+
+  if [ -f "$gitignore" ] && grep -Fq "$marker" "$gitignore"; then
+    echo "  ✓ .gitignore already has kit-managed block — no change"
+    return 0
+  fi
+
+  local existed=0
+  if [ -f "$gitignore" ]; then
+    existed=1
+    if [ -s "$gitignore" ]; then
+      # Ensure file ends with a newline before appending.
+      if [ -n "$(tail -c 1 "$gitignore")" ]; then
+        printf '\n' >> "$gitignore"
+      fi
+      # Blank-line separator before our block.
+      printf '\n' >> "$gitignore"
+    fi
+  fi
+
+  emit_gitignore_block >> "$gitignore"
+
+  if [ "$existed" -eq 1 ]; then
+    echo "  ✓ Appended kit-managed block to $gitignore"
+  else
+    echo "  ✓ Created $gitignore with kit-managed block"
+  fi
+  return 0
+}
+
 SKIP_MEMORY=0
+SKIP_GITIGNORE=0
 FORCE=0
 DRY_RUN=0
 WORKSPACE_MODE=0
@@ -503,6 +579,7 @@ CI_TOOL=""
 while [ $# -gt 0 ]; do
   case "$1" in
     --skip-memory) SKIP_MEMORY=1; shift ;;
+    --no-gitignore) SKIP_GITIGNORE=1; shift ;;
     --force) FORCE=1; shift ;;
     --dry-run) DRY_RUN=1; shift ;;
     --workspace) WORKSPACE_MODE=1; shift ;;
@@ -844,6 +921,20 @@ if [ "$DRY_RUN" -eq 1 ]; then
     echo "Memory seeding skipped (--skip-memory)."
   fi
   echo
+  if [ "$SKIP_GITIGNORE" -eq 0 ]; then
+    GITIGNORE_PATH="$REPO_ROOT/.gitignore"
+    if [ -f "$GITIGNORE_PATH" ] && grep -Fq "$(gitignore_block_start_marker)" "$GITIGNORE_PATH"; then
+      echo "Repo .gitignore: $GITIGNORE_PATH"
+      echo "  ✓ kit-managed block already present — no change"
+    elif [ -f "$GITIGNORE_PATH" ]; then
+      echo "Would update repo .gitignore: $GITIGNORE_PATH"
+      echo "  + append kit-managed block (.claude/, macOS junk, IDE files)"
+    else
+      echo "Would create repo .gitignore: $GITIGNORE_PATH"
+      echo "  + write kit-managed block (.claude/, macOS junk, IDE files)"
+    fi
+    echo
+  fi
   echo "No changes made. Re-run without --dry-run to apply."
   exit 0
 fi
@@ -951,6 +1042,10 @@ fi
 
 write_initial_session_log_entry
 echo "  ✓ Wrote initial Bootstrap entry to $WORKING_FOLDER/SESSION-LOG.md"
+
+if [ "$SKIP_GITIGNORE" -eq 0 ]; then
+  update_repo_gitignore "$REPO_ROOT"
+fi
 
 if [ "$TRUST_WORKING_FOLDER_ROOT" -eq 1 ]; then
   TRUSTED_ROOT_PATH="$(trusted_root_for_working_folder)"
