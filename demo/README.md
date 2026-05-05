@@ -23,6 +23,26 @@ vhs demo/bootstrap.tape
 
 Output lands at `demo/bootstrap.gif`.
 
+## Converting GIFs to MP4 for social posts
+
+GitHub's README renders animated GIFs inline natively, so the kit's `README.md` references them as-is. Most social-media composers (Threads, Bluesky, LinkedIn, etc.) **don't accept animated `.gif` uploads** — they want MP4 video for any motion content, and their file pickers filter `.gif` out at the OS level.
+
+If you're posting a launch / update thread and want the demo motion in the post itself (not just a link to the repo), convert the GIF to MP4 with `ffmpeg`:
+
+```sh
+cd demo
+ffmpeg -y -i bootstrap.gif -movflags faststart -pix_fmt yuv420p \
+  -vf "scale=trunc(iw/2)*2:trunc(ih/2)*2" bootstrap.mp4
+```
+
+The flags handle three things social platforms care about:
+
+- `-movflags faststart` — moves the video metadata to the front so the file plays without buffering.
+- `-pix_fmt yuv420p` — required pixel format for broad compatibility (Threads/Bluesky/LinkedIn all reject other formats).
+- `-vf "scale=trunc(iw/2)*2..."` — forces even dimensions, which H.264 requires (otherwise `ffmpeg` errors out).
+
+Output lands at `demo/bootstrap.mp4`. Like the GIFs, MP4 renders are git-ignored — generate locally as needed for posts.
+
 ## Why renders aren't committed
 
 `demo/*.gif` and `demo/*.mp4` are git-ignored. The kit is docs-and-templates only; binary artifacts would bloat the repo over time.
