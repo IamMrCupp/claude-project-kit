@@ -6,6 +6,14 @@ See [Upgrading an existing project](SETUP.md#upgrading-an-existing-project) for 
 
 ---
 
+## [0.39.1](https://github.com/IamMrCupp/claude-project-kit/compare/v0.39.0...v0.39.1) (2026-05-05)
+
+
+### Documentation
+
+* **setup:** document shared-repos-across-workspaces workaround (refs [#199](https://github.com/IamMrCupp/claude-project-kit/issues/199)) ([267232d](https://github.com/IamMrCupp/claude-project-kit/commit/267232d6059f235fe956a7941c9c7a8426669c1a))
+* **setup:** document shared-repos-across-workspaces workaround pattern (refs [#199](https://github.com/IamMrCupp/claude-project-kit/issues/199)) ([0f87823](https://github.com/IamMrCupp/claude-project-kit/commit/0f87823b695f23d37743195fbe574be28f8cd52d))
+
 ## [0.39.0](https://github.com/IamMrCupp/claude-project-kit/compare/v0.38.4...v0.39.0) (2026-05-05)
 
 
