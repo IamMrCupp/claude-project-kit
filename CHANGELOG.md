@@ -6,6 +6,14 @@ See [Upgrading an existing project](SETUP.md#upgrading-an-existing-project) for 
 
 ---
 
+## [0.38.4](https://github.com/IamMrCupp/claude-project-kit/compare/v0.38.3...v0.38.4) (2026-05-05)
+
+
+### Bug Fixes
+
+* **memory:** flag override-authoritative rules in MEMORY.md index ([7f61714](https://github.com/IamMrCupp/claude-project-kit/commit/7f617149b8cb3a80434d343461772e75360ea824))
+* **memory:** flag override-authoritative rules in MEMORY.md index ([bd51a8f](https://github.com/IamMrCupp/claude-project-kit/commit/bd51a8f18a0a77b81789dbeba2016be94d4b034c))
+
 ## [0.38.3](https://github.com/IamMrCupp/claude-project-kit/compare/v0.38.2...v0.38.3) (2026-05-04)
 
 
