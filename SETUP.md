@@ -435,9 +435,60 @@ Pass `--dry-run` to preview before committing:
   ~/Documents/Claude/Projects/<new-name>/
 ```
 
+### Shared repos across workspaces
+
+Some repos get pulled into more than one program of work — a shared `flux/k8s` config repo consumed by multiple platforms, an internal Terraform module repo touched by several initiatives, a Helm chart repo referenced from a handful of deployment programs. The kit's auto-memory keys to the **repo path**, so a single repo has exactly one canonical working folder; bootstrapping it twice under two different workspaces would clobber the auto-memory pointer each time.
+
+The current pattern (and the one [issue #199](https://github.com/IamMrCupp/claude-project-kit/issues/199) will turn into first-class tooling post-launch) is **standalone working folder + manual reference**: the shared repo gets its own canonical working folder outside any workspace, and each consuming workspace adds a reference pointer in its `workspace-CONTEXT.md` without creating a per-repo subfolder.
+
+```
+~/Documents/Claude/Projects/
+├── shared-flux-config/              ← standalone working folder for the shared repo
+│   ├── CONTEXT.md                   ← canonical per-repo state lives here
+│   ├── SESSION-LOG.md
+│   └── plan.md
+├── platform-infra/                  ← workspace A
+│   ├── workspace-CONTEXT.md         ← "Shared repos" section pointing at shared-flux-config
+│   └── terraform-modules/
+└── data-platform/                   ← workspace B (same shared-repo reference)
+    ├── workspace-CONTEXT.md
+    └── ...
+```
+
+**Bootstrap the shared repo as a standalone working folder** (no `--workspace`):
+
+```bash
+cd ~/Code/<shared-repo>
+~/Code/claude-project-kit/bootstrap.sh
+# Working folder lands at ~/Documents/Claude/Projects/<shared-repo-name>/
+```
+
+**Then add a "Shared repos" section by hand** to each consuming workspace's `workspace-CONTEXT.md`:
+
+```markdown
+## Shared repos
+
+Repos referenced by this workspace whose canonical working folder lives elsewhere
+(see [issue #199](https://github.com/IamMrCupp/claude-project-kit/issues/199) for
+the formal `--reference` flag coming post-launch).
+
+- **shared-flux-config** — `~/Documents/Claude/Projects/shared-flux-config/`
+  - Used by this workspace for: cluster deployments + Argo manifests for current initiative
+  - Per-repo state (CONTEXT.md, SESSION-LOG.md, plan.md) is canonical at the standalone path; do not duplicate here
+```
+
+Why standalone+reference and not symlinks or per-workspace copies:
+
+- **One source of truth.** Branches, history, and SESSION-LOG entries for the shared repo live in one place. Per-workspace copies drift.
+- **Auto-memory stays consistent.** `reference_ai_working_folder.md` for the shared repo points at the standalone working folder regardless of which workspace you're working in.
+- **Symlinks are tooling-fragile.** Some tools don't follow them; future-you will be confused.
+
+When [#199](https://github.com/IamMrCupp/claude-project-kit/issues/199) lands post-launch, this becomes first-class with `--shared` and `--reference` flags + a `convert-to-shared.sh` migration helper. The manual pattern above will keep working — the migration helper formalizes it without breaking existing setups.
+
 ### What `--workspace` does NOT do (yet)
 
 - **Interactive workspace prompt** — `--workspace` requires the explicit flag. Interactive mode still defaults to single-repo. Use the flag-based form above for workspace bootstraps.
+- **Shared-repo flags** — `--shared` and `--reference` for repos consumed by multiple workspaces. Tracked in [#199](https://github.com/IamMrCupp/claude-project-kit/issues/199); the manual pattern is documented in [Shared repos across workspaces](#shared-repos-across-workspaces) above.
 
 (Tracker config substitution into `CONTEXT.md` / `workspace-CONTEXT.md` and the Terraform sibling-repo prompt landed in v0.17.0. The interactive workspace prompt is the only remaining `--workspace` polish item.)
 
