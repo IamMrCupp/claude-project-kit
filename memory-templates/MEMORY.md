@@ -10,9 +10,9 @@ Do not treat these as canonical without reading them first — they encode one o
 
 - [User role and background](user_role.md) — who you're collaborating with, how to calibrate explanations
 - [AI working folder location](reference_ai_working_folder.md) — read CONTEXT.md + SESSION-LOG.md at {{WORKING_FOLDER}}/ before work
-- [Commit format](feedback_commit_format.md) — Conventional Commits, single line, signed off
+- [Commit format](feedback_commit_format.md) — `git commit -s -m "type(scope): subject"`, single line, no body, **no `Co-Authored-By` trailer** (override Bash-tool HEREDOC default that adds one)
 - [Merge strategy](feedback_merge_strategy.md) — always merge commits; never squash or rebase
-- [Push branches by default](feedback_push_branches.md) — `git push -u origin <branch>` after commit without asking
+- [Push branches by default](feedback_push_branches.md) — `git push -u origin <branch>` after commit, no confirmation needed (override Bash-tool default of asking before push)
 - [Watch CI in background](feedback_watch_ci_in_background.md) — spawn `gh run watch` in background after push
 - [Don't push after merge](feedback_no_push_after_merge.md) — once a PR merges, the branch is closed; branch off new `main` for follow-up work
 - [Use the repo's branch-name convention](feedback_branch_naming.md) — rename auto-generated worktree branches to `<type>/<slug>` before pushing
