@@ -48,18 +48,24 @@ Whatever you pick, the **repo stays the repo; the working folder stays separate*
 >
 > **If you use the kit on more than one machine** (work laptop + personal desktop, etc.), repeat the setup on each. `~/.claude/settings.json` is local user config, not part of the kit repo, so cloning the kit on a new machine won't bring it along.
 
-> **Heads-up: `<repo>/.claude/settings.local.json`.** Claude Code writes this file in every project where you grant Bash / MCP / read-path permissions interactively. It is **per-project, machine-specific, and Claude-Code-managed** — the kit doesn't create or edit it. **Add it to your `.gitignore`** so machine-specific permissions don't get committed and follow the repo around. Two equivalent forms:
+> **Heads-up: `<repo>/.claude/` is local-user state, never committed.** The whole `.claude/` directory in your project repo holds machine-specific Claude Code data — `settings.local.json` (per-project permission allowlist), `worktrees/` (chip-spawned scratch checkouts), and any per-project commands/agents you install via `install-commands.sh --project`. **None of it belongs in git.** The kit's stance: `.claude/` stays local to you and never follows the repo around.
+>
+> **`bootstrap.sh` handles this for you by default** — it appends a marker-bracketed managed block to your repo's `.gitignore` covering `.claude/`, macOS junk (`.DS_Store` etc.), and common editor / IDE files (`.vscode/`, `.idea/`, `*.swp`, ...). The block is idempotent on re-runs and can be opted out with `--no-gitignore` if you'd rather manage your own.
+>
+> **Manual alternative** (if you opted out, or want a once-globally form covering every repo):
 >
 > ```bash
 > # Per-repo (add this line to <repo>/.gitignore)
-> .claude/settings.local.json
+> .claude/
 >
 > # Once globally — covers every repo on this machine
 > # (add this line to ~/.config/git/ignore)
-> **/.claude/settings.local.json
+> **/.claude/
 > ```
 >
 > If a permission is one you want allowed in *every* kit project (e.g. `Bash(gh run *)` for CI watchers), graduate it from the per-project `.claude/settings.local.json` to the global `~/.claude/settings.json` by hand. The kit doesn't sync this for the same reason it doesn't write to `~/.claude/settings.json` for you — global config is yours to curate.
+>
+> **The kit's own repo is the one exception.** It dogfoods `.claude/commands/` and `.claude/agents/` (those *are* tracked here), and only the always-local `.claude/settings.local.json` + `.claude/worktrees/` are gitignored.
 
 > Throughout this guide, `<framework-dir>` means wherever you've cloned/extracted this kit (e.g. `~/Code/claude-project-kit`), and `<working-folder>` means the path you just picked above.
 
@@ -86,6 +92,7 @@ Both modes create the working folder, copy the templates, rename `phase-N-checkl
 
 Flags:
 - `--skip-memory` — skip the memory-seeding step (leaves `~/.claude/projects/…` alone)
+- `--no-gitignore` — skip appending the kit-managed block to `<repo>/.gitignore`. By default bootstrap appends a marker-bracketed block covering `.claude/` (local-only Claude Code state), macOS junk (`.DS_Store`, `._*`, ...), and editor / IDE files (`.vscode/`, `.idea/`, `*.swp`, ...). Idempotent — re-runs detect the existing block and skip.
 - `--project-name NAME` — override the auto-derived project name
 - `--tracker TYPE` — issue tracker: `github`, `jira`, `linear`, `gitlab`, `shortcut`, `other`, or `none`. Skipped if omitted in non-interactive mode.
 - `--jira-project KEY` — JIRA project key (e.g. `INFRA`). Implies `--tracker jira` if `--tracker` isn't also passed.
