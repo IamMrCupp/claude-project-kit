@@ -6,6 +6,19 @@ See [Upgrading an existing project](SETUP.md#upgrading-an-existing-project) for 
 
 ---
 
+## [0.39.0](https://github.com/IamMrCupp/claude-project-kit/compare/v0.38.4...v0.39.0) (2026-05-05)
+
+
+### Features
+
+* **bootstrap:** manage adopter .gitignore with --no-gitignore opt-out ([79be513](https://github.com/IamMrCupp/claude-project-kit/commit/79be513aa3527e822b5dea7b30fba25ade3a7372))
+* **bootstrap:** manage adopter .gitignore with --no-gitignore opt-out ([eba6774](https://github.com/IamMrCupp/claude-project-kit/commit/eba6774d41537b1a41c243d75704deed553a7b91))
+
+
+### Documentation
+
+* cover bootstrap .gitignore management in README, SETUP, FEATURES ([20e6889](https://github.com/IamMrCupp/claude-project-kit/commit/20e68895b7c344677026134de6589813c0428cd9))
+
 ## [0.38.4](https://github.com/IamMrCupp/claude-project-kit/compare/v0.38.3...v0.38.4) (2026-05-05)
 
 
