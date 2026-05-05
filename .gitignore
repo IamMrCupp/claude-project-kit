@@ -3,6 +3,13 @@
 .idea/
 *.swp
 
+# Local-only Claude Code state — the kit's repo dogfoods .claude/commands/
+# and .claude/agents/ (those ARE tracked above), but settings.local.json
+# accumulates per-user allowlists and worktrees/ holds chip-spawned scratch
+# checkouts. Both are local-user state and never belong in git.
+.claude/settings.local.json
+.claude/worktrees/
+
 # VHS-rendered demos — sources committed under demo/, renders hosted via
 # GitHub user-attachments and embedded by URL in README.md (see demo/README.md).
 demo/*.gif

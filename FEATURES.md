@@ -69,6 +69,18 @@ Bootstrap detects Terraform-shaped repos (signals: `*.tf`, `*.tfvars`, `.terrafo
 
 The signal list comes from [ADR-0001 §A.6](docs/adr/0001-multi-repo-folder-model.md). Pulumi (`Pulumi.yaml`) and CDK (`cdk.json`) are deferred — promote in a follow-up if the demand surfaces.
 
+### Managed `.gitignore` block
+
+Bootstrap appends a marker-bracketed managed block to the target repo's `.gitignore` covering local-user state that doesn't belong in source control:
+
+- `.claude/` — local-only Claude Code state (`settings.local.json` permissions allowlist, `worktrees/` chip-spawned scratch checkouts, optional per-project commands installed via `install-commands.sh --project`)
+- macOS junk: `.DS_Store`, `._*`, `.AppleDouble`, `.LSOverride`
+- Editors / IDEs: `.vscode/`, `.idea/`, `*.swp`, `*.swo`, `*~`
+
+Idempotent — re-runs detect the existing `# claude-project-kit — managed block START` / `END` markers and skip. Creates `.gitignore` if absent; preserves any pre-existing entries when the file already exists. Honors `--dry-run` (preview only) and `--no-gitignore` (opt out entirely; you manage your own).
+
+The kit's stance: **`.claude/` stays local to the user — never committed to the source-code repo it's being used on.** The kit's own repo is the one exception; it dogfoods `.claude/commands/` + `.claude/agents/` (those *are* tracked here) and only gitignores `.claude/settings.local.json` + `.claude/worktrees/`.
+
 ---
 
 ## Workspace mode (multi-repo)
