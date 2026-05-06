@@ -6,6 +6,14 @@ See [Upgrading an existing project](SETUP.md#upgrading-an-existing-project) for 
 
 ---
 
+## [0.40.1](https://github.com/IamMrCupp/claude-project-kit/compare/v0.40.0...v0.40.1) (2026-05-06)
+
+
+### Bug Fixes
+
+* **precheck:** walk up from worktree to parent repo before sanitizing path ([3a8891f](https://github.com/IamMrCupp/claude-project-kit/commit/3a8891f7a5390b439b77e60525486ba24050bdbe))
+* **precheck:** walk up from worktree to parent repo before sanitizing path (closes [#210](https://github.com/IamMrCupp/claude-project-kit/issues/210)) ([a665a4a](https://github.com/IamMrCupp/claude-project-kit/commit/a665a4a0ad20412a903289bf38f1ce6bcc169253))
+
 ## [0.40.0](https://github.com/IamMrCupp/claude-project-kit/compare/v0.39.2...v0.40.0) (2026-05-06)
 
 
