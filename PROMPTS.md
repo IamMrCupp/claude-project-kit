@@ -599,6 +599,38 @@ Don't `git commit` — the user reviews the checklist diff and commits separatel
 
 ---
 
+## 13. Verifying session-start loaded the right context
+
+Use this after `/session-start` (or any time you suspect drift between the runtime auto-memory and the kit's seeded state) to dump every kit-loaded resource as a verification table. Pure read-only — no fixes proposed.
+
+The paired slash command is `/session-verify`. The full prompt:
+
+```
+Verification dump — list every file you read or referenced during /session-start. For each, report on one line:
+- absolute path
+- line count (run `wc -l` if needed)
+- first heading or signal line
+
+Also report, separately:
+- the resolved auto-memory dir path, derived the same way the precheck does:
+    `$HOME/.claude/projects/$(echo "$PWD" | sed 's|[/.]|-|g')/memory`
+- whether the on-disk MEMORY.md at that path matches the auto-loaded MEMORY.md you see in the system reminder (compare the index entry count and a couple of sample bullet titles)
+- the count of `- [...]` index entries currently in MEMORY.md
+
+In workspace mode, include any workspace-level files (workspace-CONTEXT.md, workspace-plan.md, workspace-phase-N-checklist.md).
+
+Output as a single markdown table. End with a one-line verdict:
+- OK — disk MEMORY.md matches runtime auto-memory, all expected files present
+- MISMATCH — quote the diff signal (e.g. "disk has 22 entries, runtime has 4")
+- MISSING — one or more expected files not found
+
+Don't propose fixes.
+```
+
+The MISMATCH verdict is the smoking gun for the v0.39.x dot-sanitization bug — the runtime auto-loads `MEMORY.md` from a different path than the precheck resolves to, so the on-disk file (kit-seeded, full) and the system-reminder copy (slim, runtime-created) diverge.
+
+---
+
 ## When to write a new prompt
 
 Add one here whenever you find yourself typing similar setup instructions into a fresh session for the third time. A good prompt is:

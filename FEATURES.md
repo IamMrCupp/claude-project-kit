@@ -251,9 +251,10 @@ These are **starters**. Edit the frontmatter (model, tool allowlist), customize 
 
 ## Starter slash commands
 
-Nine slash commands stage in `<working-folder>/.claude/commands/`. Same install path as agents — `scripts/install-commands.sh --global` (recommended, covers every project) or `--project <repo-path>` (scope to one repo).
+Ten slash commands stage in `<working-folder>/.claude/commands/`. Same install path as agents — `scripts/install-commands.sh --global` (recommended, covers every project) or `--project <repo-path>` (scope to one repo).
 
 - **`/session-start`** — packages Prompt 1 from `PROMPTS.md`. Loads `CONTEXT.md`, `SESSION-LOG.md`, and the current phase checklist; hands back a 3–5 bullet grounding summary. Use at the start of a fresh session.
+- **`/session-verify`** — packages Prompt 13 from `PROMPTS.md`. Dumps every kit-loaded resource — auto-memory dir path, MEMORY.md disk-vs-runtime parity, working-folder file metadata, workspace files — as a verification table. Use after `/session-start` (or when you suspect auto-memory is loading from the wrong path). Read-only.
 - **`/refresh-context`** — re-reads the working folder mid-session, after a `/close-phase` or `/session-end` writeback or when a long session has drifted. Hands back a delta read against the latest state.
 - **`/close-phase`** — packages Prompt 7 from `PROMPTS.md`. Runs the phase-close writeback (checklist tick, `plan.md` status bump, `CONTEXT.md` update, acceptance-results archive). Refuses to close without a non-empty `acceptance-test-results.md` or an explicit skip-rationale line — see [`CONVENTIONS.md`](CONVENTIONS.md) → "Acceptance tests at phase boundaries". Takes a phase number or infers from `CONTEXT.md`.
 - **`/session-end`** — packages Prompt 3 from `PROMPTS.md`. Drafts the four end-of-session updates (SESSION-LOG entry, CONTEXT bump, checklist scan, memory candidates) and waits for confirmation before writing.
