@@ -6,6 +6,20 @@ See [Upgrading an existing project](SETUP.md#upgrading-an-existing-project) for 
 
 ---
 
+## [0.39.2](https://github.com/IamMrCupp/claude-project-kit/compare/v0.39.1...v0.39.2) (2026-05-06)
+
+
+### Bug Fixes
+
+* **memory:** sanitize dots in auto-memory path key (closes [#205](https://github.com/IamMrCupp/claude-project-kit/issues/205)) ([90fee35](https://github.com/IamMrCupp/claude-project-kit/commit/90fee35f95b3aa64dd373dfae86ed4f8be2327e9))
+* **memory:** sanitize dots in auto-memory path key (closes [#205](https://github.com/IamMrCupp/claude-project-kit/issues/205)) ([5c70682](https://github.com/IamMrCupp/claude-project-kit/commit/5c70682d43e97435316fe9bbc6c1c7169af95f9c))
+
+
+### Documentation
+
+* **demo:** document GIF to MP4 conversion for social posts ([88c27e0](https://github.com/IamMrCupp/claude-project-kit/commit/88c27e053865356e4a61109626c64194d59c5985))
+* **demo:** document GIF to MP4 conversion for social posts ([49d0a03](https://github.com/IamMrCupp/claude-project-kit/commit/49d0a03d9f397303dab719428fdd608e2d334c8b))
+
 ## [0.39.1](https://github.com/IamMrCupp/claude-project-kit/compare/v0.39.0...v0.39.1) (2026-05-05)
 
 
