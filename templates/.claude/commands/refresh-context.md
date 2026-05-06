@@ -8,7 +8,8 @@ Before doing anything else:
 
 1. Run this Bash command to print the absolute path of this project's auto-memory pointer file, then use the `Read` tool on the **exact absolute path** the command prints (it will begin with `/`, not `~/` — do not pass `~/` to Read, it does not expand it):
    ```bash
-   echo "$HOME/.claude/projects/$(echo "$PWD" | sed 's|[/.]|-|g')/memory/reference_ai_working_folder.md"
+   REPO_ROOT=$(git rev-parse --path-format=absolute --git-common-dir 2>/dev/null) && REPO_ROOT=$(dirname "$REPO_ROOT") || REPO_ROOT="$PWD"
+   echo "$HOME/.claude/projects/$(echo "$REPO_ROOT" | sed 's|[/.]|-|g')/memory/reference_ai_working_folder.md"
    ```
    Do not rely on auto-memory recall — auto-memory loads only `MEMORY.md` into the session reminder, not the files it links to.
 2. If it isn't there, OR the working-folder path it points to doesn't have a `CONTEXT.md` file, **stop** and tell me:

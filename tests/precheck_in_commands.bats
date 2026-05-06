@@ -117,6 +117,51 @@ KIT_COUPLED_AGENTS=(
   done
 }
 
+# Regression guard for #210 — precheck must walk up from worktree to parent
+# repo before sanitizing. Sanitizing $PWD directly produces a key that
+# includes the worktree subdir name, but bootstrap only ever seeded auto-
+# memory at the parent repo's path. Claude Code's runtime walks up; the
+# precheck must too. Use `git rev-parse --git-common-dir` (returns the
+# parent repo's .git for both regular and worktree sessions) → `dirname`
+# → sanitize. Falls back to $PWD outside a git repo.
+@test "every kit-coupled command Precheck is worktree-aware (uses git rev-parse)" {
+  for cmd in "${KIT_COUPLED_COMMANDS[@]}"; do
+    f="$KIT_ROOT/$cmd"
+    if ! grep -q 'git rev-parse --path-format=absolute --git-common-dir' "$f"; then
+      echo "missing worktree-aware git rev-parse in: $cmd"
+      return 1
+    fi
+    # Must sanitize REPO_ROOT (worktree-resolved), not raw $PWD.
+    if ! grep -q 'echo "\$REPO_ROOT" | sed' "$f"; then
+      echo "must sanitize \$REPO_ROOT (not raw \$PWD): $cmd"
+      return 1
+    fi
+    # The old raw-PWD sanitization must be gone.
+    if grep -q 'echo "\$PWD" | sed' "$f"; then
+      echo "regression — old raw-\$PWD sanitization still present in: $cmd"
+      return 1
+    fi
+  done
+}
+
+@test "every kit-coupled agent Precheck is worktree-aware (uses git rev-parse)" {
+  for agent in "${KIT_COUPLED_AGENTS[@]}"; do
+    f="$KIT_ROOT/$agent"
+    if ! grep -q 'git rev-parse --path-format=absolute --git-common-dir' "$f"; then
+      echo "missing worktree-aware git rev-parse in: $agent"
+      return 1
+    fi
+    if ! grep -q 'echo "\$REPO_ROOT" | sed' "$f"; then
+      echo "must sanitize \$REPO_ROOT (not raw \$PWD): $agent"
+      return 1
+    fi
+    if grep -q 'echo "\$PWD" | sed' "$f"; then
+      echo "regression — old raw-\$PWD sanitization still present in: $agent"
+      return 1
+    fi
+  done
+}
+
 @test "code-reviewer agent does NOT include the kit Precheck (universal agent)" {
   f="$KIT_ROOT/templates/.claude/agents/code-reviewer.md"
   [ -f "$f" ]
