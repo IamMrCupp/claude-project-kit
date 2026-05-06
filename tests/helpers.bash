@@ -32,7 +32,7 @@ bootstrap_teardown() {
 # Echo the auto-memory path bootstrap will derive for the current TEST_REPO.
 memory_dir() {
   local sanitized
-  sanitized="$(echo "$TEST_REPO" | sed 's|/|-|g')"
+  sanitized="$(echo "$TEST_REPO" | sed 's|[/.]|-|g')"
   echo "$TEST_HOME/.claude/projects/${sanitized}/memory"
 }
 

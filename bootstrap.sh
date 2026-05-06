@@ -744,7 +744,7 @@ if [ ! -d "$KIT_ROOT/templates" ] || [ ! -d "$KIT_ROOT/memory-templates" ]; then
   exit 1
 fi
 
-SANITIZED="$(echo "$REPO_ROOT" | sed 's|/|-|g')"
+SANITIZED="$(echo "$REPO_ROOT" | sed 's|[/.]|-|g')"
 MEMORY_DIR="$HOME/.claude/projects/${SANITIZED}/memory"
 
 WORKSPACE_DIR=""
