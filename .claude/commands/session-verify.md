@@ -8,7 +8,8 @@ Before doing anything else:
 
 1. Run this Bash command to print the absolute path of this project's auto-memory pointer file, then use the `Read` tool on the **exact absolute path** the command prints (it will begin with `/`, not `~/` — do not pass `~/` to Read, it does not expand it):
    ```bash
-   echo "$HOME/.claude/projects/$(echo "$PWD" | sed 's|[/.]|-|g')/memory/reference_ai_working_folder.md"
+   REPO_ROOT=$(git rev-parse --path-format=absolute --git-common-dir 2>/dev/null) && REPO_ROOT=$(dirname "$REPO_ROOT") || REPO_ROOT="$PWD"
+   echo "$HOME/.claude/projects/$(echo "$REPO_ROOT" | sed 's|[/.]|-|g')/memory/reference_ai_working_folder.md"
    ```
    Do not rely on auto-memory recall — auto-memory loads only `MEMORY.md` into the session reminder, not the files it links to.
 2. If it isn't there, OR the working-folder path it points to doesn't have a `CONTEXT.md` file, **stop** and tell me:
@@ -28,10 +29,13 @@ Read-only. No writebacks, no fixes — just report what you find.
 Run this Bash command to print the absolute path of the auto-memory directory the precheck resolves to, plus a directory listing:
 
 ```bash
-MEM_DIR="$HOME/.claude/projects/$(echo "$PWD" | sed 's|[/.]|-|g')/memory"
+REPO_ROOT=$(git rev-parse --path-format=absolute --git-common-dir 2>/dev/null) && REPO_ROOT=$(dirname "$REPO_ROOT") || REPO_ROOT="$PWD"
+MEM_DIR="$HOME/.claude/projects/$(echo "$REPO_ROOT" | sed 's|[/.]|-|g')/memory"
 echo "$MEM_DIR"
 ls -1 "$MEM_DIR" 2>/dev/null || echo "(directory does not exist)"
 ```
+
+The `git rev-parse` step makes the resolution worktree-aware: from inside a `git worktree`, it walks up to the parent repo's `.git` directory before sanitizing, matching where bootstrap seeded auto-memory.
 
 ## Step 2 — compare on-disk MEMORY.md to runtime auto-memory
 
