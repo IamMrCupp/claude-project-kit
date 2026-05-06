@@ -22,6 +22,7 @@ KIT_COUPLED_FILES=(
   templates/.claude/commands/session-start.md
   templates/.claude/commands/session-end.md
   templates/.claude/commands/session-handoff.md
+  templates/.claude/commands/session-verify.md
   templates/.claude/commands/refresh-context.md
   templates/.claude/commands/close-phase.md
   templates/.claude/commands/pull-ticket.md
@@ -32,6 +33,7 @@ KIT_COUPLED_FILES=(
   .claude/commands/session-start.md
   .claude/commands/session-end.md
   .claude/commands/session-handoff.md
+  .claude/commands/session-verify.md
   .claude/commands/refresh-context.md
   .claude/commands/close-phase.md
   .claude/commands/pull-ticket.md

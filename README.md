@@ -76,7 +76,7 @@ That kicks off interactive mode: it asks for the working-folder path, project na
 - **Phase-based planning docs** — `plan.md` + per-phase checklist + `implementation.md` give Claude scoped, numbered tasks instead of a wall of intent.
 - **SEED-PROMPT auto-fill** — point Claude at one file and it deep-reads your repo, fills `CONTEXT.md`, drafts `research.md`, flags inferences, and stops for your review.
 - **Starter agents** — `code-reviewer` (universal) and `session-summarizer` (kit-aware), staged in the working folder; copy into your repo to activate.
-- **Starter slash commands** — `/session-start`, `/refresh-context`, `/close-phase`, `/session-end`, `/session-handoff`, `/pull-ticket`, `/run-acceptance`, `/research`, `/plan`. Install once globally with `scripts/install-commands.sh --global` (recommended) or per-repo with `--project <path>`.
+- **Starter slash commands** — `/session-start`, `/session-verify`, `/refresh-context`, `/close-phase`, `/session-end`, `/session-handoff`, `/pull-ticket`, `/run-acceptance`, `/research`, `/plan`. Install once globally with `scripts/install-commands.sh --global` (recommended) or per-repo with `--project <path>`.
 - **Managed `.gitignore` block** — bootstrap appends a marker-bracketed block to `<repo>/.gitignore` covering `.claude/` (local-only Claude Code state), macOS junk (`.DS_Store` etc.), and editor / IDE files (`.vscode/`, `.idea/`, `*.swp`, ...). Idempotent on re-runs; opt out with `--no-gitignore`. Kit's stance: `.claude/` stays local to the user, never committed.
 - **Upgrade helpers** — `scripts/sync-memory.sh`, `scripts/sync-templates.sh`, and `scripts/rename-workspace.sh` keep auto-memory, working-folder templates, and workspace paths in sync with the latest kit release without overwriting your filled-in content. See [SETUP.md §Upgrading](SETUP.md#upgrading-an-existing-project).
 - **Worked examples** — `examples/widget-tracker/` (fictional Go CLI, single-repo, mid-Phase 1) and `examples/acme-platform/` (fictional Terraform multi-repo workspace, JIRA-driven, **long-running with multiple initiatives** — one completed, one active — plus `workspace-plan.md`, `workspace-phase-N-checklist.md`, and active + archived ticket scratchpads).
@@ -87,7 +87,7 @@ See [FEATURES.md](FEATURES.md) for one-paragraph-per-feature detail with example
 
 ## What this is / isn't
 
-- **Is:** a workflow scaffold layered on top of Claude Code — templates, memory starters, conventions, two starter agents, six starter slash commands.
+- **Is:** a workflow scaffold layered on top of Claude Code — templates, memory starters, conventions, two starter agents, ten starter slash commands.
 - **Isn't:** a Claude Code plugin, a replacement for `CLAUDE.md`, or a project tracker. It complements all three.
 
 ## Why this works
@@ -173,7 +173,7 @@ Works the same for greenfield repos and ones you're adopting it on mid-stream �
 │   │   └── ticket.md              ← per-ticket scratchpad shape
 │   └── .claude/             ← starter agents + slash commands (staged in WF)
 │       ├── agents/          ← code-reviewer, session-summarizer
-│       ├── commands/        ← /session-start, /refresh-context, /close-phase, /session-end, /session-handoff, /pull-ticket, /run-acceptance, /research, /plan
+│       ├── commands/        ← /session-start, /session-verify, /refresh-context, /close-phase, /session-end, /session-handoff, /pull-ticket, /run-acceptance, /research, /plan
 │       └── README.md        ← how to copy into your target repo
 ├── examples/                ← filled-in reference — read, don't copy
 │   ├── widget-tracker/      ← fictional Go CLI, single-repo, mid-Phase-1 snapshot

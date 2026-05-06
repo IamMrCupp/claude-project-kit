@@ -12,6 +12,7 @@ KIT_COUPLED_COMMANDS=(
   templates/.claude/commands/session-start.md
   templates/.claude/commands/session-end.md
   templates/.claude/commands/session-handoff.md
+  templates/.claude/commands/session-verify.md
   templates/.claude/commands/refresh-context.md
   templates/.claude/commands/close-phase.md
   templates/.claude/commands/pull-ticket.md
