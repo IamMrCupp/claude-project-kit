@@ -8,7 +8,7 @@
 # Functions are pure (no side effects, no exits) so the calling script
 # decides how to handle empty returns. All return paths use absolute,
 # unresolved-symlink form to match bootstrap.sh's sanitization rule
-# (sed 's|/|-|g').
+# (sed 's|[/.]|-|g').
 #
 # Conventions:
 #   - All functions take an optional first arg (defaults to $PWD).
@@ -16,10 +16,13 @@
 #   - Functions never error / never call exit. Caller decides.
 
 # Sanitize a filesystem path the way the Claude harness keys auto-memory:
-# replace `/` with `-`. Result is the directory name under
-# ~/.claude/projects/.
+# replace `/` and `.` with `-`. Result is the directory name under
+# ~/.claude/projects/. The dot replacement matters for any user with a `.`
+# in their `$HOME` (e.g. macOS username `firstname.lastname`) or repo path
+# — without it, the kit seeds memory at one path and Claude Code's runtime
+# auto-loads from a different one.
 sanitize_path_for_memory() {
-  echo "$1" | sed 's|/|-|g'
+  echo "$1" | sed 's|[/.]|-|g'
 }
 
 # Walk up from $1 (default $PWD) to find a directory that contains .git.

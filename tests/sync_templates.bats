@@ -173,7 +173,7 @@ inferred_setup() {
   git -C "$TEST_REPO" init -q
   export HOME="$TEST_HOME"
   local sanitized
-  sanitized="$(echo "$TEST_REPO" | sed 's|/|-|g')"
+  sanitized="$(echo "$TEST_REPO" | sed 's|[/.]|-|g')"
   INFERRED_MEMORY="$HOME/.claude/projects/${sanitized}/memory"
   mkdir -p "$INFERRED_MEMORY"
   cat > "$INFERRED_MEMORY/reference_ai_working_folder.md" <<REF
