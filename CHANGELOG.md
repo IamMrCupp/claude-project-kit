@@ -6,6 +6,14 @@ See [Upgrading an existing project](SETUP.md#upgrading-an-existing-project) for 
 
 ---
 
+## [0.40.0](https://github.com/IamMrCupp/claude-project-kit/compare/v0.39.2...v0.40.0) (2026-05-06)
+
+
+### Features
+
+* **commands:** add /session-verify for post-session-start verification ([ff1cdfd](https://github.com/IamMrCupp/claude-project-kit/commit/ff1cdfdfb40f15395a9cb10f92d991164374c7c1))
+* **commands:** add /session-verify for post-session-start verification (closes [#207](https://github.com/IamMrCupp/claude-project-kit/issues/207)) ([c0cb910](https://github.com/IamMrCupp/claude-project-kit/commit/c0cb91046ba60c081e0f159f39135917fbac15a4))
+
 ## [0.39.2](https://github.com/IamMrCupp/claude-project-kit/compare/v0.39.1...v0.39.2) (2026-05-06)
 
 
