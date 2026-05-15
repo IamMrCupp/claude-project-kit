@@ -118,7 +118,8 @@ The repo has a [pull request template](.github/pull_request_template.md). The se
 Use the closest-fit template:
 
 - **Bug report** — something doesn't work as documented
-- **Feature request** — open-ended idea
+- **Feature request** — open-ended idea with a concrete change in mind
+- **Discussion / proposal** — open-ended question or proposal where the right shape isn't decided yet; gathers adopter signal before any implementation
 - **Tracker variant request** — request a new `--tracker <name>` variant
 - **CI variant request** — request a new `--ci <name>` variant
 
@@ -134,4 +135,4 @@ GitHub's Sponsor button does NOT render from `FUNDING.yml` alone — the repo al
 
 ## Questions
 
-Open an issue with the closest-fit template (often "Feature request") and add the `question` label if there's no actionable change requested.
+Use the **Discussion / proposal** template — it carries the `type:discussion` label and is the right shape for any question, open-ended proposal, or "should the kit have an opinion on X?" prompt that doesn't yet have a concrete change in mind.
