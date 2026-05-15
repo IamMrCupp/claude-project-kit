@@ -6,6 +6,15 @@ See [Upgrading an existing project](SETUP.md#upgrading-an-existing-project) for 
 
 ---
 
+## [0.40.2](https://github.com/IamMrCupp/claude-project-kit/compare/v0.40.1...v0.40.2) (2026-05-15)
+
+
+### Documentation
+
+* add discussion issue template ([76f793b](https://github.com/IamMrCupp/claude-project-kit/commit/76f793be0c510edb63396e390f213045e96cbd06))
+* add discussion issue template + point CONTRIBUTING at it ([73ef673](https://github.com/IamMrCupp/claude-project-kit/commit/73ef673eb6c2102273944eead8a5a61434bb14a1))
+* **contributing:** point open-ended questions at the new discussion template ([700f677](https://github.com/IamMrCupp/claude-project-kit/commit/700f677ca13177046e0a461e16a0b35aca046992))
+
 ## [0.40.1](https://github.com/IamMrCupp/claude-project-kit/compare/v0.40.0...v0.40.1) (2026-05-06)
 
 
