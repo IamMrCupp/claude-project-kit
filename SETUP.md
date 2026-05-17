@@ -27,24 +27,30 @@ Avoid:
 
 Whatever you pick, the **repo stays the repo; the working folder stays separate**. Never commit it.
 
-> **One-time, per machine: tell Claude Code to trust the working-folder root.** Because the working folder lives outside any repo, Claude Code prompts for permission every time it reads or writes `CONTEXT.md` / `SESSION-LOG.md` / phase checklists. Add the **parent directory** of your working folders to `permissions.additionalDirectories` in `~/.claude/settings.json` once and the prompts stop — for every kit project that lives under that root, on both the macOS desktop app and the CLI.
+> **One-time, per machine: tell Claude Code to trust the kit's paths.** Two specific permission prompts surface on every fresh kit session if you skip this — both are noise, neither tells you anything new. Adding two entries to `~/.claude/settings.json` silences both, for every kit project on this machine, on both the macOS desktop app and the CLI.
 >
 > ```json
 > {
 >   "permissions": {
 >     "additionalDirectories": [
->       "~/Documents/Claude/Projects/"
+>       "/Users/<you>/Documents/Claude/Projects/"
+>     ],
+>     "allow": [
+>       "Bash(/Users/<you>/.claude/scripts/kit-print-memory-pointer.sh)"
 >     ]
 >   }
 > }
 > ```
 >
-> Adjust the path to match wherever you keep your working folders (`~/claude-projects/`, a synced drive, etc.). One entry covers every project underneath it.
+> - **`additionalDirectories`** — the parent directory of your working folders. Stops the prompt on every read of `CONTEXT.md` / `SESSION-LOG.md` / phase checklists. Adjust the path to match wherever you keep your working folders (`~/claude-projects/`, a synced drive, etc.); one entry covers every project under it.
+> - **`allow`** — the absolute path to the kit's precheck helper script (installed by `bootstrap.sh` / `scripts/install-scripts.sh --global`). Stops the prompt that every kit slash command's precheck triggers on first use. **Both entries must use absolute paths** — `~/` and `$HOME` are NOT expanded by Claude Code's permission matcher (see [anthropics/claude-code#16800](https://github.com/anthropics/claude-code/issues/16800)).
 >
 > **Two ways to set this:**
 >
-> 1. **Hand-edit** the JSON above (most explicit, no kit involvement). Restart Claude Code afterwards.
-> 2. **Let bootstrap do it for you** with the opt-in flag `--trust-working-folder-root`, or accept the interactive prompt during `bootstrap.sh` setup. Bootstrap appends only the working-folder parent (idempotent — skip if already there), backs up the existing `~/.claude/settings.json` to `settings.json.bak.<timestamp>` before writing, and prints the diff before applying. You can also pass `--dry-run` to preview without writing. The kit *only* mutates `permissions.additionalDirectories` for the working-folder parent; nothing else in the file is touched.
+> 1. **Hand-edit** the JSON above, substituting `<you>` with your actual username (run `echo $HOME` if you need to check). Restart Claude Code afterwards.
+> 2. **Let bootstrap do it for you** with the opt-in flag `--trust-kit-paths`, or accept the interactive prompt during `bootstrap.sh` setup. Bootstrap computes the absolute paths from `$HOME` at run time (so no placeholder substitution to mess up), appends both entries idempotently (skips any already present), backs up the existing `~/.claude/settings.json` to `settings.json.bak.<timestamp>` before writing, and prints the diff before applying. Pass `--dry-run` to preview without writing. The kit only mutates `permissions.additionalDirectories` and `permissions.allow`; nothing else in the file is touched.
+>
+> The older `--trust-working-folder-root` flag is kept as a deprecation alias with the same combined behavior, so existing scripted invocations still work — but new scripts should use `--trust-kit-paths`.
 >
 > **If you use the kit on more than one machine** (work laptop + personal desktop, etc.), repeat the setup on each. `~/.claude/settings.json` is local user config, not part of the kit repo, so cloning the kit on a new machine won't bring it along.
 
@@ -92,6 +98,7 @@ Both modes create the working folder, copy the templates, rename `phase-N-checkl
 
 Flags:
 - `--skip-memory` — skip the memory-seeding step (leaves `~/.claude/projects/…` alone)
+- `--skip-scripts` — skip installing the kit's runtime helper scripts to `~/.claude/scripts/`. The slash-command precheck depends on `kit-print-memory-pointer.sh` being installed there; skipping leaves the precheck broken until you re-run `scripts/install-scripts.sh --global` separately.
 - `--no-gitignore` — skip appending the kit-managed block to `<repo>/.gitignore`. By default bootstrap appends a marker-bracketed block covering `.claude/` (local-only Claude Code state), macOS junk (`.DS_Store`, `._*`, ...), and editor / IDE files (`.vscode/`, `.idea/`, `*.swp`, ...). Idempotent — re-runs detect the existing block and skip.
 - `--project-name NAME` — override the auto-derived project name
 - `--tracker TYPE` — issue tracker: `github`, `jira`, `linear`, `gitlab`, `shortcut`, `other`, or `none`. Skipped if omitted in non-interactive mode.
@@ -101,7 +108,8 @@ Flags:
 - `--force` — proceed even if the working folder is already non-empty
 - `--dry-run` — print what would be created (paths, placeholder substitutions, tracker memory, MEMORY.md index line) and exit without writing anything. Safe to re-run.
 - `--workspace` — treat `<working-folder>` as a workspace path (multi-repo mode). Bootstrap creates a per-repo subfolder for the current repo inside the workspace, and on first use also seeds `workspace-CONTEXT.md` and `tickets/`. See [Workspace mode](#workspace-mode-multi-repo-initiatives) below.
-- `--trust-working-folder-root` — opt-in: append the working folder's parent directory to `permissions.additionalDirectories` in `~/.claude/settings.json` so Claude Code stops prompting on every read of `CONTEXT.md` / `SESSION-LOG.md` / phase checklists. Backs up the existing settings.json before writing; idempotent (skip if already present); honors `--dry-run`. In interactive mode, bootstrap also asks before doing this — the flag opts in for scripted runs. See §1 above for the manual alternative.
+- `--trust-kit-paths` — opt-in: two coordinated writes to `~/.claude/settings.json` that silence per-session permission prompts. (1) Appends the working folder's parent directory to `permissions.additionalDirectories` (stops the prompt on every read of `CONTEXT.md` / `SESSION-LOG.md` / phase checklists). (2) Appends `Bash(<absolute path to kit-print-memory-pointer.sh>)` to `permissions.allow` (stops the prompt every kit slash command's precheck triggers). Both writes are idempotent (skip if already present), back up the existing settings.json before writing, and honor `--dry-run`. In interactive mode, bootstrap asks before doing this — the flag opts in for scripted runs. See §1 above for the manual alternative.
+- `--trust-working-folder-root` — deprecated alias for `--trust-kit-paths`. Same combined behavior; prints a one-line deprecation note. Update scripted invocations.
 - `-h` / `--help` — show usage
 
 **On `--tracker other` and `--ci other`:** these are escape hatches for tools the kit doesn't have a named variant for. Picking either seeds a placeholder-rich memory file (`reference_issue_tracker.md` for trackers, `reference_ci.md` for CI) with `{{tracker URL pattern}}`, `{{ticket reference format}}`, `{{CI config location}}`, etc. that need manual fill-in before the memory is useful. The bootstrap end-of-run output flags this; if you're scanning flags to plan an invocation, plan for the follow-up edit.
@@ -268,15 +276,15 @@ cd ~/Code/<your-project>
 ~/Code/claude-project-kit/scripts/upgrade.sh
 ```
 
-That runs the full flow end-to-end: pulls the kit, syncs auto-memory, syncs working-folder templates, runs workspace-mode sync if the project is in a workspace, and installs any new global slash commands. Pass `--dry-run` first to preview, `--skip-pull` if you've already pulled the kit, or `--skip-commands` to skip the global slash-command install. After completion, restart Claude.app (Cmd+Q + reopen) to pick up new slash commands.
+That runs the full flow end-to-end: pulls the kit, syncs auto-memory, syncs working-folder templates, runs workspace-mode sync if the project is in a workspace, installs any new global helper scripts (under `~/.claude/scripts/`), and installs any new global slash commands. Pass `--dry-run` first to preview, `--skip-pull` if you've already pulled the kit, `--skip-scripts` to skip the helper-script install, or `--skip-commands` to skip the slash-command install. After completion, restart Claude.app (Cmd+Q + reopen) to pick up new slash commands.
 
-**Updating *changed* kit-shipped commands** — `upgrade.sh` (and `install-commands.sh` underneath it) is **write-once by default**: existing files in your global `~/.claude/{commands,agents}/` stay untouched. When a kit release ships an updated version of a command you already have installed (e.g. `/close-phase` got new behavior between v0.30 and v0.31), pass `--force-commands` to overwrite kit-shipped files with the kit's current templates:
+**Updating *changed* kit-shipped commands and scripts** — `upgrade.sh` (and the underlying `install-commands.sh` + `install-scripts.sh`) is **write-once by default**: existing files in your global `~/.claude/{commands,agents,scripts}/` stay untouched. When a kit release ships an updated version of a command or helper script you already have installed (e.g. `/close-phase` got new behavior between v0.30 and v0.31, or `kit-print-memory-pointer.sh` gets a bug fix), pass `--force-commands` and/or `--force-scripts` to overwrite kit-shipped files with the kit's current versions:
 
 ```bash
-~/Code/claude-project-kit/scripts/upgrade.sh --force-commands
+~/Code/claude-project-kit/scripts/upgrade.sh --force-commands --force-scripts
 ```
 
-`--force-commands` is safe in two ways: every overwritten file gets a `.bak.<timestamp>` backup so local edits are recoverable, and **commands you added that aren't in the kit's templates are never touched** — only kit-shipped files are candidates for overwrite. Skip the flag for the conservative default; opt in when you actually want the latest kit versions.
+Both flags are safe in two ways: every overwritten file gets a `.bak.<timestamp>` backup so local edits are recoverable, and **files you added that aren't in the kit's templates / scripts are never touched** — only kit-shipped files are candidates for overwrite. Skip the flags for the conservative default; opt in when you actually want the latest kit versions.
 
 If you'd rather run the steps manually (or want to understand exactly what the orchestrator does), here they are:
 
@@ -318,9 +326,15 @@ If you'd rather run the steps manually (or want to understand exactly what the o
    ```bash
    cp <kit-dir>/templates/.claude/<commands_or_agents>/<NEW_FILE>.md ~/.claude/<commands_or_agents>/
    ```
-5. **Changed prose in kit-level files** (e.g. `CONVENTIONS.md`, `SETUP.md`, `README.md`) — re-read them. Your local copies of working-folder templates and memory files are yours; they don't auto-upgrade.
-6. **New `bootstrap.sh` flags or behavior** — apply only to *new* projects you bootstrap going forward. Already-bootstrapped projects keep their current state.
-7. **Don't re-run `bootstrap.sh`** on a populated working folder — it errors by design. If you really need to re-seed, clear the auto-memory dir manually and pass `--force` to the working folder, but you'll lose local customizations.
+5. **New or changed kit helper scripts** (`scripts/kit-print-memory-pointer.sh` and friends) — install them to the user-global runtime location so kit slash commands can invoke them with a single allowlist-friendly call:
+   ```bash
+   <kit-dir>/scripts/install-scripts.sh --global             # write-once
+   <kit-dir>/scripts/install-scripts.sh --global --force-update --yes   # overwrite to latest
+   ```
+   Write-once by default (existing files preserved); `--force-update` overwrites kit-shipped scripts with `.bak.<timestamp>` backups. The slash-command precheck depends on `kit-print-memory-pointer.sh` being installed here — if you upgrade `templates/.claude/commands/` without also running this, the precheck will fail with `command not found`.
+6. **Changed prose in kit-level files** (e.g. `CONVENTIONS.md`, `SETUP.md`, `README.md`) — re-read them. Your local copies of working-folder templates and memory files are yours; they don't auto-upgrade.
+7. **New `bootstrap.sh` flags or behavior** — apply only to *new* projects you bootstrap going forward. Already-bootstrapped projects keep their current state.
+8. **Don't re-run `bootstrap.sh`** on a populated working folder — it errors by design. If you really need to re-seed, clear the auto-memory dir manually and pass `--force` to the working folder, but you'll lose local customizations.
 
 If a future change is *not* backwards-compatible (rare for a docs-only kit — only likely if a template structure fundamentally changes), the CHANGELOG entry will call that out explicitly.
 

@@ -50,6 +50,14 @@ Options:
                      See ADR-0001 in the kit for the workspace folder model.
   --skip-memory      Skip copying memory-templates/ into the auto-memory
                      folder. Only the working folder will be seeded.
+  --skip-scripts     Skip installing the kit's runtime helper scripts into
+                     ~/.claude/scripts/. The precheck used by every kit
+                     slash command depends on kit-print-memory-pointer.sh
+                     being installed there, so skipping leaves the slash
+                     commands unable to resolve the working folder. Only
+                     pass this if you're managing ~/.claude/scripts/ by
+                     hand or running bootstrap from a context where the
+                     install step is performed separately.
   --no-gitignore     Skip appending the kit-managed block to the repo's
                      .gitignore. By default bootstrap appends a block
                      covering .claude/ (local-only Claude Code state),
@@ -84,17 +92,27 @@ Options:
                      substitutions, tracker memory, MEMORY.md index
                      line) and exit without writing anything. Safe to
                      run repeatedly to preview config before committing.
-  --trust-working-folder-root
-                     Add the working folder's parent directory to
-                     permissions.additionalDirectories in
-                     ~/.claude/settings.json so Claude Code stops
-                     prompting on every read of CONTEXT.md /
-                     SESSION-LOG.md / phase checklists. Backs up the
-                     existing settings.json before writing; idempotent
-                     (skip if already present); honors --dry-run. In
-                     interactive mode, bootstrap also asks before
-                     making this change — this flag opts in for
+  --trust-kit-paths  Two opt-in writes to ~/.claude/settings.json that
+                     silence per-session permission prompts:
+                       1. Append the working folder's parent directory
+                          to permissions.additionalDirectories (stops
+                          prompts on every read of CONTEXT.md /
+                          SESSION-LOG.md / phase checklists).
+                       2. Append Bash(<absolute path to
+                          kit-print-memory-pointer.sh>) to
+                          permissions.allow (stops the per-session
+                          prompt the slash-command precheck triggers;
+                          absolute path is required — see
+                          anthropics/claude-code #16800).
+                     Backs up the existing settings.json before writing;
+                     idempotent (skip if already present); honors
+                     --dry-run. In interactive mode, bootstrap asks
+                     before making this change — this flag opts in for
                      scripted runs.
+  --trust-working-folder-root
+                     Deprecated alias for --trust-kit-paths. Same
+                     combined behavior; will be removed in a future
+                     release. Update scripted invocations.
   -h, --help         Show this help and exit.
 
 Examples:
@@ -496,6 +514,146 @@ PY
   return 0
 }
 
+precheck_script_absolute_path() {
+  # Echo the absolute path that the kit's precheck Bash invokes, exactly as
+  # it must appear inside a Bash(...) entry in permissions.allow. The
+  # markdown writes "~/.claude/scripts/kit-print-memory-pointer.sh" verbatim,
+  # but Claude Code's permission matcher does not expand ~ or $HOME when
+  # comparing allow entries — only absolute paths reliably match (see
+  # anthropics/claude-code #16800). Computed once from $HOME here so callers
+  # don't drift.
+  echo "$HOME/.claude/scripts/kit-print-memory-pointer.sh"
+}
+
+add_precheck_script_to_allowlist() {
+  # Append Bash(<script absolute path>) to permissions.allow in
+  # ~/.claude/settings.json. Idempotent — skips if already present. Creates
+  # the file if absent. Backs up to settings.json.bak.<timestamp> before
+  # any write. Honors $DRY_RUN — prints the diff and returns without
+  # writing in dry-run mode. Parallels add_trusted_root_to_settings.
+  #
+  # returns: 0 on success or no-op, 1 on Python failure / unwritable target.
+  local script_path
+  script_path="$(precheck_script_absolute_path)"
+  local bash_entry="Bash($script_path)"
+  local settings_dir="$HOME/.claude"
+  local settings_file="$settings_dir/settings.json"
+  local mode_label=""
+  local result=""
+
+  if ! command -v python3 >/dev/null 2>&1; then
+    echo "  ! python3 not found — skipping ~/.claude/settings.json update." >&2
+    echo "    Add \"$bash_entry\" to permissions.allow by hand." >&2
+    return 1
+  fi
+
+  result="$(python3 - "$bash_entry" "$settings_file" <<'PY' 2>&1
+import json, os, sys
+
+bash_entry = sys.argv[1]
+settings_file = sys.argv[2]
+
+if os.path.exists(settings_file):
+    try:
+        with open(settings_file) as f:
+            data = json.load(f)
+        if not isinstance(data, dict):
+            print(f"ERROR existing {settings_file} is not a JSON object", file=sys.stderr)
+            sys.exit(2)
+    except json.JSONDecodeError as e:
+        print(f"ERROR could not parse {settings_file}: {e}", file=sys.stderr)
+        sys.exit(2)
+else:
+    data = None
+
+if data is None:
+    print("WOULD_CREATE")
+    print(f"  + create {settings_file} with:")
+    print(f'      permissions.allow: ["{bash_entry}"]')
+    sys.exit(0)
+
+perms = data.get("permissions") or {}
+allow = perms.get("allow") or []
+if not isinstance(allow, list):
+    print(f"ERROR permissions.allow in {settings_file} is not a list", file=sys.stderr)
+    sys.exit(2)
+
+if bash_entry in allow:
+    print("ALREADY_PRESENT")
+    print(f"  ✓ {bash_entry} already in permissions.allow")
+    sys.exit(0)
+
+print("WOULD_APPEND")
+print(f"  + append to permissions.allow in {settings_file}:")
+print(f'      "{bash_entry}"')
+PY
+  )" || { echo "  ! settings.json inspection failed:" >&2; echo "$result" >&2; return 1; }
+
+  mode_label="$(printf '%s' "$result" | head -1)"
+
+  case "$mode_label" in
+    ALREADY_PRESENT)
+      printf '%s\n' "$result" | tail -n +2
+      return 0
+      ;;
+    WOULD_CREATE|WOULD_APPEND)
+      printf '%s\n' "$result" | tail -n +2
+      ;;
+    *)
+      echo "  ! unexpected output from settings.json inspector:" >&2
+      echo "$result" >&2
+      return 1
+      ;;
+  esac
+
+  if [ "$DRY_RUN" -eq 1 ]; then
+    echo "    (dry-run — no changes written)"
+    return 0
+  fi
+
+  mkdir -p "$settings_dir"
+
+  local backup=""
+  if [ -f "$settings_file" ]; then
+    backup="$settings_file.bak.$(date +%Y%m%d-%H%M%S)"
+    cp "$settings_file" "$backup"
+  fi
+
+  if ! python3 - "$bash_entry" "$settings_file" <<'PY'
+import json, os, sys
+
+bash_entry = sys.argv[1]
+settings_file = sys.argv[2]
+
+if os.path.exists(settings_file):
+    with open(settings_file) as f:
+        data = json.load(f)
+else:
+    data = {}
+
+perms = data.setdefault("permissions", {})
+allow = perms.setdefault("allow", [])
+if bash_entry not in allow:
+    allow.append(bash_entry)
+
+with open(settings_file, "w") as f:
+    json.dump(data, f, indent=2)
+    f.write("\n")
+PY
+  then
+    echo "  ! settings.json update failed; restoring backup" >&2
+    [ -n "$backup" ] && [ -f "$backup" ] && cp "$backup" "$settings_file"
+    return 1
+  fi
+
+  if [ -n "$backup" ]; then
+    echo "    ✓ updated $settings_file (backup: $backup)"
+  else
+    echo "    ✓ created $settings_file"
+  fi
+  return 0
+}
+
 gitignore_block_start_marker() { echo "# claude-project-kit — managed block START"; }
 gitignore_block_end_marker()   { echo "# claude-project-kit — managed block END"; }
 
@@ -564,11 +722,12 @@ update_repo_gitignore() {
 }
 
 SKIP_MEMORY=0
+SKIP_SCRIPTS=0
 SKIP_GITIGNORE=0
 FORCE=0
 DRY_RUN=0
 WORKSPACE_MODE=0
-TRUST_WORKING_FOLDER_ROOT=0
+TRUST_KIT_PATHS=0
 WORKING_FOLDER=""
 PROJECT_NAME=""
 TRACKER=""
@@ -579,11 +738,17 @@ CI_TOOL=""
 while [ $# -gt 0 ]; do
   case "$1" in
     --skip-memory) SKIP_MEMORY=1; shift ;;
+    --skip-scripts) SKIP_SCRIPTS=1; shift ;;
     --no-gitignore) SKIP_GITIGNORE=1; shift ;;
     --force) FORCE=1; shift ;;
     --dry-run) DRY_RUN=1; shift ;;
     --workspace) WORKSPACE_MODE=1; shift ;;
-    --trust-working-folder-root) TRUST_WORKING_FOLDER_ROOT=1; shift ;;
+    --trust-kit-paths) TRUST_KIT_PATHS=1; shift ;;
+    --trust-working-folder-root)
+      echo "warning: --trust-working-folder-root is deprecated; use --trust-kit-paths (same combined behavior, plus adds the precheck script to permissions.allow)." >&2
+      TRUST_KIT_PATHS=1
+      shift
+      ;;
     --project-name)
       if [ $# -lt 2 ]; then
         echo "error: --project-name requires a value" >&2
@@ -806,17 +971,24 @@ if [ "$INTERACTIVE" -eq 1 ]; then
     esac
   fi
 
-  if [ "$TRUST_WORKING_FOLDER_ROOT" -eq 0 ]; then
+  if [ "$TRUST_KIT_PATHS" -eq 0 ]; then
     INTERACTIVE_TRUSTED_ROOT="$(trusted_root_for_working_folder)"
+    INTERACTIVE_PRECHECK_ENTRY="Bash($(precheck_script_absolute_path))"
     echo
-    echo "Add $INTERACTIVE_TRUSTED_ROOT to permissions.additionalDirectories"
-    echo "in ~/.claude/settings.json? This stops Claude Code from prompting on"
-    echo "every read of CONTEXT.md / SESSION-LOG.md / phase checklists."
+    echo "Edit ~/.claude/settings.json to silence per-session permission prompts?"
+    echo "Two additions, both idempotent and backed up before write:"
+    echo "  1. Append $INTERACTIVE_TRUSTED_ROOT"
+    echo "     to permissions.additionalDirectories (stops prompts on every"
+    echo "     read of CONTEXT.md / SESSION-LOG.md / phase checklists)."
+    echo "  2. Append $INTERACTIVE_PRECHECK_ENTRY"
+    echo "     to permissions.allow (stops the per-session prompt the slash"
+    echo "     command precheck triggers; absolute path required —"
+    echo "     anthropics/claude-code #16800)."
     read -r -p "[y/N]: " INPUT
     case "$(printf '%s' "$INPUT" | tr '[:upper:]' '[:lower:]')" in
-      y|yes) TRUST_WORKING_FOLDER_ROOT=1 ;;
+      y|yes) TRUST_KIT_PATHS=1 ;;
     esac
-    unset INTERACTIVE_TRUSTED_ROOT
+    unset INTERACTIVE_TRUSTED_ROOT INTERACTIVE_PRECHECK_ENTRY
   fi
 fi
 
@@ -935,6 +1107,22 @@ if [ "$DRY_RUN" -eq 1 ]; then
     fi
     echo
   fi
+  if [ "$SKIP_SCRIPTS" -eq 0 ]; then
+    echo "Would install kit runtime scripts: $HOME/.claude/scripts/"
+    echo "  + kit-print-memory-pointer.sh (precheck helper)"
+    echo "  (write-once — existing files preserved)"
+    echo
+  else
+    echo "Script install skipped (--skip-scripts)."
+    echo
+  fi
+  if [ "$TRUST_KIT_PATHS" -eq 1 ]; then
+    echo "Would update ~/.claude/settings.json (--trust-kit-paths):"
+    echo "  + permissions.additionalDirectories ← $(trusted_root_for_working_folder)"
+    echo "  + permissions.allow ← \"Bash($(precheck_script_absolute_path))\""
+    echo "  (idempotent — skipped if entries already present; backed up before write)"
+    echo
+  fi
   echo "No changes made. Re-run without --dry-run to apply."
   exit 0
 fi
@@ -1047,11 +1235,23 @@ if [ "$SKIP_GITIGNORE" -eq 0 ]; then
   update_repo_gitignore "$REPO_ROOT"
 fi
 
-if [ "$TRUST_WORKING_FOLDER_ROOT" -eq 1 ]; then
+if [ "$SKIP_SCRIPTS" -eq 0 ]; then
+  echo
+  echo "  Installing kit runtime scripts to ~/.claude/scripts/:"
+  if ! "$SCRIPT_DIR/scripts/install-scripts.sh" --global; then
+    echo "  ! install-scripts.sh failed — slash-command prechecks may not work" >&2
+    echo "    until you re-run: $SCRIPT_DIR/scripts/install-scripts.sh --global" >&2
+  fi
+fi
+
+if [ "$TRUST_KIT_PATHS" -eq 1 ]; then
   TRUSTED_ROOT_PATH="$(trusted_root_for_working_folder)"
   echo
   echo "  Updating ~/.claude/settings.json (working-folder root trust):"
   add_trusted_root_to_settings "$TRUSTED_ROOT_PATH" || true
+  echo
+  echo "  Updating ~/.claude/settings.json (precheck-script allowlist entry):"
+  add_precheck_script_to_allowlist || true
   unset TRUSTED_ROOT_PATH
 fi
 
