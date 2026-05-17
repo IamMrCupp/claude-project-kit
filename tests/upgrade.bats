@@ -74,7 +74,7 @@ teardown() { bootstrap_teardown; }
 
   run "$UPGRADE" --skip-pull --skip-commands
   [ "$status" -eq 0 ]
-  [[ "$output" == *"Step 5 (commands):   SKIPPED"* ]]
+  [[ "$output" == *"Step 6 (commands):   SKIPPED"* ]]
   [[ "$output" == *"Upgrade complete"* ]]
 
   # Memory + templates should still have run; global commands dir not created
@@ -89,7 +89,8 @@ teardown() { bootstrap_teardown; }
   [ "$status" -eq 0 ]
   [[ "$output" == *"Step 2 — syncing memory"* ]]
   [[ "$output" == *"Step 3 — syncing working-folder templates"* ]]
-  [[ "$output" == *"Step 5 — installing global slash commands"* ]]
+  [[ "$output" == *"Step 5 — installing global helper scripts"* ]]
+  [[ "$output" == *"Step 6 — installing global slash commands"* ]]
   [[ "$output" == *"Upgrade complete"* ]]
   [[ "$output" == *"Restart Claude.app"* ]]
 
@@ -132,7 +133,45 @@ teardown() { bootstrap_teardown; }
 
   run "$UPGRADE" --skip-pull --skip-commands --dry-run
   [ "$status" -eq 0 ]
-  [[ "$output" == *"Step 5 (commands):   SKIPPED (--skip-commands)"* ]]
+  [[ "$output" == *"Step 6 (commands):   SKIPPED (--skip-commands)"* ]]
+}
+
+# ─── --skip-scripts / --force-scripts tests (issue #218) ──────────────────
+
+@test "upgrade.sh -h documents --skip-scripts and --force-scripts flags" {
+  run "$UPGRADE" -h
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"--skip-scripts"* ]]
+  [[ "$output" == *"--force-scripts"* ]]
+  [[ "$output" == *"kit-print-memory-pointer.sh"* ]]
+}
+
+@test "upgrade.sh --skip-scripts shows skipped step in plan" {
+  run "$BOOTSTRAP" "$TEST_WF"
+  [ "$status" -eq 0 ]
+
+  run "$UPGRADE" --skip-pull --skip-scripts --dry-run
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"Step 5 (scripts):    SKIPPED (--skip-scripts)"* ]]
+}
+
+@test "upgrade.sh --force-scripts and --skip-scripts are mutually exclusive" {
+  run "$UPGRADE" --skip-pull --force-scripts --skip-scripts
+  [ "$status" -ne 0 ]
+  [[ "$output" == *"mutually exclusive"* ]]
+}
+
+@test "upgrade.sh --skip-pull installs the kit helper script via Step 5" {
+  run "$BOOTSTRAP" "$TEST_WF" --skip-scripts
+  [ "$status" -eq 0 ]
+  # Bootstrap with --skip-scripts means no script installed yet.
+  [ ! -f "$TEST_HOME/.claude/scripts/kit-print-memory-pointer.sh" ]
+
+  run "$UPGRADE" --skip-pull
+  [ "$status" -eq 0 ]
+  # Upgrade's Step 5 should install the script.
+  [ -f "$TEST_HOME/.claude/scripts/kit-print-memory-pointer.sh" ]
+  [ -x "$TEST_HOME/.claude/scripts/kit-print-memory-pointer.sh" ]
 }
 
 # ─── --force-commands tests (issue #170) ──────────────────────────────────

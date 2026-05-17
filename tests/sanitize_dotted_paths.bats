@@ -11,36 +11,22 @@ load 'helpers'
 # Source the inference helper for behavioral tests.
 source "$KIT_ROOT/scripts/lib/infer.sh"
 
-# Files that embed the sanitization sed inline (slash-command prechecks +
-# session-summarizer agent + the kit's own dogfooded copies).
+# Files that embed the sanitization sed inline. As of #218 the slash-command
+# prechecks no longer embed it — they invoke scripts/kit-print-memory-pointer.sh,
+# which is now the single source of truth for the sanitization logic. The
+# session-verify command is the one exception: its Step 1 diagnostic block
+# still embeds the same logic inline so /session-verify works even when the
+# helper script is missing (the kit's "what's broken about my install"
+# command can't depend on a working install).
 KIT_COUPLED_FILES=(
   bootstrap.sh
+  scripts/kit-print-memory-pointer.sh
   scripts/lib/infer.sh
   tests/helpers.bash
   tests/sync_memory.bats
   tests/sync_templates.bats
-  templates/.claude/commands/session-start.md
-  templates/.claude/commands/session-end.md
-  templates/.claude/commands/session-handoff.md
   templates/.claude/commands/session-verify.md
-  templates/.claude/commands/refresh-context.md
-  templates/.claude/commands/close-phase.md
-  templates/.claude/commands/pull-ticket.md
-  templates/.claude/commands/run-acceptance.md
-  templates/.claude/commands/plan.md
-  templates/.claude/commands/research.md
-  templates/.claude/agents/session-summarizer.md
-  .claude/commands/session-start.md
-  .claude/commands/session-end.md
-  .claude/commands/session-handoff.md
   .claude/commands/session-verify.md
-  .claude/commands/refresh-context.md
-  .claude/commands/close-phase.md
-  .claude/commands/pull-ticket.md
-  .claude/commands/run-acceptance.md
-  .claude/commands/plan.md
-  .claude/commands/research.md
-  .claude/agents/session-summarizer.md
 )
 
 @test "sanitize_path_for_memory replaces / with -" {

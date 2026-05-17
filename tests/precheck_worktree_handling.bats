@@ -1,12 +1,14 @@
 #!/usr/bin/env bats
-# Behavioral check — the worktree-aware precheck Bash (extracted from
-# session-start.md) must resolve to the parent repo's auto-memory path
-# regardless of whether the session is running in the main worktree, a
-# linked worktree under <repo>/.claude/worktrees/, or a linked worktree
-# elsewhere on disk. Closes #210.
+# Behavioral check — the worktree-aware precheck must resolve to the parent
+# repo's auto-memory path regardless of whether the session is running in
+# the main worktree, a linked worktree under <repo>/.claude/worktrees/, or
+# a linked worktree elsewhere on disk. Closes #210.
 #
-# This test runs the actual Bash one-liner the precheck instructs Claude
-# to execute, against real `git worktree add`-created worktrees.
+# As of #218 the precheck logic lives in scripts/kit-print-memory-pointer.sh
+# (extracted from the inline compound Bash so Claude Code's permission
+# matcher can allowlist the invocation). This test runs the script directly
+# against real `git worktree add`-created worktrees so the worktree-aware
+# behavior stays locked in regardless of where the logic lives.
 
 load 'helpers'
 
@@ -29,16 +31,11 @@ teardown() {
   [ -n "${TEST_TMP:-}" ] && rm -rf "$TEST_TMP"
 }
 
-# Run the precheck Bash from inside $1 and echo the resolved memory pointer
-# path. Mirrors the snippet embedded in every kit-coupled slash command.
+# Run the precheck script from inside $1 and echo its stdout. The script
+# IS what every kit-coupled slash command invokes — no inline duplication.
 run_precheck_in() {
   local cwd="$1"
-  ( cd "$cwd" && \
-    REPO_ROOT=$(git rev-parse --path-format=absolute --git-common-dir 2>/dev/null) \
-      && REPO_ROOT=$(dirname "$REPO_ROOT") \
-      || REPO_ROOT="$PWD"
-    echo "$HOME/.claude/projects/$(echo "$REPO_ROOT" | sed 's|[/.]|-|g')/memory/reference_ai_working_folder.md"
-  )
+  ( cd "$cwd" && "$KIT_ROOT/scripts/kit-print-memory-pointer.sh" )
 }
 
 @test "precheck inside the main worktree resolves to the parent repo's memory path" {

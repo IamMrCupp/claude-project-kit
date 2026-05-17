@@ -13,12 +13,11 @@ phase that produces a written report before any planning or implementation.
 
 Before doing anything else:
 
-1. Run this Bash command to print the absolute path of this project's auto-memory pointer file, then use the `Read` tool on the **exact absolute path** the command prints (it will begin with `/`, not `~/` — do not pass `~/` to Read, it does not expand it):
+1. Run this Bash command to print the absolute path of this project's auto-memory pointer file (`reference_ai_working_folder.md`), then use the `Read` tool on the **exact absolute path** the command prints (it will begin with `/`, not `~/` — do not pass `~/` to Read, it does not expand it):
    ```bash
-   REPO_ROOT=$(git rev-parse --path-format=absolute --git-common-dir 2>/dev/null) && REPO_ROOT=$(dirname "$REPO_ROOT") || REPO_ROOT="$PWD"
-   echo "$HOME/.claude/projects/$(echo "$REPO_ROOT" | sed 's|[/.]|-|g')/memory/reference_ai_working_folder.md"
+   ~/.claude/scripts/kit-print-memory-pointer.sh
    ```
-   Do not rely on auto-memory recall — auto-memory loads only `MEMORY.md` into the session reminder, not the files it links to.
+   If you get `command not found`, the kit's helper scripts aren't installed yet — from the kit checkout run `scripts/install-scripts.sh --global` (or re-run `bootstrap.sh` in this repo), then retry. Do not rely on auto-memory recall — auto-memory loads only `MEMORY.md` into the session reminder, not the files it links to.
 2. If it isn't there, OR the working-folder path it points to doesn't have a `CONTEXT.md` file, **stop** and tell me:
    > "No kit working folder found for this project. To use this command, either run `bootstrap.sh` from the kit (https://github.com/IamMrCupp/claude-project-kit) to create one, or `cd` into a kit-bootstrapped repo. If a working folder exists at a non-default path, tell me and I'll load from there."
 3. Don't load partial state. If any required file is missing, treat the project as not-bootstrapped and bail with the message above.

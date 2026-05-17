@@ -19,7 +19,8 @@
 #   2. sync-memory.sh           — auto-memory templates
 #   3. sync-templates.sh        — working-folder templates
 #   4. sync-templates.sh --workspace  — only if $PWD is inside a workspace
-#   5. install-commands.sh --global   — slash commands + agents
+#   5. install-scripts.sh --global    — runtime helper scripts (precheck etc.)
+#   6. install-commands.sh --global   — slash commands + agents
 #
 # Each step is invoked with the same $PWD-inference the user would get if
 # they ran the helper themselves. See scripts/lib/infer.sh.
@@ -47,7 +48,8 @@ Run the kit upgrade flow end-to-end:
   2. (current project) sync-memory.sh
   3. (current project) sync-templates.sh
   4. (workspace, if applicable) sync-templates.sh --workspace
-  5. (global) install-commands.sh --global
+  5. (global) install-scripts.sh --global
+  6. (global) install-commands.sh --global
 
 Run from inside any kit-bootstrapped repo. Paths inferred from \$PWD.
 
@@ -56,9 +58,21 @@ Options:
                     run in their own --dry-run mode where supported.
   --skip-pull       Don't git-pull the kit; assume already current.
                     Also bypasses the kit-checkout-clean pre-flight check.
+  --skip-scripts    Don't install/update global helper scripts (Step 5).
+                    The slash-command precheck depends on
+                    kit-print-memory-pointer.sh being installed at
+                    ~/.claude/scripts/ — skipping leaves the precheck
+                    broken until you re-run install-scripts.sh manually.
   --skip-commands   Don't install/update global slash commands or agents.
+  --force-scripts   Pass --force-update --yes through to install-scripts.sh
+                    in Step 5. Overwrites kit-shipped helper scripts in
+                    the target with the kit's current versions (with
+                    .bak.<timestamp> backups). Use after a kit release
+                    that updated existing helper scripts you already have
+                    installed (the install-scripts.sh write-once default
+                    won't pick those changes up).
   --force-commands  Pass --force-update --yes through to install-commands.sh
-                    in Step 5. Overwrites kit-shipped commands / agents in
+                    in Step 6. Overwrites kit-shipped commands / agents in
                     the target with the kit's current templates (with
                     .bak.<timestamp> backups). Files NOT in the kit's
                     templates are still preserved. Use after a kit release
@@ -86,14 +100,18 @@ EOF
 
 DRY_RUN=0
 SKIP_PULL=0
+SKIP_SCRIPTS=0
 SKIP_COMMANDS=0
+FORCE_SCRIPTS=0
 FORCE_COMMANDS=0
 
 while [ $# -gt 0 ]; do
   case "$1" in
     --dry-run) DRY_RUN=1; shift ;;
     --skip-pull) SKIP_PULL=1; shift ;;
+    --skip-scripts) SKIP_SCRIPTS=1; shift ;;
     --skip-commands) SKIP_COMMANDS=1; shift ;;
+    --force-scripts) FORCE_SCRIPTS=1; shift ;;
     --force-commands) FORCE_COMMANDS=1; shift ;;
     -h|--help) usage; exit 0 ;;
     --*) echo "error: unknown option: $1" >&2; usage >&2; exit 2 ;;
@@ -101,6 +119,10 @@ while [ $# -gt 0 ]; do
   esac
 done
 
+if [ "$FORCE_SCRIPTS" -eq 1 ] && [ "$SKIP_SCRIPTS" -eq 1 ]; then
+  echo "error: --force-scripts and --skip-scripts are mutually exclusive" >&2
+  exit 2
+fi
 if [ "$FORCE_COMMANDS" -eq 1 ] && [ "$SKIP_COMMANDS" -eq 1 ]; then
   echo "error: --force-commands and --skip-commands are mutually exclusive" >&2
   exit 2
@@ -158,12 +180,19 @@ if [ -n "$WORKSPACE_ROOT" ]; then
 else
   echo "  Step 4 (workspace):  SKIPPED (not in a workspace)"
 fi
-if [ "$SKIP_COMMANDS" -eq 1 ]; then
-  echo "  Step 5 (commands):   SKIPPED (--skip-commands)"
-elif [ "$FORCE_COMMANDS" -eq 1 ]; then
-  echo "  Step 5 (commands):   install-commands.sh --global --force-update --yes"
+if [ "$SKIP_SCRIPTS" -eq 1 ]; then
+  echo "  Step 5 (scripts):    SKIPPED (--skip-scripts)"
+elif [ "$FORCE_SCRIPTS" -eq 1 ]; then
+  echo "  Step 5 (scripts):    install-scripts.sh --global --force-update --yes"
 else
-  echo "  Step 5 (commands):   install-commands.sh --global"
+  echo "  Step 5 (scripts):    install-scripts.sh --global"
+fi
+if [ "$SKIP_COMMANDS" -eq 1 ]; then
+  echo "  Step 6 (commands):   SKIPPED (--skip-commands)"
+elif [ "$FORCE_COMMANDS" -eq 1 ]; then
+  echo "  Step 6 (commands):   install-commands.sh --global --force-update --yes"
+else
+  echo "  Step 6 (commands):   install-commands.sh --global"
 fi
 echo
 
@@ -201,13 +230,25 @@ if [ -n "$WORKSPACE_ROOT" ]; then
   echo
 fi
 
-# ─── Step 5 — install commands ────────────────────────────────────────────
+# ─── Step 5 — install scripts ─────────────────────────────────────────────
+if [ "$SKIP_SCRIPTS" -eq 0 ]; then
+  if [ "$FORCE_SCRIPTS" -eq 1 ]; then
+    echo "── Step 5 — installing/updating global helper scripts (--force-update) ──"
+    "$SCRIPT_DIR/install-scripts.sh" --global --force-update --yes
+  else
+    echo "── Step 5 — installing global helper scripts ──"
+    "$SCRIPT_DIR/install-scripts.sh" --global
+  fi
+  echo
+fi
+
+# ─── Step 6 — install commands ────────────────────────────────────────────
 if [ "$SKIP_COMMANDS" -eq 0 ]; then
   if [ "$FORCE_COMMANDS" -eq 1 ]; then
-    echo "── Step 5 — installing/updating global slash commands + agents (--force-update) ──"
+    echo "── Step 6 — installing/updating global slash commands + agents (--force-update) ──"
     "$SCRIPT_DIR/install-commands.sh" --global --force-update --yes
   else
-    echo "── Step 5 — installing global slash commands + agents ──"
+    echo "── Step 6 — installing global slash commands + agents ──"
     "$SCRIPT_DIR/install-commands.sh" --global
   fi
   echo
@@ -217,7 +258,11 @@ echo "✓ Upgrade complete."
 echo
 echo "Next steps:"
 echo "  • Restart Claude.app (Cmd+Q + reopen) to pick up new slash commands."
-if [ "$FORCE_COMMANDS" -eq 0 ]; then
+if [ "$FORCE_SCRIPTS" -eq 0 ] && [ "$SKIP_SCRIPTS" -eq 0 ]; then
+  echo "  • Existing helper scripts were preserved (write-once invariant). To update"
+  echo "    changed scripts to the kit's current versions, re-run with --force-scripts."
+fi
+if [ "$FORCE_COMMANDS" -eq 0 ] && [ "$SKIP_COMMANDS" -eq 0 ]; then
   echo "  • Existing commands were preserved (write-once invariant). To update"
   echo "    changed commands to the kit's current templates, re-run with --force-commands."
 fi
