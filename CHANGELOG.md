@@ -6,6 +6,14 @@ See [Upgrading an existing project](SETUP.md#upgrading-an-existing-project) for 
 
 ---
 
+## [0.41.0](https://github.com/IamMrCupp/claude-project-kit/compare/v0.40.2...v0.41.0) (2026-05-17)
+
+
+### Features
+
+* **precheck:** extract precheck bash into helper script for allowlisting ([3835226](https://github.com/IamMrCupp/claude-project-kit/commit/3835226b50d1e36ee728d1ac86f85cb86f0196ab))
+* **precheck:** extract precheck bash into helper script for allowlisting (closes [#218](https://github.com/IamMrCupp/claude-project-kit/issues/218)) ([18d3bd8](https://github.com/IamMrCupp/claude-project-kit/commit/18d3bd818fa9da8ae0bb147e35bd939b7513b808))
+
 ## [0.40.2](https://github.com/IamMrCupp/claude-project-kit/compare/v0.40.1...v0.40.2) (2026-05-15)
 
 
