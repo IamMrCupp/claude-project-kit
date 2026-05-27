@@ -70,6 +70,7 @@ This folder uses a layered documentation system. Reuse this pattern when startin
 - {{Template location if any}}
 - {{Required reviewers, required checks}}
 - Manual test plan required for runtime changes — see CONVENTIONS.md
+- **Branch protection on free-tier private repos:** as of 2026, GitHub gates BOTH legacy branch protection and rulesets enforcement behind paid plans (Pro for personal, Team for orgs). On a free private repo neither enforces — rulesets can be *created* but won't take effect. Fall back to manual discipline: never force-push to `main`, never delete `main`, wait for green CI before merging. A local `pre-push` git hook can add belt-and-suspenders if desired.
 
 ### Shell / build
 - {{Shell in use — bash / zsh / fish / pwsh}}
@@ -113,9 +114,11 @@ This folder uses a layered documentation system. Reuse this pattern when startin
 
 ## Open Questions
 
-| # | Question | Status |
-|---|---|---|
-| 1 | {{…}} | ⏳ Open / ✅ Resolved — see §X |
+> **Two-tier tracking:** promote a question to a GitHub Issue (and link both ways via the **Tracked as** column) *when work is about to commit that depends on its resolution* — that's when public visibility and PR cross-linking earn their keep. Pure "still thinking" items stay here in the private working folder; promoting everything is noise, promoting nothing loses traceability the moment a deferred decision starts gating real work.
+
+| # | Question | Status | Tracked as |
+|---|---|---|---|
+| 1 | {{…}} | ⏳ Open / ✅ Resolved — see §X | {{#N once promoted, else —}} |
 
 ---
 
