@@ -154,6 +154,56 @@ EOF
   [[ "$output" == *"copied feedback_push_branches.md"* ]]
 }
 
+# ─── Drift detection (issue #221) ─────────────────────────────────────────
+
+@test "sync-memory.sh reports an outdated file when the local copy differs" {
+  # Seed a divergent copy of a shipped template
+  printf 'DIVERGED LOCAL CONTENT\n' > "$TARGET/feedback_commit_format.md"
+
+  run "$SYNC" "$TARGET"
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"Outdated files"* ]]
+  [[ "$output" == *"feedback_commit_format.md"* ]]
+  [[ "$output" == *"diff "* ]]
+
+  # Never overwritten — local content preserved
+  grep -q "DIVERGED LOCAL CONTENT" "$TARGET/feedback_commit_format.md"
+}
+
+@test "sync-memory.sh reports no outdated files when local copies are identical" {
+  # Fully populate target with identical kit content
+  run "$SYNC" "$TARGET"
+  [ "$status" -eq 0 ]
+
+  # Second run: everything identical → no drift report
+  run "$SYNC" "$TARGET"
+  [ "$status" -eq 0 ]
+  [[ "$output" != *"Outdated files"* ]]
+  [[ "$output" == *"Already in sync"* ]]
+}
+
+@test "sync-memory.sh --dry-run still reports outdated files and writes nothing" {
+  printf 'DIVERGED\n' > "$TARGET/feedback_commit_format.md"
+
+  run "$SYNC" --dry-run "$TARGET"
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"DRY RUN"* ]]
+  [[ "$output" == *"Outdated files"* ]]
+  [[ "$output" == *"feedback_commit_format.md"* ]]
+
+  # Divergent file untouched
+  grep -q "DIVERGED" "$TARGET/feedback_commit_format.md"
+}
+
+@test "sync-memory.sh suggests a real index line for every shipped template" {
+  run "$SYNC" "$TARGET"
+  [ "$status" -eq 0 ]
+  # Regression guard for the suggested_index_line gap class (#221 chip):
+  # a shipped template with no matching MEMORY.md index line emits the
+  # "TODO: write a one-line hook" placeholder. None should.
+  [[ "$output" != *"TODO: write a one-line hook"* ]]
+}
+
 # ─── Inference tests (issue #163) ─────────────────────────────────────────
 
 @test "sync-memory.sh inferred mode works when run from a kit-bootstrapped repo" {
