@@ -2,7 +2,7 @@
 name: CI variant request
 about: Request a new --ci <name> variant
 title: '[ci] add <name> variant'
-labels: 'enhancement, ci-variant'
+labels: 'type:feature'
 ---
 
 ## CI platform

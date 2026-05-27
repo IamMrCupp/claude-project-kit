@@ -2,7 +2,7 @@
 name: Tracker variant request
 about: Request a new --tracker <name> variant
 title: '[tracker] add <name> variant'
-labels: 'enhancement, tracker-variant'
+labels: 'type:feature'
 ---
 
 ## Tracker name
