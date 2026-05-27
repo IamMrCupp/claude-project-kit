@@ -6,6 +6,31 @@ See [Upgrading an existing project](SETUP.md#upgrading-an-existing-project) for 
 
 ---
 
+## [1.1.0](https://github.com/IamMrCupp/claude-project-kit/compare/v1.0.0...v1.1.0) (2026-05-27)
+
+
+### Features
+
+* add ticket archival helper — /archive-ticket + archive-ticket.sh (closes [#134](https://github.com/IamMrCupp/claude-project-kit/issues/134)) ([7d81462](https://github.com/IamMrCupp/claude-project-kit/commit/7d8146204e062fc3a3599ce96b8e3e8c73e9aea9))
+* **bootstrap:** add opt-in --with-labels triage scheme, relax label stance (closes [#58](https://github.com/IamMrCupp/claude-project-kit/issues/58)) ([1f621f2](https://github.com/IamMrCupp/claude-project-kit/commit/1f621f25eada359675c36094a3fcca39e5060535))
+* **bootstrap:** opt-in --with-labels triage scheme ([596e9c3](https://github.com/IamMrCupp/claude-project-kit/commit/596e9c31e631448a7aaccaf36a56e8fa5ed7f490))
+* document subagent fan-out pattern + ship research-question agent (closes [#62](https://github.com/IamMrCupp/claude-project-kit/issues/62)) ([e4ecb82](https://github.com/IamMrCupp/claude-project-kit/commit/e4ecb82f1f41c67b52a9ccf992f91badf4303f00))
+* encourage test-first workflow where the code shape fits ([fbd5bab](https://github.com/IamMrCupp/claude-project-kit/commit/fbd5bab5583870d1be30e52de8f029372dbedbdb))
+* encourage test-first workflow where the code shape fits (closes [#63](https://github.com/IamMrCupp/claude-project-kit/issues/63)) ([a3a72f6](https://github.com/IamMrCupp/claude-project-kit/commit/a3a72f616d2e5eb4284d0828785594503d002c57))
+* subagent fan-out pattern + research-question agent ([426cc27](https://github.com/IamMrCupp/claude-project-kit/commit/426cc2743f01c258760ced37ac2a3b7633414854))
+* ticket archival helper — /archive-ticket + archive-ticket.sh ([8f80eab](https://github.com/IamMrCupp/claude-project-kit/commit/8f80eab5a31083875255304ea50ff1d48b18a4a1))
+
+
+### Documentation
+
+* **bootstrap:** correct header constraint comment for --with-labels exception ([87e6c40](https://github.com/IamMrCupp/claude-project-kit/commit/87e6c4024ca646f44d0dabfe53eea822449d917a))
+* **context:** free-tier branch-protection limits + two-tier issue tracking ([bb7d9ba](https://github.com/IamMrCupp/claude-project-kit/commit/bb7d9ba961ab653efcbce12b349077f2a382a136))
+* **context:** note free-tier branch-protection limits + two-tier issue tracking (closes [#64](https://github.com/IamMrCupp/claude-project-kit/issues/64), closes [#57](https://github.com/IamMrCupp/claude-project-kit/issues/57)) ([6963b8a](https://github.com/IamMrCupp/claude-project-kit/commit/6963b8a50bb19cb8d8b388e328ce1ef861b86923))
+* **seed-prompt:** add GitHub Projects decision prompt ([a2ccafe](https://github.com/IamMrCupp/claude-project-kit/commit/a2ccafe19b80216609f39c8a2e83fc765e7444ec))
+* **seed-prompt:** add GitHub Projects decision prompt (closes [#59](https://github.com/IamMrCupp/claude-project-kit/issues/59)) ([580b96d](https://github.com/IamMrCupp/claude-project-kit/commit/580b96d60b5e62918b4e72003926c2b9816c479f))
+* **seed-prompt:** surface IaC state/secrets/migration decisions ([3e71c29](https://github.com/IamMrCupp/claude-project-kit/commit/3e71c29ee8118990de0590ac77579a5509313dfc))
+* **seed-prompt:** surface IaC state/secrets/migration decisions (closes [#60](https://github.com/IamMrCupp/claude-project-kit/issues/60)) ([f583acc](https://github.com/IamMrCupp/claude-project-kit/commit/f583acc4f46d96bfcf361dddbc874d97f14ba5c4))
+
 ## [1.0.0](https://github.com/IamMrCupp/claude-project-kit/compare/v0.41.0...v1.0.0) (2026-05-27)
 
 
