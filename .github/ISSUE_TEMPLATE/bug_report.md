@@ -2,7 +2,7 @@
 name: Bug report
 about: Something doesn't work as documented
 title: '[bug] '
-labels: bug
+labels: 'type:bug'
 ---
 
 ## What happened

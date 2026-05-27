@@ -2,7 +2,7 @@
 name: Feature request
 about: Open-ended idea or improvement
 title: '[feature] '
-labels: enhancement
+labels: 'type:feature'
 ---
 
 ## Problem
