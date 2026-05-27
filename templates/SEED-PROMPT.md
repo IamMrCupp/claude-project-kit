@@ -151,6 +151,8 @@ Output a summary in this exact shape:
 
 **GitHub Projects:** <recommendation — see the decision note below; default "skip" for solo devs>
 
+**IaC decisions** (only if Terraform / Pulumi / Helm-with-state detected): <state backend / secrets-at-runtime / migration plan — see the decision note below>
+
 ## Questions (≤5)
 
 1. ...
@@ -165,6 +167,18 @@ Surface this one-time decision in the summary — **don't enable anything automa
 - **Flag "consider enabling" when** any of these hold: a second collaborator joins, you run more than one repo and want a cross-repo view, or you want filtered status views beyond what `is:open label:phase-N` saved searches give you.
 
 This is a decision tree, not an action — enabling Projects (and wiring its API) stays the user's explicit call.
+
+### On the IaC decisions line
+
+**Only when Step 1 detected Terraform / Pulumi / Helm-with-state** (or similar stateful IaC). For these repos, *"where does state live?"* is load-bearing — get it wrong and you risk committing important state to a single laptop disk, and it has to be settled before any bulk-import or apply-at-scale work. Surface these (or get an explicit deferral) rather than letting them sink into a generic "open question":
+
+- **State backend** — local-only-during-bootstrap is a fine *start*, but if deferred, say so and recommend filing a tracking issue that **gates bulk-apply / bulk-import** until it's resolved.
+- **Secrets-at-runtime** — 1Password CLI / sops / direnv / CI secret. Drives `op run`-style wrapper conventions, env-var naming, and downstream CI design.
+- **State migration plan** — if starting local, what's the migration trigger and the target backend?
+
+**Recommended escape hatch:** *"local backend for bootstrap, migrate later, gated by a tracking issue."* It lets work start without pretending the decision is made — the tracking issue keeps the deferral honest and blocks the operations (bulk import / apply) that would be unsafe against laptop-local state. The same shape generalizes to other stateful IaC (Helm release secrets, Pulumi stack secrets).
+
+This is a decision-surfacing prompt, not an action — don't pick a backend or wire secrets yourself.
 
 ### Question rules
 
