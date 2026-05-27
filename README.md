@@ -146,6 +146,7 @@ Works the same for greenfield repos and ones you're adopting it on mid-stream �
 ├── SETUP.md                 ← step-by-step: starting a new project
 ├── FEATURES.md              ← feature-by-feature reference
 ├── CONVENTIONS.md           ← generic working rules (commits, PRs, etc.)
+├── STABILITY.md             ← what 1.x promises not to break
 ├── PROMPTS.md               ← ready-to-paste session-opening prompts
 ├── CHANGELOG.md             ← what's landed; upgrade notes for existing adopters
 ├── CONTRIBUTING.md          ← contributor onboarding
@@ -205,6 +206,7 @@ Works the same for greenfield repos and ones you're adopting it on mid-stream �
 | [FEATURES.md](FEATURES.md) | Feature-by-feature reference with example invocations |
 | [PROMPTS.md](PROMPTS.md) | Session-opening / session-end prompt library |
 | [CONVENTIONS.md](CONVENTIONS.md) | Commit / PR / CI rules the kit assumes |
+| [STABILITY.md](STABILITY.md) | What `1.x` promises not to break, and what can change in any release |
 | [CHANGELOG.md](CHANGELOG.md) | What's shipped, with **For existing adopters** notes per release |
 | [CONTRIBUTING.md](CONTRIBUTING.md) | Adding tracker / CI variants, running the Bats suite, PR shape |
 | [SECURITY.md](SECURITY.md) | Vulnerability reporting |
