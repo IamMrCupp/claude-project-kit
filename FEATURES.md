@@ -249,7 +249,7 @@ Saves ~30 minutes of manual fill-in on a real project, and the inference markers
 
 ## Starter agents
 
-Two agents stage in `<working-folder>/.claude/agents/`. **Recommended install: globally, once per machine** so they're available across every kit project:
+Three agents stage in `<working-folder>/.claude/agents/`. **Recommended install: globally, once per machine** so they're available across every kit project:
 
 ```bash
 <kit-dir>/scripts/install-commands.sh --global
@@ -259,6 +259,7 @@ The helper is idempotent and never overwrites existing files. To scope to one re
 
 - **`code-reviewer`** — reviews diffs, branches, or files for security / correctness / performance / style. Project-agnostic; works anywhere.
 - **`session-summarizer`** — drafts SESSION-LOG entries, CONTEXT.md status bumps, checklist scans, and memory candidates from the current session's activity. Specific to projects using the kit's working-folder pattern.
+- **`research-question`** — investigates one focused question and returns a structured, self-contained brief. Project-agnostic; **built to be spawned in parallel** — fire several at once on independent questions, then merge the briefs. See `CONVENTIONS.md` → *Subagent fan-out* and [`examples/fan-out-walkthrough.md`](examples/fan-out-walkthrough.md).
 
 These are **starters**. Edit the frontmatter (model, tool allowlist), customize the prompts, write your own. The kit seeds the pattern, not the content. See [`templates/.claude/README.md`](templates/.claude/README.md) for the activation flow and how to add new ones.
 
