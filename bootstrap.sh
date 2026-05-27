@@ -7,9 +7,12 @@
 # the Claude harness's sanitization rule ('/' -> '-', prefixed with '-').
 #
 # CONSTRAINT: This script never creates resources in external trackers
-# (issues, labels, projects, workflows, sprints). It only captures
-# references to existing trackers via --tracker / --jira-project /
-# --linear-team flags. See ADR-0001 D3 and CONVENTIONS.md
+# (issues, projects, workflows, sprints). The one exception is the opt-in
+# --with-labels flag, which creates a standard label scheme on a GitHub
+# repo you own (off by default; skips existing; never touches an
+# externally-owned tracker). Otherwise it only captures references to
+# existing trackers via --tracker / --jira-project / --linear-team flags.
+# See ADR-0001 D3 and CONVENTIONS.md
 # "Ticket-driven workflows → What the kit does NOT do with trackers".
 set -euo pipefail
 
