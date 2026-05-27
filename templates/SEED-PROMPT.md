@@ -149,11 +149,22 @@ Output a summary in this exact shape:
 
 **research.md drafted:** <one-line what it covers, e.g. "5 entry points, 8 modules, Postgres + Redis as external deps">
 
+**GitHub Projects:** <recommendation — see the decision note below; default "skip" for solo devs>
+
 ## Questions (≤5)
 
 1. ...
 2. ...
 ```
+
+### On the GitHub Projects line
+
+Surface this one-time decision in the summary — **don't enable anything automatically**, just flag the call:
+
+- **Default: skip for solo developers.** `phase-N-checklist.md` already fills the kanban role, so a Project board is usually duplicative.
+- **Flag "consider enabling" when** any of these hold: a second collaborator joins, you run more than one repo and want a cross-repo view, or you want filtered status views beyond what `is:open label:phase-N` saved searches give you.
+
+This is a decision tree, not an action — enabling Projects (and wiring its API) stays the user's explicit call.
 
 ### Question rules
 
