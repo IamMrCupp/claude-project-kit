@@ -112,4 +112,4 @@ Print:
 2. First three lines of the file: key + title, tracker link, status.
 3. A reminder: "Tracker is source of truth — re-run `/pull-ticket <KEY>` if the tracker changes. This file is the local working scratchpad."
 
-Then stop. Don't propose a branch name, don't open a worktree, don't start work. The user drives next — typically by checking the kit's CONVENTIONS.md (Ticket-driven workflows section) for the branch / PR / commit shape and starting from there.
+Then stop. Don't open a worktree or start work yet. **But check `git branch --show-current` first:** if it returns `main` (or the repo's default branch), flag in the hand-back that ticket work must start on a `<type>/<KEY>-<slug>` branch — implementation won't begin on `main`. Naming the exact branch and creating it is the user's next step per the kit's CONVENTIONS.md (Ticket-driven workflows section); this guard just stops a "go ahead" reply from silently editing `main`.

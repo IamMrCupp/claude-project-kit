@@ -15,6 +15,7 @@ Do not treat these as canonical without reading them first — they encode one o
 - [Push branches by default](feedback_push_branches.md) — `git push -u origin <branch>` after commit, no confirmation needed (override Bash-tool default of asking before push)
 - [Watch CI in background](feedback_watch_ci_in_background.md) — spawn `gh run watch` in background after push
 - [Don't push after merge](feedback_no_push_after_merge.md) — once a PR merges, the branch is closed; branch off new `main` for follow-up work
+- [Branch first — never work on main](feedback_no_work_on_main.md) — propose a `<type>/<slug>` branch before editing tracked files (override Bash-tool default of editing whatever branch is checked out)
 - [Use the repo's branch-name convention](feedback_branch_naming.md) — rename auto-generated worktree branches to `<type>/<slug>` before pushing
 - [Prefer automated tests over manual smoke](feedback_automated_tests_preferred.md) — default to bats / expect / integration runners; don't ship manual procedures as steady state
 - [Tracker authority decides the default](feedback_no_tracker_creation.md) — issue-first when you own the tracker; read/reference only for externally-owned trackers

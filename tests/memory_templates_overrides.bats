@@ -45,3 +45,13 @@ MEMORY_INDEX="$KIT_ROOT/memory-templates/MEMORY.md"
   echo "$line" | grep -qE 'override.*[Bb]ash.*default' \
     || { echo "[Push branches by default] index line missing override-of-Bash-tool-default flag"; return 1; }
 }
+
+@test "Branch-first index line exists and flags override of edit-on-current-branch default" {
+  line="$(grep -F '(feedback_no_work_on_main.md)' "$MEMORY_INDEX" || true)"
+  [ -n "$line" ] || { echo "missing [Branch first — never work on main] index line"; return 1; }
+
+  # Must flag this as an override of a Bash-tool default so index-only readers
+  # see the no-work-on-main rule on first scan (the #204 regression shape).
+  echo "$line" | grep -qE 'override.*[Bb]ash.*default' \
+    || { echo "[Branch first] index line missing override-of-Bash-tool-default flag"; return 1; }
+}
