@@ -70,7 +70,7 @@ CLAUDE_README="$KIT_ROOT/templates/.claude/README.md"
   [ -f "$CLAUDE_README" ]
   grep -q "/run-acceptance" "$CLAUDE_README"
   # Slash command count is bumped on every additional command; just verify a count is present.
-  grep -qE "(seven|eight|nine|ten) slash commands" "$CLAUDE_README"
+  grep -qE "(seven|eight|nine|ten|eleven|twelve) slash commands" "$CLAUDE_README"
 }
 
 @test "PROMPTS.md adds Prompt 8 mirroring /run-acceptance" {

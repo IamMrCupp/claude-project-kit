@@ -16,6 +16,7 @@ KIT_COUPLED_COMMANDS=(
   templates/.claude/commands/refresh-context.md
   templates/.claude/commands/close-phase.md
   templates/.claude/commands/pull-ticket.md
+  templates/.claude/commands/archive-ticket.md
   templates/.claude/commands/run-acceptance.md
   templates/.claude/commands/plan.md
   templates/.claude/commands/research.md
