@@ -122,8 +122,9 @@ When in doubt about who owns it, ask. Default to assuming externally-owned.
 
 ### What the kit does NOT do with trackers
 
-- **Never creates tracker projects, labels, workflows, or sprint scaffolding** on your behalf. JIRA projects, GitHub Project boards, Linear teams, etc. are owned by PMs and the business — bootstrap captures *references* to projects that already exist (project key, MCP availability, link), never creates them.
-- **Creating individual issues/tickets inside an existing project** depends on tracker authority — see *Issue-first when you own the tracker* above. For trackers you own, issue creation is the default (with confirmation before bulk-create). For externally-owned trackers, it's only on the table when you explicitly ask, and never structural artifacts (labels, workflows, sprint config).
+- **Never creates tracker projects, workflows, or sprint scaffolding** on your behalf. JIRA projects, GitHub Project boards, Linear teams, etc. are owned by PMs and the business — bootstrap captures *references* to projects that already exist (project key, MCP availability, link), never creates them.
+- **Labels are the one opt-in exception, and only on a repo you own.** `bootstrap.sh --with-labels` creates a standard triage scheme (`type:*`, `priority:P0–P2`, `blocker`, `decision-needed`, `phase-0`/`phase-1`) on the current GitHub repo via `gh label create`. It is **off by default**, skips labels that already exist, no-ops cleanly without `gh` or a remote, and never touches an externally-owned tracker. Rationale: labels on your own repo are low-stakes and reversible, and the kit already ships an opinionated triage vocabulary worth seeding — but only when you ask. Everything else structural (workflows, sprint config, Project boards) stays hands-off.
+- **Creating individual issues/tickets inside an existing project** depends on tracker authority — see *Issue-first when you own the tracker* above. For trackers you own, issue creation is the default (with confirmation before bulk-create). For externally-owned trackers, it's only on the table when you explicitly ask, and never structural artifacts (workflows, sprint config).
 
 ## Documentation (in the working folder)
 

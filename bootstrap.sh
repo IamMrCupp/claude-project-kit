@@ -66,6 +66,14 @@ Options:
                      re-runs detect the existing block and skip. The kit's
                      stance: .claude/ stays local to the user, never
                      committed to the source-code repo.
+  --with-labels      Opt-in: create a standard triage label scheme on the
+                     repo via \`gh label create\` (type:*, priority:P0-P2,
+                     blocker, decision-needed, phase-0/-1). OFF by default —
+                     this is the one structural change the kit will make to a
+                     repo you own, and only when you ask. Skips labels that
+                     already exist; no-ops cleanly without \`gh\` or a GitHub
+                     remote; never touches an external tracker. Honors
+                     --dry-run.
   --project-name NAME
                      Override the auto-derived project name used to fill
                      {{PROJECT_NAME}} placeholders in seeded memory files.
@@ -728,6 +736,7 @@ FORCE=0
 DRY_RUN=0
 WORKSPACE_MODE=0
 TRUST_KIT_PATHS=0
+WITH_LABELS=0
 WORKING_FOLDER=""
 PROJECT_NAME=""
 TRACKER=""
@@ -735,11 +744,57 @@ JIRA_PROJECT_KEY=""
 LINEAR_TEAM_KEY=""
 CI_TOOL=""
 
+# --with-labels: the opt-in standard triage label scheme. type:* / priority:*
+# mirror the kit's own vocabulary; blocker / decision-needed pair with the
+# two-tier tracking pattern (see CONVENTIONS.md); phase-0/-1 are lifecycle
+# starters — further phase-N labels are created on demand. Format: name|hex|desc.
+KIT_LABELS=(
+  "type:bug|d73a4a|Something broken or incorrect"
+  "type:feature|a2eeef|New capability or enhancement"
+  "type:docs|0075ca|Documentation change"
+  "type:chore|cfd3d7|Tooling, CI, release plumbing, misc"
+  "priority:P0|b60205|Must ship next"
+  "priority:P1|d93f0b|Should ship soon"
+  "priority:P2|fbca04|Nice to have / when time allows"
+  "blocker|e11d21|Gates other work"
+  "decision-needed|8957e5|Waiting on a deliberate human call"
+  "phase-0|ededed|Scaffolding / setup phase"
+  "phase-1|ededed|First delivery phase"
+)
+
+# Create the standard label scheme on the GitHub repo identified by <slug>
+# (owner/repo). Opt-in via --with-labels. Non-fatal throughout: warns and
+# returns 0 if gh is missing, the slug is empty, or an individual label
+# already exists. Never touches an external tracker.
+create_labels() {
+  local slug="$1"
+  if ! command -v gh > /dev/null 2>&1; then
+    echo "  ⚠ --with-labels: gh CLI not found — skipping label creation."
+    echo "    Install gh (https://cli.github.com), then re-run or create them by hand."
+    return 0
+  fi
+  if [ -z "$slug" ]; then
+    echo "  ⚠ --with-labels: no git remote 'origin' — can't resolve the GitHub repo."
+    echo "    Skipping label creation; set a remote and re-run, or create by hand."
+    return 0
+  fi
+  local entry name rest color desc
+  for entry in "${KIT_LABELS[@]}"; do
+    name="${entry%%|*}"; rest="${entry#*|}"; color="${rest%%|*}"; desc="${rest#*|}"
+    if gh label create "$name" --color "$color" --description "$desc" -R "$slug" > /dev/null 2>&1; then
+      echo "  ✓ created label: $name"
+    else
+      echo "  • skipped (already exists or no access): $name"
+    fi
+  done
+}
+
 while [ $# -gt 0 ]; do
   case "$1" in
     --skip-memory) SKIP_MEMORY=1; shift ;;
     --skip-scripts) SKIP_SCRIPTS=1; shift ;;
     --no-gitignore) SKIP_GITIGNORE=1; shift ;;
+    --with-labels) WITH_LABELS=1; shift ;;
     --force) FORCE=1; shift ;;
     --dry-run) DRY_RUN=1; shift ;;
     --workspace) WORKSPACE_MODE=1; shift ;;
@@ -1123,6 +1178,18 @@ if [ "$DRY_RUN" -eq 1 ]; then
     echo "  (idempotent — skipped if entries already present; backed up before write)"
     echo
   fi
+  if [ "$WITH_LABELS" -eq 1 ]; then
+    echo "Would create GitHub labels (--with-labels), skipping any that already exist:"
+    for entry in "${KIT_LABELS[@]}"; do
+      echo "  + ${entry%%|*}"
+    done
+    if ! command -v gh > /dev/null 2>&1; then
+      echo "  ⚠ gh CLI not found — the real run would skip label creation."
+    elif [ -z "$REPO_SLUG" ]; then
+      echo "  ⚠ no git remote 'origin' — the real run would skip label creation."
+    fi
+    echo
+  fi
   echo "No changes made. Re-run without --dry-run to apply."
   exit 0
 fi
@@ -1253,6 +1320,12 @@ if [ "$TRUST_KIT_PATHS" -eq 1 ]; then
   echo "  Updating ~/.claude/settings.json (precheck-script allowlist entry):"
   add_precheck_script_to_allowlist || true
   unset TRUSTED_ROOT_PATH
+fi
+
+if [ "$WITH_LABELS" -eq 1 ]; then
+  echo
+  echo "Creating standard labels on ${REPO_SLUG:-<repo>} (--with-labels):"
+  create_labels "$REPO_SLUG"
 fi
 
 echo
