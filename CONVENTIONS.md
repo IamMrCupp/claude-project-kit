@@ -176,6 +176,17 @@ This layers on top of *automated tests preferred over manual* — that rule gove
 - **When the repo is in the working directory, Claude reads + edits directly.** Don't copy-paste code through chat — it loses fidelity and wastes cycles.
 - **When the repo is NOT selected, flag it immediately** before doing any file work.
 
+## Subagent fan-out (parallel delegation)
+
+Claude Code can spawn multiple subagents in parallel. Fan-out — firing several at once on **independent** pieces of a task — is powerful but expensive, so reach for it deliberately.
+
+- **Worth it when** the pieces are genuinely independent and each is non-trivial: researching three options at once, drafting tests while another agent drafts docs, reviewing several unrelated files in parallel. The kit ships a `research-question` starter agent tuned for exactly this — fire a few, each on one question, then merge the briefs.
+- **Not worth it when** there are sequential dependencies (B needs A's output), or the tasks are small enough that coordination + merge cost exceeds the time saved. One capable agent beats five that each do a sliver and hand you five drafts to reconcile.
+- **Brief for mergeable output.** Each subagent starts cold — give it a self-contained prompt, an explicit return format, and hard scope boundaries, so the briefs slot together without you re-reading sources. (See the `research-question` agent's "Hand back" shape for the pattern.)
+- **Mind the cost.** Fan-out burns tokens fast and produces *drafts that need human merging*, not finished work. The win is wall-clock time on independent research / drafting — it doesn't remove the synthesis, which is still yours.
+
+See [`examples/fan-out-walkthrough.md`](examples/fan-out-walkthrough.md) for an end-to-end research-phase example.
+
 ## What *not* to adopt blindly
 
 These are worth thinking about per-project, not defaulted:

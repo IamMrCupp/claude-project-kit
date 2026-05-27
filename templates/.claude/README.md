@@ -1,6 +1,6 @@
 # `.claude/` starters
 
-Two agents and eleven slash commands that follow the kit's session-start, session-end, session-handoff, phase-close, acceptance-test, ticket, and task-level (research / plan) conventions. Staged here in your working folder; copy into your target repo's `.claude/` if you want them.
+Three agents and eleven slash commands that follow the kit's session-start, session-end, session-handoff, phase-close, acceptance-test, ticket, and task-level (research / plan) conventions. Staged here in your working folder; copy into your target repo's `.claude/` if you want them.
 
 ## What's here
 
@@ -8,6 +8,7 @@ Two agents and eleven slash commands that follow the kit's session-start, sessio
 
 - **`code-reviewer.md`** — reviews diffs, branches, or files for security / correctness / performance / style. Universal; works on any project.
 - **`session-summarizer.md`** — drafts SESSION-LOG entries, CONTEXT.md status bumps, checklist scans, and memory candidates from the current session's activity. Specific to projects using the kit's working-folder pattern.
+- **`research-question.md`** — investigates one focused question and returns a structured, self-contained brief. Universal (any project); **built to be spawned in parallel** — fire several at once on independent questions, then merge the briefs. See `CONVENTIONS.md` → *Subagent fan-out* and `examples/fan-out-walkthrough.md`.
 
 ### Slash commands (`.claude/commands/`)
 

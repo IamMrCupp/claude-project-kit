@@ -75,7 +75,7 @@ That kicks off interactive mode: it asks for the working-folder path, project na
 - **Auto-memory seeding** — starter memory files for role, conventions, project context, and external references, with placeholder substitution from your repo (`{{PROJECT_NAME}}`, `{{REPO_SLUG}}`, etc.).
 - **Phase-based planning docs** — `plan.md` + per-phase checklist + `implementation.md` give Claude scoped, numbered tasks instead of a wall of intent.
 - **SEED-PROMPT auto-fill** — point Claude at one file and it deep-reads your repo, fills `CONTEXT.md`, drafts `research.md`, flags inferences, and stops for your review.
-- **Starter agents** — `code-reviewer` (universal) and `session-summarizer` (kit-aware), staged in the working folder; copy into your repo to activate.
+- **Starter agents** — `code-reviewer` (universal), `session-summarizer` (kit-aware), and `research-question` (universal, built for parallel fan-out), staged in the working folder; copy into your repo to activate.
 - **Starter slash commands** — `/session-start`, `/session-verify`, `/refresh-context`, `/close-phase`, `/session-end`, `/session-handoff`, `/pull-ticket`, `/archive-ticket`, `/run-acceptance`, `/research`, `/plan`. Install once globally with `scripts/install-commands.sh --global` (recommended) or per-repo with `--project <path>`.
 - **Managed `.gitignore` block** — bootstrap appends a marker-bracketed block to `<repo>/.gitignore` covering `.claude/` (local-only Claude Code state), macOS junk (`.DS_Store` etc.), and editor / IDE files (`.vscode/`, `.idea/`, `*.swp`, ...). Idempotent on re-runs; opt out with `--no-gitignore`. Kit's stance: `.claude/` stays local to the user, never committed.
 - **Upgrade helpers** — `scripts/sync-memory.sh`, `scripts/sync-templates.sh`, and `scripts/rename-workspace.sh` keep auto-memory, working-folder templates, and workspace paths in sync with the latest kit release without overwriting your filled-in content. See [SETUP.md §Upgrading](SETUP.md#upgrading-an-existing-project).
@@ -87,7 +87,7 @@ See [FEATURES.md](FEATURES.md) for one-paragraph-per-feature detail with example
 
 ## What this is / isn't
 
-- **Is:** a workflow scaffold layered on top of Claude Code — templates, memory starters, conventions, two starter agents, eleven starter slash commands.
+- **Is:** a workflow scaffold layered on top of Claude Code — templates, memory starters, conventions, three starter agents, eleven starter slash commands.
 - **Isn't:** a Claude Code plugin, a replacement for `CLAUDE.md`, or a project tracker. It complements all three.
 
 ## Why this works
