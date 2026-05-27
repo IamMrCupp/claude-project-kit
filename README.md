@@ -81,7 +81,7 @@ That kicks off interactive mode: it asks for the working-folder path, project na
 - **Upgrade helpers** — `scripts/sync-memory.sh`, `scripts/sync-templates.sh`, and `scripts/rename-workspace.sh` keep auto-memory, working-folder templates, and workspace paths in sync with the latest kit release without overwriting your filled-in content. See [SETUP.md §Upgrading](SETUP.md#upgrading-an-existing-project).
 - **Worked examples** — `examples/widget-tracker/` (fictional Go CLI, single-repo, mid-Phase 1) and `examples/acme-platform/` (fictional Terraform multi-repo workspace, JIRA-driven, **long-running with multiple initiatives** — one completed, one active — plus `workspace-plan.md`, `workspace-phase-N-checklist.md`, and active + archived ticket scratchpads).
 - **Conventions baseline** — Conventional Commits, merge-only PRs, ticket-driven branch / PR / commit shape, test-plan format, etc. Read once, drop or keep per project.
-- **No surprises** — MIT licensed, no telemetry, no network calls. The only file bootstrap writes to your target repo is `.gitignore` (managed block, opt-out via `--no-gitignore`); everything else lands in the out-of-tree working folder.
+- **No surprises** — MIT licensed, no telemetry. By default no network calls, and the only file bootstrap writes to your target repo is `.gitignore` (managed block, opt-out via `--no-gitignore`); everything else lands in the out-of-tree working folder. The sole opt-in exception is `--with-labels`, which calls `gh` to create a triage label scheme on a repo you own — off unless you pass it.
 
 See [FEATURES.md](FEATURES.md) for one-paragraph-per-feature detail with example invocations.
 

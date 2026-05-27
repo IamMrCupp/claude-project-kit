@@ -12,13 +12,18 @@ teardown() { bootstrap_teardown; }
   # Static check: scan bootstrap.sh for any command that would create or
   # mutate resources in an external tracker. This is the load-bearing
   # assertion behind ADR-0001 D3.
+  #
+  # Exception (#58): `gh label create` is the ONE sanctioned mutation —
+  # the opt-in `--with-labels` flag creates a standard label scheme on a
+  # GitHub repo you own (off by default, skips existing, never touches an
+  # externally-owned tracker). It is intentionally NOT in this list. Label
+  # *edit* / *delete* and every other tracker mutation stay forbidden.
   local forbidden=(
     "gh issue create"
     "gh issue edit"
     "gh issue close"
     "gh issue delete"
     "gh issue reopen"
-    "gh label create"
     "gh label edit"
     "gh label delete"
     "gh project create"
