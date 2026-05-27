@@ -6,6 +6,32 @@ See [Upgrading an existing project](SETUP.md#upgrading-an-existing-project) for 
 
 ---
 
+## [1.0.0](https://github.com/IamMrCupp/claude-project-kit/compare/v0.41.0...v1.0.0) (2026-05-27)
+
+
+### Features
+
+* **sync-memory:** report kit-template drift without overwriting ([5e56557](https://github.com/IamMrCupp/claude-project-kit/commit/5e56557a1a90c0475c8ecece091bbe7e5869562f))
+* **sync-memory:** report kit-template drift without overwriting (closes [#221](https://github.com/IamMrCupp/claude-project-kit/issues/221)) ([32c72df](https://github.com/IamMrCupp/claude-project-kit/commit/32c72df2cbe055324183af281c2003a6d52b682b))
+
+
+### Bug Fixes
+
+* surface no-work-on-main rule in memory + slash commands (closes [#204](https://github.com/IamMrCupp/claude-project-kit/issues/204)) ([8e27ac1](https://github.com/IamMrCupp/claude-project-kit/commit/8e27ac1d21cb580b792093369e70f51300a24159))
+* surface no-work-on-main rule so fresh sessions don't edit main ([d36adea](https://github.com/IamMrCupp/claude-project-kit/commit/d36adeaba6ff33b32879b17674909156594e675a))
+
+
+### Documentation
+
+* add STABILITY.md and switch to post-1.0 semver (closes [#157](https://github.com/IamMrCupp/claude-project-kit/issues/157)) ([f062294](https://github.com/IamMrCupp/claude-project-kit/commit/f0622942df46ed91413a7ba78d2c99f3830a1efa))
+* **issue-templates:** align labels with type:* family ([e232228](https://github.com/IamMrCupp/claude-project-kit/commit/e232228747012f3817a9adf222b1719be506ebac))
+* **issue-templates:** align labels with type:* family (closes [#216](https://github.com/IamMrCupp/claude-project-kit/issues/216)) ([84e318d](https://github.com/IamMrCupp/claude-project-kit/commit/84e318dff1dcf22ba43d2c933ba1e6fefbc90e14))
+
+
+### Chores
+
+* release 1.0.0 ([5076bf1](https://github.com/IamMrCupp/claude-project-kit/commit/5076bf14145a5a66b9c9fdc2140abce8b0268e5b))
+
 ## [0.41.0](https://github.com/IamMrCupp/claude-project-kit/compare/v0.40.2...v0.41.0) (2026-05-17)
 
 
