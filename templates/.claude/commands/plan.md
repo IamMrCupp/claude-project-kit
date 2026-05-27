@@ -73,6 +73,7 @@ Required sections, in this order:
 
 - File path
 - 3–5 bullet summary covering: the goal in one sentence, the major approach steps, the riskiest open question, and the count of todo items
+- **Branch-first guard.** Run `git branch --show-current`. If it returns `main` (or the repo's default branch), add a closing line to the hand-back: *"When you say go, I'll start a `<type>/<slug>` branch first — implementation won't begin on `main`."* Name a concrete branch for todo item 1. This catches the common "ok, go ahead and implement" reply that would otherwise edit `main` directly — the kit's rule is *branch name first, then code* (`CONVENTIONS.md` → Git & commits).
 - Then **wait**. Don't ask "should I start implementing?" — assume no until told yes.
 
 ## Iterating on the plan

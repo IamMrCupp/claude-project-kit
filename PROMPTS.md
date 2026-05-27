@@ -70,6 +70,10 @@ and cross-project conventions.
 - **Follow `CONVENTIONS.md` for this repo's own work** — Conventional Commits
   single-line with `-s` sign-off, branch name proposed before coding,
   merge-commit PR strategy, detailed manual test plans where applicable.
+- **Never edit on `main`.** Before the first edit to a tracked file, check
+  `git branch --show-current`; if it's `main` / the default branch, propose a
+  `<type>/<slug>` branch and switch to it first. (Read-only exploration on
+  `main` is fine — the rule is about edits.)
 - If I ask for something that contradicts the kit's own conventions, flag it.
   A kit that preaches X while itself doing Y is a credibility leak.
 - This repo is docs + templates — no runtime code — so "test plans" usually
