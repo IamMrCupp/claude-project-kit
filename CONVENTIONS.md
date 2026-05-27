@@ -148,6 +148,17 @@ Acceptance tests verify *user-visible behavior* of a phase's slice. Green CI alo
   The rationale gets surfaced in the SESSION-LOG entry that closes the phase. Skipping without a rationale is a convention violation, not a customization.
 - **The `/close-phase` slash command enforces both rules.** It refuses to close when neither condition is met (no non-empty results file AND no skip-rationale line), and refuses if the checklist's `## Acceptance testing` section was deleted. The convention is the source of truth; the slash command makes it operationally hard to skip silently.
 
+## Test-first where it fits
+
+Test-first (write the failing test *before* the implementation) is **encouraged, not enforced** — and only where the code shape rewards it.
+
+- **Reach for it** on code with a clear input/output contract: app logic, APIs, library functions, component behavior. Writing the test first sharpens the acceptance criteria, surfaces bad interfaces early, and pairs naturally with the phase-checklist model — the failing test *is* the AC, made executable.
+- **Skip it** for IaC (Terraform / Helm / Ansible), shell glue, one-shot scripts, and exploratory spikes. Forcing test-first there produces checkbox tests that don't catch real bugs; post-implementation `bats` / integration tests are the right level for that work.
+
+This layers on top of *automated tests preferred over manual* — that rule governs *whether* tests exist; this one governs *when* they're written relative to the code, for the subset of work where it pays off.
+
+**The loop, inside a phase:** for an app-shaped behavior change, make the first checklist item *"write a failing test for the AC"* (red), implement until it's green, then refactor with the test as a safety net. Each step is small and reviewable, and the test merges in the same PR as the behavior. Stay framework-neutral — Jest / Vitest / Pytest / Go's `testing` / etc. are the project's call, not the kit's.
+
 ## Auto-memory
 
 - **Save feedback from both corrections and confirmations.** Corrections are easy to notice; quiet "yes exactly, keep doing that" moments are what keep you from drifting away from validated approaches.

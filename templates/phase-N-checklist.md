@@ -13,6 +13,7 @@
 - Each item records issue number (when applicable), branch name, commit message(s), and PR number once merged.
 - Reference `implementation.md` specs by number (`see §1.4`) rather than duplicating.
 - Tick items ✅ the moment the PR merges — not at end of phase.
+- **Test-first where it fits:** for app / API / library work (clear input/output contract), lead a behavior item with a "write a failing test for the AC" step before "implement X" — see `CONVENTIONS.md` → *Test-first where it fits*. Skip for IaC / shell / one-shot scripts / spikes.
 - **Issue-first when you own the tracker:** when the tracker is yours (e.g. GitHub Issues on your own repo), open an issue *before* starting trackable work and record `#N` in the `Issue:` field below. PRs use `Closes #N` so the issue auto-closes on merge. See `CONVENTIONS.md` → *Ticket-driven workflows* → *Issue-first when you own the tracker* for the full rule. For externally-owned trackers (work JIRA, upstream OSS), leave `Issue:` blank or remove the field — read-only is the default there.
 
 ---
