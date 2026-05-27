@@ -240,7 +240,7 @@ The `.claude/` directory holds starter agents and slash commands that match the 
 <framework-dir>/scripts/install-commands.sh --global
 ```
 
-The helper is idempotent and never overwrites existing files. To scope to one repo instead, use `--project <repo-path>`. See [`templates/.claude/README.md`](templates/.claude/README.md) for the full list (two agents + six slash commands), the kit-coupling caveat (most commands assume a kit working folder), and manual-copy alternatives.
+The helper is idempotent and never overwrites existing files. To scope to one repo instead, use `--project <repo-path>`. See [`templates/.claude/README.md`](templates/.claude/README.md) for the full list (two agents + eleven slash commands), the kit-coupling caveat (most commands assume a kit working folder), and manual-copy alternatives.
 
 ### Seed auto-memory
 The harness expects memory at `~/.claude/projects/<sanitized-path>/memory/`. Sanitization rule: absolute repo path with `/` replaced by `-`, prefixed with `-`. Example: `/Users/you/Code/acme/foo` → `-Users-you-Code-acme-foo`.
@@ -419,6 +419,14 @@ Once a workspace is set up with tracker config (`--tracker jira --jira-project A
 ```
 
 Idempotence: both refuse to overwrite an existing scratchpad with the same `<KEY>-` prefix (active or archived). Re-pull by removing or archiving the old file first, or do it from Claude (the slash command can re-pull if you confirm).
+
+When a ticket's work is done, archive its scratchpad so the `tickets/` folder stays scannable — the `/archive-ticket <KEY>` slash command (or `archive-ticket.sh <KEY>` at the kit root) moves `tickets/<KEY>-<slug>.md` into `tickets/archive/` and the slash command notes it in `SESSION-LOG.md`. Like pull, it's read-only against the tracker — transition the ticket in your tracker yourself.
+
+```bash
+# In Claude:  /archive-ticket ACME-1234
+# In a terminal:
+~/Code/claude-project-kit/archive-ticket.sh ACME-1234
+```
 
 ### Renaming a workspace
 

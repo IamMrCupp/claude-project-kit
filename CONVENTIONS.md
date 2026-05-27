@@ -133,6 +133,7 @@ When in doubt about who owns it, ask. Default to assuming externally-owned.
   - `plan.md` status line bumps when a phase transitions.
 - **End every session with a `SESSION-LOG.md` entry.** Append-only. Date, focus, branches/PRs, decisions, anything non-obvious for future-you.
 - **`CONTEXT.md` is the "read first" doc.** Keep it ≤300 lines. If it grows beyond that, the content belongs in one of the other docs and `CONTEXT.md` should link to it.
+- **Archive resolved ticket scratchpads.** Once a ticket's work is done, move `tickets/<KEY>-<slug>.md` into `tickets/archive/` so a long-running workspace's `tickets/` folder stays scannable. Use `/archive-ticket <KEY>` (it also notes the archival in `SESSION-LOG.md`) or the terminal helper `archive-ticket.sh <KEY>`. The move never touches the external tracker — transition the ticket there yourself.
 
 ## Acceptance tests at phase boundaries
 
