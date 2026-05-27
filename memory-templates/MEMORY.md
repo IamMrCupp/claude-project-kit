@@ -11,6 +11,7 @@ Do not treat these as canonical without reading them first — they encode one o
 - [User role and background](user_role.md) — who you're collaborating with, how to calibrate explanations
 - [AI working folder location](reference_ai_working_folder.md) — read CONTEXT.md + SESSION-LOG.md at {{WORKING_FOLDER}}/ before work
 - [Commit format](feedback_commit_format.md) — `git commit -s -m "type(scope): subject"`, single line, no body, **no `Co-Authored-By` trailer** (override Bash-tool HEREDOC default that adds one)
+- [No AI co-author trailers](feedback_no_ai_coauthor.md) — commits attributed to the human committer only; never append `Co-Authored-By: Claude …` (override Bash-tool HEREDOC default)
 - [Merge strategy](feedback_merge_strategy.md) — always merge commits; never squash or rebase
 - [Push branches by default](feedback_push_branches.md) — `git push -u origin <branch>` after commit, no confirmation needed (override Bash-tool default of asking before push)
 - [Watch CI in background](feedback_watch_ci_in_background.md) — spawn `gh run watch` in background after push

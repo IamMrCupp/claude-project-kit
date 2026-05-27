@@ -7,6 +7,12 @@
 # memory dir, never overwrites existing files, and never touches user-curated
 # files (MEMORY.md, project_current.md, user_role.md).
 #
+# Files that already exist but differ from the kit's current template are
+# reported as "outdated" (with a diff hint) and left untouched — memory files
+# are designed to be edited and grown, so a local copy almost always differs
+# on purpose. Detect-and-report only; never overwrite. (Counterpart to the
+# same behavior in scripts/sync-templates.sh.)
+#
 # Run after pulling kit updates if you want to absorb new starter rules.
 # Idempotent — re-running is a no-op once everything is in sync.
 set -euo pipefail
@@ -33,8 +39,10 @@ usage() {
 Usage: sync-memory.sh [options] [memory-dir]
 
 Sync missing memory-templates/*.md into the auto-memory directory. Never
-overwrites existing files. Never touches MEMORY.md, project_current.md,
-or user_role.md (those are user-customized).
+overwrites existing files. Reports files that exist but differ from the
+kit's current template ("outdated") so you can merge by hand if desired.
+Never touches MEMORY.md, project_current.md, or user_role.md (those are
+user-customized).
 
 Arguments:
   [memory-dir]   Optional. Absolute path to an auto-memory directory.
@@ -149,6 +157,7 @@ echo
 COPIED=()
 SKIPPED_EXISTING=()
 SKIPPED_RESERVED=()
+OUTDATED=()
 
 for src in "$TEMPLATES_DIR"/*.md; do
   [ -e "$src" ] || continue
@@ -160,7 +169,11 @@ for src in "$TEMPLATES_DIR"/*.md; do
   fi
 
   if [ -e "$TARGET/$name" ]; then
-    SKIPPED_EXISTING+=("$name")
+    if cmp -s "$src" "$TARGET/$name"; then
+      SKIPPED_EXISTING+=("$name")
+    else
+      OUTDATED+=("$name")
+    fi
     continue
   fi
 
@@ -174,30 +187,50 @@ for src in "$TEMPLATES_DIR"/*.md; do
 done
 
 echo
-if [ "${#COPIED[@]}" -eq 0 ]; then
-  echo "Already in sync — no files to copy."
+if [ "${#COPIED[@]}" -eq 0 ] && [ "${#OUTDATED[@]}" -eq 0 ]; then
+  echo "Already in sync — no files to copy, no outdated content."
   if [ "${#SKIPPED_RESERVED[@]}" -gt 0 ]; then
     echo "Skipped (user-customized, never auto-synced): ${SKIPPED_RESERVED[*]}"
   fi
   exit 0
 fi
 
-if [ "$DRY_RUN" -eq 1 ]; then
-  echo "Would copy ${#COPIED[@]} file(s). Re-run without --dry-run to apply."
-else
-  echo "Copied ${#COPIED[@]} file(s) into $TARGET."
+if [ "${#COPIED[@]}" -gt 0 ]; then
+  if [ "$DRY_RUN" -eq 1 ]; then
+    echo "Would copy ${#COPIED[@]} file(s). Re-run without --dry-run to apply."
+  else
+    echo "Copied ${#COPIED[@]} file(s) into $TARGET."
+  fi
+
+  echo
+  echo "Suggested MEMORY.md additions (paste the ones you want):"
+  echo
+  for name in "${COPIED[@]}"; do
+    line="$(suggested_index_line "$name")"
+    if [ -n "$line" ]; then
+      echo "  $line"
+    else
+      echo "  - [TITLE]($name) — TODO: write a one-line hook"
+    fi
+  done
+  echo
+  echo "MEMORY.md is user-curated; this script does not edit it directly."
 fi
 
-echo
-echo "Suggested MEMORY.md additions (paste the ones you want):"
-echo
-for name in "${COPIED[@]}"; do
-  line="$(suggested_index_line "$name")"
-  if [ -n "$line" ]; then
-    echo "  $line"
-  else
-    echo "  - [TITLE]($name) — TODO: write a one-line hook"
-  fi
-done
-echo
-echo "MEMORY.md is user-curated; this script does not edit it directly."
+if [ "${#OUTDATED[@]}" -gt 0 ]; then
+  echo
+  echo "Outdated files (exist locally but differ from kit's current template):"
+  for name in "${OUTDATED[@]}"; do
+    echo "  - $name"
+  done
+  echo
+  echo "These were NOT modified. Memory files are meant to be edited and grown,"
+  echo "so a local copy almost always differs on purpose — this script never"
+  echo "overwrites them. Review the kit's version and merge by hand if you want"
+  echo "a wording or rule update. Compare with:"
+  echo
+  for name in "${OUTDATED[@]}"; do
+    echo "    diff $TEMPLATES_DIR/$name $TARGET/$name"
+    break  # show one example, the user can extrapolate
+  done
+fi
