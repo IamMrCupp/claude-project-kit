@@ -515,51 +515,68 @@ Pass `--dry-run` to preview before committing:
 
 Some repos get pulled into more than one program of work — a shared `flux/k8s` config repo consumed by multiple platforms, an internal Terraform module repo touched by several initiatives, a Helm chart repo referenced from a handful of deployment programs. The kit's auto-memory keys to the **repo path**, so a single repo has exactly one canonical working folder; bootstrapping it twice under two different workspaces would clobber the auto-memory pointer each time.
 
-The current pattern (and the one [issue #199](https://github.com/IamMrCupp/claude-project-kit/issues/199) will turn into first-class tooling post-launch) is **standalone working folder + manual reference**: the shared repo gets its own canonical working folder outside any workspace, and each consuming workspace adds a reference pointer in its `workspace-CONTEXT.md` without creating a per-repo subfolder.
+The kit ships first-class support for this via two `bootstrap.sh` flags (PR A of [#199](https://github.com/IamMrCupp/claude-project-kit/issues/199)):
+
+- **`--shared`** — bootstraps the shared repo as a standalone working folder (no `--workspace`), and keeps an optional `## Referenced by` section in the seeded `CONTEXT.md` template so the shared repo's state can list which workspaces depend on it.
+- **`--workspace <ws> --reference <shared-wf>`** — bootstraps (or re-runs against) a workspace and declares that the workspace depends on the shared repo's standalone working folder. Adds a `## Shared repos` entry to the workspace's `workspace-CONTEXT.md` *without* creating a per-repo subfolder for the shared repo. **Read-only on the shared side** — never modifies the shared repo's working folder or auto-memory. Repeatable: pass `--reference` multiple times for several shared repos at once.
+
+The resulting layout:
 
 ```
 ~/Documents/Claude/Projects/
-├── shared-flux-config/              ← standalone working folder for the shared repo
+├── shared-flux-config/              ← standalone working folder (--shared)
 │   ├── CONTEXT.md                   ← canonical per-repo state lives here
+│   │   └── "## Referenced by" lists workspaces that use this repo
 │   ├── SESSION-LOG.md
 │   └── plan.md
 ├── platform-infra/                  ← workspace A
-│   ├── workspace-CONTEXT.md         ← "Shared repos" section pointing at shared-flux-config
-│   └── terraform-modules/
+│   ├── workspace-CONTEXT.md         ← "## Shared repos" entry → shared-flux-config
+│   └── terraform-modules/           ← per-repo subfolder for a non-shared repo
 └── data-platform/                   ← workspace B (same shared-repo reference)
     ├── workspace-CONTEXT.md
     └── ...
 ```
 
-**Bootstrap the shared repo as a standalone working folder** (no `--workspace`):
+**Step-by-step.** Bootstrap the shared repo once, then opt each workspace in:
 
 ```bash
-cd ~/Code/<shared-repo>
-~/Code/claude-project-kit/bootstrap.sh
-# Working folder lands at ~/Documents/Claude/Projects/<shared-repo-name>/
+# 1. Bootstrap the shared repo as a standalone working folder
+cd ~/Code/shared-flux-config
+~/Code/claude-project-kit/bootstrap.sh --shared
+# Working folder lands at ~/Documents/Claude/Projects/shared-flux-config/
+# CONTEXT.md gets the "## Referenced by" section ready for entries
+
+# 2. Bootstrap workspace A and declare the shared-repo reference
+cd ~/Code/platform-infra
+~/Code/claude-project-kit/bootstrap.sh \
+  --workspace ~/Documents/Claude/Projects/platform-infra/ \
+  --reference ~/Documents/Claude/Projects/shared-flux-config/
+
+# 3. Same for workspace B
+cd ~/Code/data-platform
+~/Code/claude-project-kit/bootstrap.sh \
+  --workspace ~/Documents/Claude/Projects/data-platform/ \
+  --reference ~/Documents/Claude/Projects/shared-flux-config/
 ```
 
-**Then add a "Shared repos" section by hand** to each consuming workspace's `workspace-CONTEXT.md`:
+After step 3, each workspace's `workspace-CONTEXT.md` has a populated `## Shared repos` section pointing at `shared-flux-config`. Edit the auto-generated entries to fill in the per-workspace "why" descriptions, and add matching entries to the shared repo's `## Referenced by` section by hand (the shared side stays user-curated).
 
-```markdown
-## Shared repos
+Re-running `bootstrap.sh --workspace <existing-ws> --reference <new-shared-wf>` from a different cwd against an existing workspace **appends** the new reference — useful when a workspace picks up dependency on another shared repo later.
 
-Repos referenced by this workspace whose canonical working folder lives elsewhere
-(see [issue #199](https://github.com/IamMrCupp/claude-project-kit/issues/199) for
-the formal `--reference` flag coming post-launch).
+**Why standalone + reference (and not symlinks or per-workspace copies):**
 
-- **shared-flux-config** — `~/Documents/Claude/Projects/shared-flux-config/`
-  - Used by this workspace for: cluster deployments + Argo manifests for current initiative
-  - Per-repo state (CONTEXT.md, SESSION-LOG.md, plan.md) is canonical at the standalone path; do not duplicate here
-```
-
-Why standalone+reference and not symlinks or per-workspace copies:
-
-- **One source of truth.** Branches, history, and SESSION-LOG entries for the shared repo live in one place. Per-workspace copies drift.
+- **One source of truth.** Branches, history, and SESSION-LOG entries for the shared repo live in one place. Per-workspace copies drift over time.
 - **Auto-memory stays consistent.** `reference_ai_working_folder.md` for the shared repo points at the standalone working folder regardless of which workspace you're working in.
 - **Symlinks are tooling-fragile.** Some tools don't follow them; future-you will be confused.
 
-When [#199](https://github.com/IamMrCupp/claude-project-kit/issues/199) lands post-launch, this becomes first-class with `--shared` and `--reference` flags + a `convert-to-shared.sh` migration helper. The manual pattern above will keep working — the migration helper formalizes it without breaking existing setups.
+#### Manual alternative
+
+If you can't run `bootstrap.sh` (no Bash available, restricted environment) or you prefer to wire the reference by hand:
+
+1. Bootstrap the shared repo as a regular single-repo working folder (no `--workspace`, no `--shared`).
+2. Add the `## Referenced by` and `## Shared repos` sections by hand using the template shape under the `<!-- BEGIN OPTIONAL: REFERENCED_BY -->` / `<!-- BEGIN OPTIONAL: SHARED_REPOS -->` markers in `templates/CONTEXT.md` and `templates/workspace/workspace-CONTEXT.md` respectively as the reference. Drop the marker comments — they're just there so `bootstrap.sh` knows what to strip when the flags aren't passed.
+
+For converting an existing per-repo subfolder under a workspace into a standalone shared working folder (the migration path), the upcoming `scripts/convert-to-shared.sh` helper from [#199 PR B](https://github.com/IamMrCupp/claude-project-kit/issues/199) will automate it. Until then, the manual flow is: `mv` the WF to its standalone path; edit `~/.claude/projects/<sanitized-repo-path>/memory/reference_ai_working_folder.md` to point at the new path; add a `## Shared repos` entry to the original workspace's `workspace-CONTEXT.md` referring to the new standalone path.
 
 ### What `--workspace` does NOT do (yet)
 

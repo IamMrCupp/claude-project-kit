@@ -72,6 +72,23 @@ See `CONVENTIONS.md` (kit-level — `## Ticket-driven workflows`) for the branch
 
 ---
 
+<!-- BEGIN OPTIONAL: SHARED_REPOS -->
+## Shared repos
+
+<!-- Repos this workspace references but does NOT subfolder here — their working
+     folders live standalone (one canonical state, shared across workspaces). Seeded
+     by `bootstrap.sh --workspace <this> --reference <shared-wf>` (repeatable).
+     Each entry: name — absolute path to the shared repo's working folder — why
+     this workspace uses it. Edit by hand as references are added/removed.
+     If this workspace doesn't reference any shared repos, remove this whole section.
+
+     See `SETUP.md` → *Shared repos across workspaces* for the pattern. -->
+
+- {{SHARED_REPO_NAME}} — `{{absolute/path/to/shared-repo-working-folder}}` — {{why this workspace uses it}}
+
+---
+<!-- END OPTIONAL: SHARED_REPOS -->
+
 ## Tickets
 
 Active per-ticket scratchpads live under `tickets/<KEY>-<slug>.md`. Closed ticket files move to `tickets/archive/`.
