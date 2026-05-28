@@ -6,6 +6,18 @@ See [Upgrading an existing project](SETUP.md#upgrading-an-existing-project) for 
 
 ---
 
+## [1.3.0](https://github.com/IamMrCupp/claude-project-kit/compare/v1.2.0...v1.3.0) (2026-05-28)
+
+
+### Features
+
+* **bootstrap:** --shared and --reference flags for shared repos (PR A of [#199](https://github.com/IamMrCupp/claude-project-kit/issues/199)) ([d69e437](https://github.com/IamMrCupp/claude-project-kit/commit/d69e4371f33405763e922342bbaa2af2cf3828ba))
+* **bootstrap:** --shared and --reference flags for shared repos across workspaces ([#199](https://github.com/IamMrCupp/claude-project-kit/issues/199) PR A) ([229907b](https://github.com/IamMrCupp/claude-project-kit/commit/229907ba4ef8eee56ab25b319af477f4a8ca834f))
+* **scripts:** convert-to-shared.sh migration helper ([#199](https://github.com/IamMrCupp/claude-project-kit/issues/199) PR B) ([efcc53e](https://github.com/IamMrCupp/claude-project-kit/commit/efcc53ecb8a3782f160bd0f6e874a610915cca96))
+* **scripts:** convert-to-shared.sh migration helper (PR B of [#199](https://github.com/IamMrCupp/claude-project-kit/issues/199)) ([53d623c](https://github.com/IamMrCupp/claude-project-kit/commit/53d623c4376a6c8067228c0570eecf6917bd217c))
+* **session-start:** shared-repo surfacing + ADR-0003 (PR C of [#199](https://github.com/IamMrCupp/claude-project-kit/issues/199)) ([958b635](https://github.com/IamMrCupp/claude-project-kit/commit/958b63577e4f24f605a9b5bd4193b9371f410291))
+* **session-start:** surface Referenced by for shared repos + ADR-0003 (closes [#199](https://github.com/IamMrCupp/claude-project-kit/issues/199)) ([5115793](https://github.com/IamMrCupp/claude-project-kit/commit/5115793efbb87621ed82c1ff97ff830d240e27fc))
+
 ## [1.2.0](https://github.com/IamMrCupp/claude-project-kit/compare/v1.1.0...v1.2.0) (2026-05-28)
 
 
