@@ -21,6 +21,8 @@ Project-agnostic habits that have proven out across real work. Start from these,
 - **Push branches to origin by default** after committing (`git push -u origin <branch>`). Still confirm before force-push or push-to-main.
 - **Git from the Claude sandbox is fine** for read-only ops (`git status`, `git log`, `git diff`, `gh`). Confirm before destructive ops: `push --force`, `reset --hard`, `branch -D`, `clean -f`.
 
+**Hook-side enforcement (recommended).** Memory and prose are guidance — Claude *usually* honors the rules above, but the kit ships an optional `PreToolUse` Bash hook (`scripts/block-forbidden-commit-patterns.sh`) that **blocks** commands carrying forbidden commit-format patterns at the harness level (Co-Authored-By trailers, "Generated with Claude Code" / 🤖 markers, `--no-verify` / `--no-gpg-sign` / `commit.gpgsign=false` bypasses). Memory is a suggestion; the hook is the structural guarantee. Wire it once per machine — see [SETUP.md → Optional: commit-format enforcement hook](SETUP.md#optional-commit-format-enforcement-hook).
+
 ## PRs
 
 - **Provide PR title + body proactively** when a branch is ready — don't wait to be asked.

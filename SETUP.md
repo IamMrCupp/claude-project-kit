@@ -222,6 +222,60 @@ If acceptance tests are still pending, `/close-phase` will offer to run **`/run-
 
 ---
 
+## Optional: commit-format enforcement hook
+
+The kit's commit-format rules (no `Co-Authored-By: Claude` trailers, no `--no-verify` / `--no-gpg-sign` / `commit.gpgsign=false` bypasses, no "Generated with Claude Code" / 🤖 markers) live in `CONVENTIONS.md` and the auto-memory `feedback_commit_format` entry. Memory and prose are guidance — Claude *usually* honors them, but slip-ups happen, especially across long sessions or fresh ones that haven't fully internalized the rules.
+
+**The structural fix is a Claude Code [hook](https://docs.claude.com/en/docs/claude-code/hooks).** Hooks run on the harness side, so they reject forbidden commands *before* they reach your repo. The kit ships a ready-to-wire one as `scripts/block-forbidden-commit-patterns.sh` (installed to `~/.claude/scripts/` by `install-scripts.sh --global`).
+
+**Wire it once, on this machine:**
+
+1. Install the script (idempotent; skipped if already present):
+
+   ```bash
+   <kit-dir>/scripts/install-scripts.sh --global
+   ```
+
+2. Add a `PreToolUse` hook entry to `~/.claude/settings.json` pointing at the installed script. **Back up first**, then merge — don't replace any existing `permissions`/`hooks` blocks:
+
+   ```bash
+   cp ~/.claude/settings.json ~/.claude/settings.json.bak.$(date +%Y%m%d-%H%M%S)
+   ```
+
+   Snippet to merge into the file (combine with existing top-level keys):
+
+   ```json
+   {
+     "hooks": {
+       "PreToolUse": [
+         {
+           "matcher": "Bash",
+           "hooks": [
+             {
+               "type": "command",
+               "command": "/Users/<you>/.claude/scripts/block-forbidden-commit-patterns.sh"
+             }
+           ]
+         }
+       ]
+     }
+   }
+   ```
+
+   The `command` path must be absolute — Claude Code's hook matcher does not expand `~/` or `$HOME`. Substitute your actual home path.
+
+3. Reload settings. New sessions pick up the hook automatically; in an existing session, open `/hooks` once to refresh, or restart.
+
+**What it does.** Any `Bash` call whose command string contains a forbidden pattern is **denied** by the harness with a clear message naming which pattern matched and pointing at the canonical commit form. The model sees the denial and corrects (it doesn't retry blindly).
+
+**False-positive avoidance.** The hook explicitly *allows* `gh issue create / edit / comment`, `gh pr create / edit / comment`, and `gh release create / edit` — those write commands legitimately *describe* the forbidden patterns in their `--body` / `--notes` args (issue and PR bodies often document the rules they enforce). Everything else still goes through pattern detection.
+
+**Review / disable.** `/hooks` in Claude Code shows every wired hook and lets you toggle it for a session. To revert entirely: `mv ~/.claude/settings.json.bak.<timestamp> ~/.claude/settings.json`.
+
+This hook is the structural enforcement layer behind `feedback_commit_format` and the equivalent CONVENTIONS rules — it's the answer to ["A + B from #204 aren't always enough"](https://github.com/IamMrCupp/claude-project-kit/issues/236).
+
+---
+
 ## Manual alternative
 
 If you can't run `bootstrap.sh` (no Bash available, restricted environment, or you just want to see what it does) **or** you'd rather fill the templates by hand instead of running the seed prompt, perform the same work manually.

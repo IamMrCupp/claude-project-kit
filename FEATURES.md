@@ -300,6 +300,12 @@ Read, don't copy.
 
 The kit's own development follows these conventions, so the repo is a worked example of the conventions in action.
 
+### Commit-format enforcement hook (optional, recommended)
+
+For the commit-format subset of `CONVENTIONS.md` (no `Co-Authored-By: Claude` trailers, no `--no-verify` / `--no-gpg-sign` / `commit.gpgsign=false` bypasses, no "Generated with Claude Code" / 🤖 markers), memory and prose are guidance — they're not always enough across long or fresh sessions. The kit ships `scripts/block-forbidden-commit-patterns.sh` as a Claude Code `PreToolUse` hook that **blocks** forbidden Bash commands at the harness level, before they reach your repo. The model sees the denial reason (which pattern matched + the canonical commit form) and corrects.
+
+Opt-in, per machine: `scripts/install-scripts.sh --global` installs the script, then wire a one-time hook entry into `~/.claude/settings.json` (copy-pasteable snippet in [SETUP.md → Optional: commit-format enforcement hook](SETUP.md#optional-commit-format-enforcement-hook)). The hook explicitly allows `gh issue|pr|release` write-subcommands so describing the rules in issue/PR bodies isn't a false positive. Closes #236 (the deferred Option C from #204).
+
 ---
 
 ## Manual mode
