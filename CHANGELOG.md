@@ -6,6 +6,14 @@ See [Upgrading an existing project](SETUP.md#upgrading-an-existing-project) for 
 
 ---
 
+## [1.2.0](https://github.com/IamMrCupp/claude-project-kit/compare/v1.1.0...v1.2.0) (2026-05-28)
+
+
+### Features
+
+* **hooks:** commit-format enforcement hook ([#204](https://github.com/IamMrCupp/claude-project-kit/issues/204) Option C) ([cfe3111](https://github.com/IamMrCupp/claude-project-kit/commit/cfe31113eb565bd1aa5926e01f2f69332ea5cebe))
+* **hooks:** ship commit-format enforcement hook (closes [#236](https://github.com/IamMrCupp/claude-project-kit/issues/236)) ([c91ec41](https://github.com/IamMrCupp/claude-project-kit/commit/c91ec418f37fc428a7229a034f69d7d837e65a98))
+
 ## [1.1.0](https://github.com/IamMrCupp/claude-project-kit/compare/v1.0.0...v1.1.0) (2026-05-27)
 
 
