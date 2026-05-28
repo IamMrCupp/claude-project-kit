@@ -42,6 +42,12 @@ A 3–5 bullet summary of:
 - Any unticked items in the current phase checklist worth flagging
 - The likely starting point for this session, if obvious
 
+**Shared-repo surfacing.** If `CONTEXT.md` has a `## Referenced by` section (the repo is shared across multiple workspaces — see SETUP.md → *Shared repos across workspaces*, ADR-0003), add one extra line to the hand-back naming the workspaces from that section so the session has cross-program context:
+
+> **Shared repo — referenced by:** platform-infra, data-platform, ml-platform. Tell me which initiative you're working on if it shapes this session's context.
+
+If `CONTEXT.md` has no such section, skip silently — non-shared repos shouldn't see this line.
+
 Then wait for my next instruction. Don't propose changes or start coding yet.
 
 ## When to use a different command
