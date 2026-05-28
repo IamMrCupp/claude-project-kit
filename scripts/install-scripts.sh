@@ -2,11 +2,19 @@
 # Install the kit's runtime helper scripts at user-level (~/.claude/scripts/)
 # or per-project (<repo>/.claude/scripts/).
 #
-# Currently ships one script:
+# Currently ships two scripts:
 #   - kit-print-memory-pointer.sh — the precheck helper invoked by every
 #     kit-coupled slash command and the session-summarizer agent. Extracted
 #     from the inline precheck Bash so the call is matchable by Claude
 #     Code's permission system (closes #218; see also #16800).
+#   - block-forbidden-commit-patterns.sh — PreToolUse Bash hook that
+#     enforces the kit's commit-format rules (no Co-Authored-By, no
+#     --no-verify / --no-gpg-sign / commit.gpgsign=false bypasses, no
+#     "Generated with Claude Code" / 🤖 markers). Installing the script
+#     is half the work; the other half is wiring it into ~/.claude/
+#     settings.json as a hook entry — see SETUP.md → "Optional commit-
+#     format enforcement hook" for the copy-pasteable snippet
+#     (closes #236; #204 Option C).
 #
 # Default behavior is write-once: never overwrites an existing file in the
 # target. Pass --force-update to overwrite kit-shipped files (with backup +
@@ -29,6 +37,7 @@ KIT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 # when the kit grows more user-facing runtime helpers.
 SHIPPED_SCRIPTS=(
   kit-print-memory-pointer.sh
+  block-forbidden-commit-patterns.sh
 )
 
 usage() {
