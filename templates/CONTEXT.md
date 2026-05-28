@@ -25,6 +25,21 @@ At the start of any new Claude session, say:
 
 ---
 
+<!-- BEGIN OPTIONAL: REFERENCED_BY -->
+## Referenced by
+
+<!-- Present when this repo is a **shared repo** used by multiple workspaces (seeded
+     by `bootstrap.sh --shared`). Each workspace's bootstrap (`--workspace … --reference
+     <this-wf>`) appends a row below. Edit by hand as workspaces are added/removed.
+     If this repo isn't shared across workspaces, remove this whole section. -->
+
+- {{WORKSPACE_NAME}} — `{{path/to/workspace-CONTEXT.md}}` — {{one-line context: why this workspace uses this repo}}
+
+See `SETUP.md` → *Shared repos across workspaces* for the pattern.
+
+---
+<!-- END OPTIONAL: REFERENCED_BY -->
+
 ## Tracker Configuration
 
 The external tracker for this project, used when work is ticket-driven. See `CONVENTIONS.md` (kit-level — `## Ticket-driven workflows`) for the branch / PR / commit conventions to use against a tracker.

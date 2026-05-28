@@ -51,6 +51,25 @@ Options:
                      Subsequent runs against an existing workspace add new
                      repo subfolders without recreating workspace files.
                      See ADR-0001 in the kit for the workspace folder model.
+  --shared           Mark the working folder as a SHARED repo (a repo
+                     referenced by multiple workspaces — e.g. a flux/k8s
+                     config repo, shared Helm charts, shared Terraform
+                     modules). Seeds the CONTEXT.md template's optional
+                     "Referenced by" section so workspaces can be listed.
+                     Mutually exclusive with --workspace (a shared repo's
+                     working folder is itself standalone; workspaces opt
+                     into it via --reference, not by subfoldering it).
+                     See #199 / SETUP.md → "Shared repos across workspaces".
+  --reference PATH   Used with --workspace. Adds <PATH> (absolute path to a
+                     shared repo's working folder) to the workspace's
+                     workspace-CONTEXT.md "Shared repos" section so this
+                     workspace declares it depends on the shared repo
+                     without creating a per-repo subfolder for it. Read-only
+                     on the shared side — never modifies the shared repo's
+                     working folder or auto-memory. Repeatable: pass --reference
+                     multiple times to reference several shared repos at once.
+                     Works on first workspace creation AND on re-runs against
+                     an existing workspace (appends entries).
   --skip-memory      Skip copying memory-templates/ into the auto-memory
                      folder. Only the working folder will be seeded.
   --skip-scripts     Skip installing the kit's runtime helper scripts into
@@ -288,6 +307,73 @@ substitute_tracker_placeholders_in_dir() {
     fi
   done
   printf '%s' "$count"
+}
+
+# Optional-section management for shared-repos templates (#199).
+#
+# Templates carry `<!-- BEGIN OPTIONAL: <NAME> -->` ... `<!-- END OPTIONAL: <NAME> -->`
+# blocks around features that only apply in certain modes (shared-repo, workspace
+# with --reference). Default bootstrap strips the whole block; --shared / --reference
+# bootstrap keeps the content and strips just the markers.
+
+strip_optional_section() {
+  # Args: <file> <marker_name>
+  # Deletes everything from the BEGIN marker to the END marker inclusive.
+  local file="$1" name="$2"
+  sed "/<!-- BEGIN OPTIONAL: ${name} -->/,/<!-- END OPTIONAL: ${name} -->/d" \
+    "$file" > "$file.new" && mv "$file.new" "$file"
+}
+
+keep_optional_section() {
+  # Args: <file> <marker_name>
+  # Deletes just the BEGIN / END marker lines, keeping the content between them.
+  local file="$1" name="$2"
+  sed "/<!-- BEGIN OPTIONAL: ${name} -->/d; /<!-- END OPTIONAL: ${name} -->/d" \
+    "$file" > "$file.new" && mv "$file.new" "$file"
+}
+
+append_shared_repo_entries() {
+  # Args: <workspace-CONTEXT.md path> <shared-wf-path> [<shared-wf-path> ...]
+  # Inserts one bullet per shared-wf-path right after the placeholder bullet line
+  # (preferred), the "## Shared repos" header (fallback for hand-edited files), or
+  # appends a fresh section at EOF (for pre-#199 workspaces that have no section
+  # at all). No-op if no paths given.
+  local file="$1"; shift
+  [ $# -gt 0 ] || return 0
+  local paths=("$@")
+
+  local anchor=""
+  if grep -Fq -- '- {{SHARED_REPO_NAME}}' "$file"; then
+    anchor='- {{SHARED_REPO_NAME}}'
+  elif grep -Fq '## Shared repos' "$file"; then
+    anchor='## Shared repos'
+  else
+    # No section at all — append a fresh one at EOF (pre-#199 workspace path).
+    {
+      printf '\n---\n\n## Shared repos\n\n'
+      printf '%s\n\n' '<!-- Added by `bootstrap.sh --reference` (workspace pre-dates #199 template; section seeded at EOF). -->'
+      local path name
+      for path in "${paths[@]}"; do
+        name="$(basename "$path")"
+        printf -- '- %s — `%s` — TODO: describe why this workspace uses it\n' "$name" "$path"
+      done
+    } >> "$file"
+    return 0
+  fi
+
+  # Iterate in REVERSE so the final layout matches argument order. (awk's -v
+  # variables can't carry embedded newlines portably on macOS, so insert one
+  # entry per pass instead of batching.)
+  local i path name entry
+  for ((i = ${#paths[@]} - 1 ; i >= 0 ; i--)); do
+    path="${paths[$i]}"
+    name="$(basename "$path")"
+    entry="- ${name} — \`${path}\` — TODO: describe why this workspace uses it"
+    awk -v anchor="$anchor" -v entry="$entry" '
+      { print }
+      index($0, anchor) == 1 && !done { print entry; done = 1 }
+    ' "$file" > "$file.new" && mv "$file.new" "$file"
+  done
 }
 
 kit_version() {
@@ -740,6 +826,8 @@ DRY_RUN=0
 WORKSPACE_MODE=0
 TRUST_KIT_PATHS=0
 WITH_LABELS=0
+SHARED_MODE=0
+REFERENCE_PATHS=()
 WORKING_FOLDER=""
 PROJECT_NAME=""
 TRACKER=""
@@ -801,6 +889,16 @@ while [ $# -gt 0 ]; do
     --force) FORCE=1; shift ;;
     --dry-run) DRY_RUN=1; shift ;;
     --workspace) WORKSPACE_MODE=1; shift ;;
+    --shared) SHARED_MODE=1; shift ;;
+    --reference)
+      if [ $# -lt 2 ]; then
+        echo "error: --reference requires a path" >&2
+        usage >&2
+        exit 2
+      fi
+      REFERENCE_PATHS+=("$2")
+      shift 2
+      ;;
     --trust-kit-paths) TRUST_KIT_PATHS=1; shift ;;
     --trust-working-folder-root)
       echo "warning: --trust-working-folder-root is deprecated; use --trust-kit-paths (same combined behavior, plus adds the precheck script to permissions.allow)." >&2
@@ -866,6 +964,24 @@ while [ $# -gt 0 ]; do
       ;;
   esac
 done
+
+# --shared and --workspace are mutually exclusive: a shared repo's working
+# folder is standalone (not itself a workspace); workspaces reference it via
+# --reference. --reference requires --workspace because references are how
+# *workspaces* opt into a shared repo.
+if [ "$SHARED_MODE" -eq 1 ] && [ "$WORKSPACE_MODE" -eq 1 ]; then
+  echo "error: --shared and --workspace are mutually exclusive" >&2
+  echo "       A shared repo's working folder is standalone; workspaces reference it" >&2
+  echo "       via --workspace <ws> --reference <shared-wf>." >&2
+  exit 2
+fi
+if [ "${#REFERENCE_PATHS[@]}" -gt 0 ] && [ "$WORKSPACE_MODE" -eq 0 ]; then
+  echo "error: --reference requires --workspace" >&2
+  echo "       References are how a workspace opts into a shared repo's standalone" >&2
+  echo "       working folder. Without --workspace there's no workspace-CONTEXT.md" >&2
+  echo "       to add the reference to." >&2
+  exit 2
+fi
 
 if [ -n "$JIRA_PROJECT_KEY" ] && [ -z "$TRACKER" ]; then
   TRACKER="jira"
@@ -1092,17 +1208,36 @@ if [ "$DRY_RUN" -eq 1 ]; then
     echo "Workspace dir: $WORKSPACE_DIR"
     if [ -f "$WORKSPACE_DIR/workspace-CONTEXT.md" ]; then
       echo "  ✓ existing workspace (workspace-CONTEXT.md present) — no workspace-level changes"
+      if [ "${#REFERENCE_PATHS[@]}" -gt 0 ]; then
+        echo "  + append ${#REFERENCE_PATHS[@]} shared-repo reference(s) to workspace-CONTEXT.md:"
+        for ref in "${REFERENCE_PATHS[@]}"; do
+          echo "      - $(basename "$ref") — $ref"
+        done
+      fi
     else
       echo "  + create workspace dir + tickets/archive/"
       echo "  + copy $KIT_ROOT/templates/workspace/workspace-CONTEXT.md → workspace-CONTEXT.md"
       echo "  + copy $KIT_ROOT/templates/workspace/workspace-plan.md → workspace-plan.md"
       echo "  + copy $KIT_ROOT/templates/workspace/workspace-phase-N-checklist.md → workspace-phase-N-checklist.md"
+      if [ "${#REFERENCE_PATHS[@]}" -gt 0 ]; then
+        echo "  + keep workspace-CONTEXT.md 'Shared repos' section + populate ${#REFERENCE_PATHS[@]} entry/entries:"
+        for ref in "${REFERENCE_PATHS[@]}"; do
+          echo "      - $(basename "$ref") — $ref"
+        done
+      else
+        echo "  + strip optional 'Shared repos' section from workspace-CONTEXT.md (no --reference)"
+      fi
     fi
     echo
   fi
   echo "Would create working folder: $WORKING_FOLDER"
   echo "  + copy $KIT_ROOT/templates/*.md"
   echo "  + rename phase-N-checklist.md → phase-0-checklist.md"
+  if [ "$SHARED_MODE" -eq 1 ]; then
+    echo "  + keep CONTEXT.md 'Referenced by' section (--shared)"
+  else
+    echo "  + strip optional 'Referenced by' section from CONTEXT.md"
+  fi
   if [ -d "$KIT_ROOT/templates/.claude" ]; then
     echo "  + copy templates/.claude/ → $WORKING_FOLDER/.claude/ (starter agents + commands)"
   fi
@@ -1235,15 +1370,35 @@ if [ "$WORKSPACE_MODE" -eq 1 ]; then
     cp "$KIT_ROOT/templates/workspace/workspace-CONTEXT.md" "$WORKSPACE_DIR/"
     cp "$KIT_ROOT/templates/workspace/workspace-plan.md" "$WORKSPACE_DIR/"
     cp "$KIT_ROOT/templates/workspace/workspace-phase-N-checklist.md" "$WORKSPACE_DIR/"
+    # --reference (#199): keep the Shared repos section + populate; otherwise strip it.
+    if [ "${#REFERENCE_PATHS[@]}" -gt 0 ]; then
+      keep_optional_section "$WORKSPACE_DIR/workspace-CONTEXT.md" "SHARED_REPOS"
+      append_shared_repo_entries "$WORKSPACE_DIR/workspace-CONTEXT.md" "${REFERENCE_PATHS[@]}"
+    else
+      strip_optional_section "$WORKSPACE_DIR/workspace-CONTEXT.md" "SHARED_REPOS"
+    fi
     echo "  ✓ Created workspace at $WORKSPACE_DIR (workspace-CONTEXT.md, workspace-plan.md, workspace-phase-N-checklist.md, tickets/archive/)"
     WORKSPACE_FIRST_REPO=1
   else
     echo "  ✓ Existing workspace at $WORKSPACE_DIR — adding repo subfolder $WORKSPACE_REPO_NAME"
+    # --reference on a re-run against an existing workspace: append to whatever's there
+    # (post-#199 section, pre-#199 file with no section, or hand-edited).
+    if [ "${#REFERENCE_PATHS[@]}" -gt 0 ]; then
+      append_shared_repo_entries "$WORKSPACE_DIR/workspace-CONTEXT.md" "${REFERENCE_PATHS[@]}"
+      echo "  ✓ Added ${#REFERENCE_PATHS[@]} shared-repo reference(s) to workspace-CONTEXT.md"
+    fi
   fi
 fi
 
 cp "$KIT_ROOT/templates/"*.md "$WORKING_FOLDER/"
 mv "$WORKING_FOLDER/phase-N-checklist.md" "$WORKING_FOLDER/phase-0-checklist.md"
+# --shared (#199): keep the Referenced by section in the seeded CONTEXT.md;
+# otherwise strip it so non-shared repos don't see the optional content.
+if [ "$SHARED_MODE" -eq 1 ]; then
+  keep_optional_section "$WORKING_FOLDER/CONTEXT.md" "REFERENCED_BY"
+else
+  strip_optional_section "$WORKING_FOLDER/CONTEXT.md" "REFERENCED_BY"
+fi
 echo "  ✓ Copied template files to $WORKING_FOLDER"
 echo "  ✓ Renamed phase-N-checklist.md → phase-0-checklist.md"
 
