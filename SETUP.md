@@ -576,12 +576,37 @@ If you can't run `bootstrap.sh` (no Bash available, restricted environment) or y
 1. Bootstrap the shared repo as a regular single-repo working folder (no `--workspace`, no `--shared`).
 2. Add the `## Referenced by` and `## Shared repos` sections by hand using the template shape under the `<!-- BEGIN OPTIONAL: REFERENCED_BY -->` / `<!-- BEGIN OPTIONAL: SHARED_REPOS -->` markers in `templates/CONTEXT.md` and `templates/workspace/workspace-CONTEXT.md` respectively as the reference. Drop the marker comments — they're just there so `bootstrap.sh` knows what to strip when the flags aren't passed.
 
-For converting an existing per-repo subfolder under a workspace into a standalone shared working folder (the migration path), the upcoming `scripts/convert-to-shared.sh` helper from [#199 PR B](https://github.com/IamMrCupp/claude-project-kit/issues/199) will automate it. Until then, the manual flow is: `mv` the WF to its standalone path; edit `~/.claude/projects/<sanitized-repo-path>/memory/reference_ai_working_folder.md` to point at the new path; add a `## Shared repos` entry to the original workspace's `workspace-CONTEXT.md` referring to the new standalone path.
+#### Migrating an existing per-repo subfolder into a standalone shared working folder
+
+If a repo currently lives as a per-repo subfolder under a workspace and you want to promote it to a standalone shared repo (so other workspaces can reference it), use `scripts/convert-to-shared.sh`:
+
+```bash
+# Default target path (~/Documents/Claude/Projects/<repo-basename>/)
+~/Code/claude-project-kit/scripts/convert-to-shared.sh ~/Code/shared-flux-config
+
+# Custom target + multiple workspaces get the back-reference at once
+~/Code/claude-project-kit/scripts/convert-to-shared.sh ~/Code/shared-flux-config \
+  --to ~/Documents/Claude/Projects/shared-flux/ \
+  --reference-from ~/Documents/Claude/Projects/data-platform/ \
+  --reference-from ~/Documents/Claude/Projects/ml-platform/
+
+# Preview before applying
+~/Code/claude-project-kit/scripts/convert-to-shared.sh ~/Code/shared-flux-config --dry-run
+```
+
+The script:
+
+- `mv`s the per-repo working folder out of the workspace into the standalone path (the default falls back to `<basename>-<sanitized-org>` if there's a name collision).
+- Repoints `~/.claude/projects/<sanitized-repo-path>/memory/reference_ai_working_folder.md` to the new path. **This file is normally never modified by the kit** — the migration justifies the write with a `.bak.<timestamp>` backup, a `--dry-run` preview, and a confirmation prompt (pass `--yes` to skip).
+- Appends a "Shared repos" entry to the source workspace's `workspace-CONTEXT.md` pointing at the new standalone path. Repeatable `--reference-from <other-workspace>` adds the same entry to additional workspaces in one go.
+- Backs up every mutated file before writing, so a botched migration is fully recoverable.
+- Refuses to proceed if the repo isn't currently a per-repo subfolder under a workspace, or if the target standalone path already exists.
+
+After the script runs, the source workspace's `## Repos in this workspace` table still has the old per-repo row — review and remove it by hand if you want the table to reflect the new shared status (the new `## Shared repos` section is the source of truth going forward).
 
 ### What `--workspace` does NOT do (yet)
 
 - **Interactive workspace prompt** — `--workspace` requires the explicit flag. Interactive mode still defaults to single-repo. Use the flag-based form above for workspace bootstraps.
-- **Shared-repo flags** — `--shared` and `--reference` for repos consumed by multiple workspaces. Tracked in [#199](https://github.com/IamMrCupp/claude-project-kit/issues/199); the manual pattern is documented in [Shared repos across workspaces](#shared-repos-across-workspaces) above.
 
 (Tracker config substitution into `CONTEXT.md` / `workspace-CONTEXT.md` and the Terraform sibling-repo prompt landed in v0.17.0. The interactive workspace prompt is the only remaining `--workspace` polish item.)
 
