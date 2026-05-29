@@ -6,6 +6,14 @@ See [Upgrading an existing project](SETUP.md#upgrading-an-existing-project) for 
 
 ---
 
+## [1.5.1](https://github.com/IamMrCupp/claude-project-kit/compare/v1.5.0...v1.5.1) (2026-05-29)
+
+
+### Bug Fixes
+
+* **infer:** match and expand ~/-prefixed pointers in infer_working_folder ([#251](https://github.com/IamMrCupp/claude-project-kit/issues/251)) ([ab4c773](https://github.com/IamMrCupp/claude-project-kit/commit/ab4c773df3f60713ba20222abd7029e24408cefc))
+* **infer:** match and expand ~/-prefixed pointers in infer_working_folder ([#251](https://github.com/IamMrCupp/claude-project-kit/issues/251)) ([a0bba1d](https://github.com/IamMrCupp/claude-project-kit/commit/a0bba1ddf649768e2c1caca29c69a6fb23cbe498))
+
 ## [1.5.0](https://github.com/IamMrCupp/claude-project-kit/compare/v1.4.0...v1.5.0) (2026-05-29)
 
 
