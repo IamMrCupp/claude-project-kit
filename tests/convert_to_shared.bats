@@ -217,6 +217,65 @@ EOF
   [ "$count" -eq 1 ]
 }
 
+# --- TODO placeholder seeding (issue #243) ---
+# Every append path must seed the 'TODO: describe why this workspace uses it'
+# placeholder so the script's "Next" output ("replace the 'TODO: …' placeholder
+# in the new entry") is honest. Regression: in v1.3.0 none of the three paths
+# wrote the TODO.
+
+@test "appended entry seeds TODO placeholder (placeholder-bullet path — default template)" {
+  stage_per_repo_in_workspace
+  # Default template carries `- {{SHARED_REPO_NAME}}` — the script anchors here.
+  grep -q '{{SHARED_REPO_NAME}}' "$WS/workspace-CONTEXT.md"
+
+  TGT="$TEST_TMP/target-wf"
+  run "$CONVERT" "$REPO" --to "$TGT" --yes
+  [ "$status" -eq 0 ]
+
+  # Appended bullet for our repo carries the TODO placeholder verbatim.
+  grep -q "^- $(basename "$REPO") .* TODO: describe why this workspace uses it" "$WS/workspace-CONTEXT.md"
+}
+
+@test "appended entry seeds TODO placeholder (existing-section path — section present, no placeholder bullet)" {
+  stage_per_repo_in_workspace
+  # Workspace whose Shared repos section is already populated — no placeholder.
+  cat > "$WS/workspace-CONTEXT.md" <<EOF
+# Workspace Context
+
+## Shared repos
+
+- another-repo — \`/tmp/another\` — already populated
+EOF
+  ! grep -q '{{SHARED_REPO_NAME}}' "$WS/workspace-CONTEXT.md"
+
+  TGT="$TEST_TMP/target-wf"
+  run "$CONVERT" "$REPO" --to "$TGT" --yes
+  [ "$status" -eq 0 ]
+
+  grep -q "^- $(basename "$REPO") .* TODO: describe why this workspace uses it" "$WS/workspace-CONTEXT.md"
+}
+
+@test "appended entry seeds TODO placeholder (retrofit path — pre-#199 workspace, no section)" {
+  stage_per_repo_in_workspace
+  # Pre-#199 workspace has no Shared repos section at all — the script seeds
+  # one at EOF. This is the path #243 was filed against.
+  cat > "$WS/workspace-CONTEXT.md" <<'EOF'
+# Workspace Context
+
+Pre-#199 workspace without any Shared repos section.
+EOF
+  ! grep -q '## Shared repos' "$WS/workspace-CONTEXT.md"
+
+  TGT="$TEST_TMP/target-wf"
+  run "$CONVERT" "$REPO" --to "$TGT" --yes
+  [ "$status" -eq 0 ]
+
+  # Section was seeded at EOF.
+  grep -q '## Shared repos' "$WS/workspace-CONTEXT.md"
+  # And the appended bullet carries the TODO placeholder.
+  grep -q "^- $(basename "$REPO") .* TODO: describe why this workspace uses it" "$WS/workspace-CONTEXT.md"
+}
+
 # --- Target collision ---
 
 @test "errors when --to target already exists" {

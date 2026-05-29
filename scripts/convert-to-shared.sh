@@ -245,7 +245,10 @@ append_shared_repo_entry() {
   # the entry name. Tries placeholder bullet → section header → append-at-EOF.
   local file="$1"
   local entry
-  entry="- ${REPO_BASENAME} — \`${TGT_WF}\` — moved from per-repo subfolder $(date +%Y-%m-%d) via convert-to-shared.sh"
+  # Seed a TODO: placeholder so the script's "Next" output ("replace the 'TODO:
+  # describe why this workspace uses it' placeholder") actually finds something
+  # to replace. Migration provenance follows in italics. See #243.
+  entry="- ${REPO_BASENAME} — \`${TGT_WF}\` — TODO: describe why this workspace uses it. *Migrated from per-repo subfolder $(date +%Y-%m-%d) via \`convert-to-shared.sh\`.*"
 
   local anchor=""
   if grep -Fq -- '- {{SHARED_REPO_NAME}}' "$file"; then
