@@ -17,3 +17,5 @@ git checkout -b <type>/<slug>   # feat/…, fix/…, docs/…, ci/…, chore/…
 - Read-only work (reading files, `git log`, `git diff`, `gh` queries) is fine on `main` — the rule is about *edits* to tracked files.
 - Working-folder files (the private `CONTEXT.md` / `SESSION-LOG.md` outside the repo) aren't tracked repo files — editing those doesn't require a branch.
 - If the user explicitly authorizes a direct commit to `main` for a specific one-off, that's their call — but surface the branch option first and let them override.
+
+**Structural enforcement (recommended).** The kit ships a `PreToolUse` Edit/Write hook (`scripts/block-edit-on-protected-branch.sh`) that the harness uses to deny edits to in-repo files when the current branch is `main` / `master`. Wire it once per machine — see `SETUP.md` → *Optional: branch-first enforcement hook*. With the hook installed, this memory entry becomes a "why the harness just blocked me" reference rather than a guidance reminder. Sibling of the commit-format hook (`feedback_commit_format`).

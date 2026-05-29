@@ -276,6 +276,68 @@ This hook is the structural enforcement layer behind `feedback_commit_format` an
 
 ---
 
+## Optional: branch-first enforcement hook
+
+The kit's "branch first, never start work on main" rule (`feedback_no_work_on_main`, CONVENTIONS.md, and the `/plan` + `/pull-ticket` guards from #204 / #222) is guidance — the model usually honors it, but fresh sessions still open on `main` and start editing tracked files before noticing. Memory and slash-command guards don't bind the harness.
+
+**The structural fix is the sibling of the commit-format hook above.** `scripts/block-edit-on-protected-branch.sh` runs as a `PreToolUse` hook for `Edit` / `Write` / `MultiEdit` / `NotebookEdit` and denies any edit to a file inside a git work-tree when the current branch matches the protected list (default: `main`, `master`). Files outside any git repo — your private working folder at `~/Documents/Claude/Projects/<repo>/...` — are always allowed.
+
+**Wire it once, on this machine:**
+
+1. Install the script (idempotent; skipped if already present):
+
+   ```bash
+   <kit-dir>/scripts/install-scripts.sh --global
+   ```
+
+2. Add a `PreToolUse` hook entry to `~/.claude/settings.json` (back up first, then merge — don't replace existing `permissions`/`hooks` blocks):
+
+   ```bash
+   cp ~/.claude/settings.json ~/.claude/settings.json.bak.$(date +%Y%m%d-%H%M%S)
+   ```
+
+   Snippet to merge into the file (combine with existing top-level keys, and combine with the commit-format hook's `PreToolUse` array if you already wired that one):
+
+   ```json
+   {
+     "hooks": {
+       "PreToolUse": [
+         {
+           "matcher": "Edit|Write|MultiEdit|NotebookEdit",
+           "hooks": [
+             {
+               "type": "command",
+               "command": "/Users/<you>/.claude/scripts/block-edit-on-protected-branch.sh"
+             }
+           ]
+         }
+       ]
+     }
+   }
+   ```
+
+   The `command` path must be absolute. Substitute your actual home path.
+
+3. Reload settings. New sessions pick up the hook automatically; in an existing session, open `/hooks` once to refresh, or restart.
+
+**What it does.** Any `Edit` / `Write` / `MultiEdit` / `NotebookEdit` whose target `file_path` resolves into a git work-tree currently checked out on `main` (or `master`) is **denied** by the harness with a message naming the branch, the repo, and the override mechanism. The model sees the denial and creates a branch — it doesn't retry blindly.
+
+**Override (rare).** Set the `KIT_PROTECTED_BRANCHES` env var to a space-separated list to customize:
+
+```bash
+# Add 'production' to the default list
+export KIT_PROTECTED_BRANCHES="main master production"
+
+# Disable entirely for this shell (very rare — better to use the hook)
+export KIT_PROTECTED_BRANCHES=""
+```
+
+**Review / disable.** `/hooks` in Claude Code shows every wired hook and lets you toggle it for a session.
+
+This hook is the structural enforcement layer behind `feedback_no_work_on_main` and CONVENTIONS.md's *Branch name first, then code* rule — sibling to the commit-format hook above. See [#248](https://github.com/IamMrCupp/claude-project-kit/issues/248) for the filing rationale.
+
+---
+
 ## Manual alternative
 
 If you can't run `bootstrap.sh` (no Bash available, restricted environment, or you just want to see what it does) **or** you'd rather fill the templates by hand instead of running the seed prompt, perform the same work manually.
