@@ -6,6 +6,14 @@ See [Upgrading an existing project](SETUP.md#upgrading-an-existing-project) for 
 
 ---
 
+## [1.5.0](https://github.com/IamMrCupp/claude-project-kit/compare/v1.4.0...v1.5.0) (2026-05-29)
+
+
+### Features
+
+* **hooks:** block edits to tracked files on protected branches ([#248](https://github.com/IamMrCupp/claude-project-kit/issues/248)) ([74a6812](https://github.com/IamMrCupp/claude-project-kit/commit/74a6812766f86ee443bcef84dbf361e4dc09613f))
+* **hooks:** block edits to tracked files on protected branches ([#248](https://github.com/IamMrCupp/claude-project-kit/issues/248)) ([98cea57](https://github.com/IamMrCupp/claude-project-kit/commit/98cea57adf8171020762f1041626b0ca4b42808f))
+
 ## [1.4.0](https://github.com/IamMrCupp/claude-project-kit/compare/v1.3.0...v1.4.0) (2026-05-29)
 
 
