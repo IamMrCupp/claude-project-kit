@@ -2,7 +2,7 @@
 # Install the kit's runtime helper scripts at user-level (~/.claude/scripts/)
 # or per-project (<repo>/.claude/scripts/).
 #
-# Currently ships two scripts:
+# Currently ships three scripts:
 #   - kit-print-memory-pointer.sh — the precheck helper invoked by every
 #     kit-coupled slash command and the session-summarizer agent. Extracted
 #     from the inline precheck Bash so the call is matchable by Claude
@@ -15,6 +15,11 @@
 #     settings.json as a hook entry — see SETUP.md → "Optional commit-
 #     format enforcement hook" for the copy-pasteable snippet
 #     (closes #236; #204 Option C).
+#   - block-edit-on-protected-branch.sh — PreToolUse Edit/Write/MultiEdit/
+#     NotebookEdit hook that enforces the kit's "branch first, never start
+#     work on main" rule. Same wire-once pattern as the commit-format hook
+#     — install + add the snippet in SETUP.md → "Optional branch-first
+#     enforcement hook" (closes #248; sibling of #236).
 #
 # Default behavior is write-once: never overwrites an existing file in the
 # target. Pass --force-update to overwrite kit-shipped files (with backup +
@@ -38,6 +43,7 @@ KIT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 SHIPPED_SCRIPTS=(
   kit-print-memory-pointer.sh
   block-forbidden-commit-patterns.sh
+  block-edit-on-protected-branch.sh
 )
 
 usage() {
