@@ -6,6 +6,20 @@ See [Upgrading an existing project](SETUP.md#upgrading-an-existing-project) for 
 
 ---
 
+## [1.4.0](https://github.com/IamMrCupp/claude-project-kit/compare/v1.3.0...v1.4.0) (2026-05-29)
+
+
+### Features
+
+* **convert-to-shared:** warn about relative ../ links in moved working folder ([#245](https://github.com/IamMrCupp/claude-project-kit/issues/245)) ([1f4780f](https://github.com/IamMrCupp/claude-project-kit/commit/1f4780fe62ea716a7b6fb71b187512b6a983d2e8))
+* **convert-to-shared:** warn about relative ../ links in moved working folder ([#245](https://github.com/IamMrCupp/claude-project-kit/issues/245)) ([6e019ce](https://github.com/IamMrCupp/claude-project-kit/commit/6e019ce513267696b75c996afce89122c584fed5))
+
+
+### Bug Fixes
+
+* **convert-to-shared:** seed TODO placeholder in appended bullet ([#243](https://github.com/IamMrCupp/claude-project-kit/issues/243)) ([8485cb3](https://github.com/IamMrCupp/claude-project-kit/commit/8485cb3f703b2a092284e76cb539482ab46734ce))
+* **convert-to-shared:** seed TODO placeholder in appended bullet ([#243](https://github.com/IamMrCupp/claude-project-kit/issues/243)) ([1a551f8](https://github.com/IamMrCupp/claude-project-kit/commit/1a551f844f566549545e366a4ceaefd86795aa53))
+
 ## [1.3.0](https://github.com/IamMrCupp/claude-project-kit/compare/v1.2.0...v1.3.0) (2026-05-28)
 
 
