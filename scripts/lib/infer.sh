@@ -58,7 +58,9 @@ infer_memory_dir() {
 # $1 (default $PWD).
 #
 # Strategy: read reference_ai_working_folder.md from the repo's auto-memory
-# and extract the first backtick-quoted absolute path ending in /CONTEXT.md.
+# and extract the first backtick-quoted path ending in /CONTEXT.md. Both
+# absolute (`/Users/...`) and `~/`-prefixed (`~/Documents/...`) forms are
+# matched; tilde is expanded to $HOME at the inference layer (#251).
 # Strip the trailing /CONTEXT.md and return the parent directory.
 #
 # Returns empty string on any failure (no memory dir, no reference file,
@@ -70,17 +72,26 @@ infer_working_folder() {
   local ref_file="$memory_dir/reference_ai_working_folder.md"
   [ -f "$ref_file" ] || return 0
 
-  # Match: backtick + / + non-backtick chars + /CONTEXT.md + backtick.
-  # Example line in memory file:
-  #   - `/Users/x/Documents/Claude/Projects/foo/CONTEXT.md` — overview...
+  # Match: backtick + [/~] + non-backtick chars + /CONTEXT.md + backtick.
+  # Both absolute (`/Users/.../CONTEXT.md`) and tilde-prefixed
+  # (`~/Documents/.../CONTEXT.md`) pointer forms are valid — Cowork-migrated
+  # and hand-written memory files routinely use the tilde form. See #251.
   local match
-  match="$(grep -oE '`/[^`]+/CONTEXT\.md`' "$ref_file" 2>/dev/null | head -1)"
+  match="$(grep -oE '`[/~][^`]+/CONTEXT\.md`' "$ref_file" 2>/dev/null | head -1)"
   [ -n "$match" ] || return 0
 
   # Strip surrounding backticks and trailing /CONTEXT.md
   match="${match#\`}"
   match="${match%\`}"
   match="${match%/CONTEXT.md}"
+
+  # Expand leading tilde — kit tooling treats `~/...` and absolute pointers
+  # interchangeably (#251). The Read tool itself doesn't expand `~/`, so the
+  # expansion happens here at the inference layer.
+  case "$match" in
+    "~"|"~/"*) match="${match/#\~/$HOME}" ;;
+  esac
+
   echo "$match"
 }
 
