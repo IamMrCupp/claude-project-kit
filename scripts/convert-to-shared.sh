@@ -282,6 +282,36 @@ backup_then_run() {
   "$@"
 }
 
+warn_relative_links() {
+  # Args: <working-folder>
+  # Scan markdown files in <working-folder> for '../<path>' references that
+  # were valid while the folder lived as a per-repo subfolder but no longer
+  # resolve once it's moved out of the workspace. Warn-only — prints a
+  # punch-list to stderr and always returns 0. See #245.
+  local dir="$1"
+  local md_files=()
+  while IFS= read -r -d '' f; do
+    md_files+=("$f")
+  done < <(find "$dir" -type f -name '*.md' -print0 2>/dev/null)
+  if [ "${#md_files[@]}" -eq 0 ]; then
+    return 0
+  fi
+  local matches
+  # Match '../' only when followed by a path-like character and NOT preceded
+  # by '/' — skips absolute-URL traversal segments and bare prose mentions.
+  matches="$(grep -n -H -E '(^|[^/])\.\./[A-Za-z0-9_.-]' "${md_files[@]}" 2>/dev/null || true)"
+  if [ -z "$matches" ]; then
+    return 0
+  fi
+  local count
+  count="$(printf '%s\n' "$matches" | wc -l | tr -d ' ')"
+  echo "  ⚠ Found ${count} relative '../...' reference(s) inside the working folder:" >&2
+  printf '%s\n' "$matches" | sed 's|^|      |' >&2
+  echo "    These resolved while the working folder was a per-repo subfolder; they no" >&2
+  echo "    longer resolve from the standalone path. Rewrite to absolute paths," >&2
+  echo "    repoint at a different workspace, or remove. (See 'Next' step 4 below.)" >&2
+}
+
 # --- Print the plan ---
 
 echo "convert-to-shared.sh plan"
@@ -303,6 +333,12 @@ if [ "${#VALID_REFS[@]}" -gt 0 ]; then
   done
 fi
 echo
+
+# Surface stale '../' relative links inside the working folder so the user
+# sees them at migration time, not session-by-session afterwards. Runs in
+# both dry-run and real-run; the files are the same either way (same content,
+# just under $SRC_WF until the `mv` happens). See #245.
+warn_relative_links "$SRC_WF"
 
 if [ "$DRY_RUN" -eq 1 ]; then
   echo "=== DRY RUN — no files moved or modified ==="
@@ -354,3 +390,6 @@ echo "  3. Review the source workspace's 'Repos in this workspace' table — the
 echo "     migrated repo's row is still there; remove it if you want the table to"
 echo "     reflect the new shared status (the 'Shared repos' section now points"
 echo "     at the standalone working folder)."
+echo "  4. If the script warned about relative '../...' references above, walk that"
+echo "     punch-list and rewrite each to an absolute path or remove it — they no"
+echo "     longer resolve from the standalone working-folder path."
