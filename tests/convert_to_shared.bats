@@ -276,6 +276,71 @@ EOF
   grep -q "^- $(basename "$REPO") .* TODO: describe why this workspace uses it" "$WS/workspace-CONTEXT.md"
 }
 
+# --- Relative-link warning (issue #245) ---
+# Working-folder `../...` references valid as a per-repo subfolder rot the
+# moment the WF moves out from under the workspace. Warn-only check should
+# surface them at migration time so the user doesn't discover them
+# session-by-session afterwards.
+
+@test "warns about relative ../ references inside the moved working folder" {
+  stage_per_repo_in_workspace
+  # Plant a couple of relative references that would rot post-migration.
+  cat > "$WS_WF/CONTEXT.md" <<EOF
+# CONTEXT
+
+Workspace context lives at [\`../workspace-CONTEXT.md\`](../workspace-CONTEXT.md).
+See also [\`../tickets/FOO-1.md\`](../tickets/FOO-1.md) for the active ticket.
+EOF
+  TGT="$TEST_TMP/target-wf"
+
+  run "$CONVERT" "$REPO" --to "$TGT" --yes
+  [ "$status" -eq 0 ]
+
+  [[ "$output" == *"reference(s) inside the working folder"* ]]
+  [[ "$output" == *"../workspace-CONTEXT.md"* ]]
+  [[ "$output" == *"../tickets/FOO-1.md"* ]]
+  [[ "$output" == *"Rewrite to absolute paths"* ]]
+  # Migration still succeeded — warning is informational, not blocking.
+  [ -d "$TGT" ]
+}
+
+@test "no relative-link warning when working folder is clean" {
+  stage_per_repo_in_workspace
+  # Wipe staged .md files first — kit's CONTEXT.md template legitimately
+  # documents '../workspace-CONTEXT.md' usage and would correctly trigger
+  # the warning. We want to test the negative path (truly no '../' refs).
+  rm -f "$WS_WF"/*.md
+  cat > "$WS_WF/CONTEXT.md" <<'EOF'
+# CONTEXT
+
+No relative links here. Absolute reference: /Users/example/workspace-CONTEXT.md.
+EOF
+  TGT="$TEST_TMP/target-wf"
+
+  run "$CONVERT" "$REPO" --to "$TGT" --yes
+  [ "$status" -eq 0 ]
+  [[ "$output" != *"reference(s) inside the working folder"* ]]
+}
+
+@test "--dry-run surfaces the relative-link warning before the DRY RUN banner" {
+  stage_per_repo_in_workspace
+  cat > "$WS_WF/CONTEXT.md" <<EOF
+# CONTEXT
+
+Link: [\`../workspace-CONTEXT.md\`](../workspace-CONTEXT.md).
+EOF
+  TGT="$TEST_TMP/target-wf"
+
+  run "$CONVERT" "$REPO" --to "$TGT" --dry-run
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"reference(s) inside the working folder"* ]]
+  [[ "$output" == *"../workspace-CONTEXT.md"* ]]
+  [[ "$output" == *"DRY RUN"* ]]
+  # Source WF untouched (dry-run wrote nothing).
+  [ -d "$WS_WF" ]
+  [ ! -e "$TGT" ]
+}
+
 # --- Target collision ---
 
 @test "errors when --to target already exists" {
