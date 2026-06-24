@@ -103,7 +103,14 @@ Active per-ticket scratchpads live under `tickets/<KEY>-<slug>.md`. Closed ticke
 
 ## Cross-repo notes
 
-{{Anything that spans multiple repos and doesn't belong in any single per-repo `CONTEXT.md` — shared dependencies, deployment ordering across repos, cross-repo PR coordination, naming conventions that hold across the workspace, etc. Keep tight; if a section grows past a paragraph, consider whether it belongs in a per-repo `CONTEXT.md` or in `implementation.md` of the relevant repo.}}
+> **Don't restate mutable conventions here.** Commit style, branch naming, merge
+> strategy, and PR rules are the source-of-truth job of auto-memory `feedback_*.md`
+> (loaded every session via `MEMORY.md`) — point at them, don't copy them. A stale
+> convention line in this file can silently override the live memory an agent already
+> loaded (see [#258](https://github.com/IamMrCupp/claude-project-kit/issues/258) and
+> `CONVENTIONS.md` → *Auto-memory*). Cross-repo *coordination* facts below are fine.
+
+{{Anything that spans multiple repos and doesn't belong in any single per-repo `CONTEXT.md` — shared dependencies, deployment ordering across repos, cross-repo PR coordination, etc. Keep tight; if a section grows past a paragraph, consider whether it belongs in a per-repo `CONTEXT.md` or in `implementation.md` of the relevant repo.}}
 
 ---
 
