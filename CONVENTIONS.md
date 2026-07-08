@@ -135,7 +135,7 @@ When in doubt about who owns it, ask. Default to assuming externally-owned.
   - `implementation.md` gets amended when a task's approach materially changes mid-flight.
   - `plan.md` status line bumps when a phase transitions.
 - **End every session with a `SESSION-LOG.md` entry.** Append-only. Date, focus, branches/PRs, decisions, anything non-obvious for future-you.
-- **`CONTEXT.md` is the "read first" doc.** Keep it ≤300 lines. If it grows beyond that, the content belongs in one of the other docs and `CONTEXT.md` should link to it.
+- **`CONTEXT.md` is the "read first" doc.** Keep it ≤300 lines. If it grows beyond that, the content belongs in one of the other docs and `CONTEXT.md` should link to it. **Its "Working Rules" section points at auto-memory `feedback_*` for mutable conventions — it does not restate them** (see *Auto-memory* below for why).
 - **Archive resolved ticket scratchpads.** Once a ticket's work is done, move `tickets/<KEY>-<slug>.md` into `tickets/archive/` so a long-running workspace's `tickets/` folder stays scannable. Use `/archive-ticket <KEY>` (it also notes the archival in `SESSION-LOG.md`) or the terminal helper `archive-ticket.sh <KEY>`. The move never touches the external tracker — transition the ticket there yourself.
 
 ## Acceptance tests at phase boundaries
@@ -163,6 +163,8 @@ This layers on top of *automated tests preferred over manual* — that rule gove
 
 ## Auto-memory
 
+- **Auto-memory `feedback_*` files are the source of truth for mutable conventions.** Commit style, branch naming, merge strategy, and PR rules live in memory and load every session via `MEMORY.md`. **Do not also restate them in `CONTEXT.md`** — `CONTEXT.md`'s "Working Rules" should *point* at the memory (`Merge strategy → feedback_merge_strategy`), never copy the rule text. Duplicated convention prose drifts: when a rule changes, one copy goes stale, and a stale `CONTEXT.md` line can silently override the live memory an agent already loaded ([#258](https://github.com/IamMrCupp/claude-project-kit/issues/258) — a stale "squash" line in CONTEXT overrode a correct "merge commit" memory and a prod PR got squash-merged against the rule). Project-specific rules with *no* memory file are the one exception — those live in CONTEXT.md's *Project-specific* block.
+- **When a rule flips, flip the frontmatter `description:` with the body.** A memory whose headline says "merge commit" but whose `description:` still says "squash" is internally contradictory and the `description:` is what gets scanned for relevance — half-finished edits are how a correct memory still steers wrong. Edit both, or neither.
 - **Save feedback from both corrections and confirmations.** Corrections are easy to notice; quiet "yes exactly, keep doing that" moments are what keep you from drifting away from validated approaches.
 - **Structure feedback/project memories as:** the rule, then **Why:** (reason), then **How to apply:** (when/where). The `why` lets future-you judge edge cases instead of blindly following.
 - **Don't memorize what the code already tells you.** File paths, architecture, function signatures belong in the code, not in memory. Memory is for rules, preferences, external references, and project context that isn't derivable from the repo.

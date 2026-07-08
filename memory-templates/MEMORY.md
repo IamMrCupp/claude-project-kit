@@ -6,6 +6,8 @@ Starter index. Every file in this folder is a **starting point** — copy them i
 - Prune entries that don't apply
 - Add new ones as rules come up during real work
 
+These `feedback_*` files are the **source of truth for mutable conventions** (commit style, branch naming, merge strategy, PR rules). Keep the rule here — don't also restate it in `CONTEXT.md`, which should only *point* at the memory. Two copies drift, and a stale one can silently override this one. When you flip a rule, **flip the frontmatter `description:` together with the body** — a half-edited memory whose `description:` still says the old rule steers wrong even when the body is right. See `CONVENTIONS.md` → *Auto-memory* and [#258](https://github.com/IamMrCupp/claude-project-kit/issues/258).
+
 Do not treat these as canonical without reading them first — they encode one opinionated way of working.
 
 - [User role and background](user_role.md) — who you're collaborating with, how to calibrate explanations

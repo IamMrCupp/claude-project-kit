@@ -11,5 +11,5 @@ When merging PRs, always choose **"Create a merge commit"** (the default first o
 **How to apply:**
 - In GitHub: when clicking "Merge pull request", the dropdown should default to "Create a merge commit"
 - If a repo has "Allow merge commits" disabled, re-enable it (Settings → Pull Requests)
-- For work projects that mandate squash-merge — override this rule but note it in `CONTEXT.md` so future-you doesn't fight the policy
+- For work projects that mandate squash-merge — override this rule **by editing this memory file itself** (flip the body *and* the frontmatter `description:` together), not by copying a contradicting line into `CONTEXT.md`. Memory is the single source of truth for merge strategy; a second copy in `CONTEXT.md` drifts and can silently override this one (see `CONVENTIONS.md` → *Auto-memory*, and [#258](https://github.com/IamMrCupp/claude-project-kit/issues/258))
 - Never force-push over someone else's merge commit to "clean up" — you'll rewrite history others may have pulled

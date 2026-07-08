@@ -76,25 +76,31 @@ This folder uses a layered documentation system. Reuse this pattern when startin
 
 ## Working Rules
 
-### Git & commits
-- {{Conventional Commits, single line, `-s` sign-off — OR whatever this project uses}}
-- {{Branch naming convention}}
-- {{Merge strategy — merge commit / squash / rebase}}
+> **Source of truth — read this before adding a rule here.** Mutable conventions
+> (commit style, branch naming, merge strategy, PR rules) live in **auto-memory
+> `feedback_*.md`** and load into every session via `MEMORY.md`. This section only
+> **points** at them — it must never restate the rule text. Duplicated convention
+> prose drifts: when a rule changes, one copy goes stale, and a stale copy here can
+> silently override the live memory (see [#258](https://github.com/IamMrCupp/claude-project-kit/issues/258)).
+> If a convention is genuinely project-specific and has no memory file, it lives
+> under *Project-specific* below — that's the one place rules-text belongs in CONTEXT.md.
+
+### Git & commits → see auto-memory
+- Commit format → `feedback_commit_format` *(adjust the linked memory, not this line)*
+- Branch naming → `feedback_branch_naming`
+- Merge strategy → `feedback_merge_strategy`
+- {{Add a pointer line per applicable `feedback_*` memory; don't paste the rule text}}
 
 ### PRs
 - {{Template location if any}}
 - {{Required reviewers, required checks}}
 - Manual test plan required for runtime changes — see CONVENTIONS.md
-- **Branch protection on free-tier private repos:** as of 2026, GitHub gates BOTH legacy branch protection and rulesets enforcement behind paid plans (Pro for personal, Team for orgs). On a free private repo neither enforces — rulesets can be *created* but won't take effect. Fall back to manual discipline: never force-push to `main`, never delete `main`, wait for green CI before merging. A local `pre-push` git hook can add belt-and-suspenders if desired.
 
-### Shell / build
-- {{Shell in use — bash / zsh / fish / pwsh}}
-- {{Local build command}}
-- {{Local test command}}
-
-### File editing
+### Project-specific (lives only here — not in memory)
 - Repo is mounted at `{{REPO_PATH}}`
 - Claude reads + edits directly; never copy-paste code through chat
+- Shell / build / test: {{shell in use — bash / zsh / fish / pwsh; local build command; local test command}}
+- **Branch protection on free-tier private repos:** as of 2026, GitHub gates BOTH legacy branch protection and rulesets enforcement behind paid plans (Pro for personal, Team for orgs). On a free private repo neither enforces — rulesets can be *created* but won't take effect. Fall back to manual discipline: never force-push to `main`, never delete `main`, wait for green CI before merging. A local `pre-push` git hook can add belt-and-suspenders if desired.
 
 ---
 
