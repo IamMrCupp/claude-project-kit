@@ -19,6 +19,12 @@ If the precheck passes, continue.
 
 ---
 
+> **Also the right command right after a PR merges** when you're carrying on rather
+> than stopping. A merged PR is the trigger to write the entry — `/session-end` drafts
+> and then waits for confirmation, so if your attention leaves at that prompt nothing
+> lands. This one writes first and lets you review later, which is what a long-running
+> session actually needs.
+
 We're handing this session off NOW. Capture everything to disk in one pass —
 do **not** wait for my confirmation. Persistence over polish: I will review on
 the next `/session-start`. The kit's normal `/session-end` flow drafts and waits
