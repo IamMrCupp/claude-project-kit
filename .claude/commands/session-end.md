@@ -19,6 +19,13 @@ If the precheck passes, continue.
 
 ---
 
+> **When to run this:** the natural trigger is **a merged PR**, not "the session
+> feels over." Merging is a real, dated event, and it's the moment the branch name,
+> PR number, commit list, and reasoning are all still at hand. A long-running session
+> has no moment that feels like the end — which is exactly how a week of merged work
+> ends up with no entry. If you're merging and carrying straight on, use
+> `/session-handoff` instead: it writes immediately instead of waiting on you.
+
 We're wrapping up this session. Help me apply the end-of-session hygiene.
 Do NOT edit any files yet — draft everything, show me, and wait for my
 confirmation before writing anything.

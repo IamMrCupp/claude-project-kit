@@ -39,6 +39,7 @@ Project-agnostic habits that have proven out across real work. Start from these,
 
   Posting back is the **default** when the user invokes a run — not an opt-in, not a "ask if you want me to update the PR" follow-up. The single best defense against "I thought we tested that" is making the evidence durable on the PR itself.
 - **Pure-CI / docs PRs:** short plan is fine, but still explicit — "no runtime change; verification is CI alone."
+- **A merged PR is the trigger to write the SESSION-LOG entry** — not "the session is ending." Run `/session-end` (or `/session-handoff` if you're carrying on) as part of merging, while the branch name, PR number, commit list, and the reasoning are all still in front of you. Waiting for the session to end loses entries: a long-running session has no moment that feels like the end, so the trigger never fires, and everything that only lived in the conversation is gone. Code-recoverable state survives that; decisions don't.
 
 ### Automating acceptance tests where it makes sense
 
