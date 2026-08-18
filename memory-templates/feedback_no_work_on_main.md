@@ -19,3 +19,5 @@ git checkout -b <type>/<slug>   # feat/…, fix/…, docs/…, ci/…, chore/…
 - If the user explicitly authorizes a direct commit to `main` for a specific one-off, that's their call — but surface the branch option first and let them override.
 
 **Structural enforcement (recommended).** The kit ships a `PreToolUse` Edit/Write hook (`scripts/block-edit-on-protected-branch.sh`) that the harness uses to deny edits to in-repo files when the current branch is `main` / `master`. Wire it once per machine — see `SETUP.md` → *Optional: branch-first enforcement hook*. With the hook installed, this memory entry becomes a "why the harness just blocked me" reference rather than a guidance reminder. Sibling of the commit-format hook (`feedback_commit_format`).
+
+**The hook does not enforce *base* branch.** By blocking edits on `main` it creates pressure to stay off it — which can turn into branching off whatever feature branch is already checked out. See [[feedback_branch_base]]: return to `main` and pull *before* `git checkout -b`, every time.

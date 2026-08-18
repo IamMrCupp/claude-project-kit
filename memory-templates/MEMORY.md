@@ -20,6 +20,7 @@ Do not treat these as canonical without reading them first — they encode one o
 - [Don't push after merge](feedback_no_push_after_merge.md) — once a PR merges, the branch is closed; branch off new `main` for follow-up work
 - [Branch first — never work on main](feedback_no_work_on_main.md) — propose a `<type>/<slug>` branch before editing tracked files (override Bash-tool default of editing whatever branch is checked out)
 - [Use the repo's branch-name convention](feedback_branch_naming.md) — rename auto-generated worktree branches to `<type>/<slug>` before pushing
+- [Branch from an up-to-date default branch](feedback_branch_base.md) — `git checkout main && git pull` *before* `checkout -b`; never stack on a branch whose PR is still open
 - [Prefer automated tests over manual smoke](feedback_automated_tests_preferred.md) — default to bats / expect / integration runners; don't ship manual procedures as steady state
 - [Tracker authority decides the default](feedback_no_tracker_creation.md) — issue-first when you own the tracker; read/reference only for externally-owned trackers
 - [Don't manually tag when release automation is configured](feedback_release_per_pr.md) — release-please etc. handle tagging; do nothing release-wise after a normal PR merge
