@@ -20,6 +20,13 @@
 #     work on main" rule. Same wire-once pattern as the commit-format hook
 #     — install + add the snippet in SETUP.md → "Optional branch-first
 #     enforcement hook" (closes #248; sibling of #236).
+#   - check-convention-drift.sh — read-only lint that flags when a CONTEXT.md
+#     convention (e.g. merge strategy) contradicts the auto-memory feedback_*
+#     that owns it. Invoked by /session-verify; optional pre-commit/pre-push
+#     hook documented in SETUP.md (closes #258, fix 3).
+#   - lib/infer.sh — shared inference helpers sourced by check-convention-
+#     drift.sh (and any future helper). Installed into <target>/lib/ so the
+#     script can source it from a stable relative path.
 #
 # Default behavior is write-once: never overwrites an existing file in the
 # target. Pass --force-update to overwrite kit-shipped files (with backup +
@@ -39,11 +46,15 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 KIT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 
 # Scripts shipped by the kit that should be installed. Add new entries here
-# when the kit grows more user-facing runtime helpers.
+# when the kit grows more user-facing runtime helpers. Entries may include a
+# subpath (e.g. lib/infer.sh) — the installer recreates the subdir in the
+# target so a script can source its shared lib from a stable relative path.
 SHIPPED_SCRIPTS=(
   kit-print-memory-pointer.sh
   block-forbidden-commit-patterns.sh
   block-edit-on-protected-branch.sh
+  check-convention-drift.sh
+  lib/infer.sh
 )
 
 usage() {
@@ -248,7 +259,7 @@ install_script() {
   if [ "$DRY_RUN" -eq 1 ]; then
     echo "  + would install $name → $dst_file"
   else
-    mkdir -p "$TARGET_DIR"
+    mkdir -p "$(dirname "$dst_file")"
     cp "$src_file" "$dst_file"
     chmod +x "$dst_file"
     echo "  ✓ installed $name"
