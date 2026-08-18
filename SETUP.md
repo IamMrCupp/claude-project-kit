@@ -338,6 +338,27 @@ This hook is the structural enforcement layer behind `feedback_no_work_on_main` 
 
 ---
 
+## Optional: convention-drift check
+
+Mutable conventions (merge strategy, branch naming, commit style) are owned by auto-memory `feedback_*.md` — `CONTEXT.md` should only *point* at them, never restate them (CONVENTIONS.md → *Auto-memory*). When both hold the rule and they drift, a stale `CONTEXT.md` line can silently override the live memory an agent already loaded. [#258](https://github.com/IamMrCupp/claude-project-kit/issues/258) is the canonical failure: a stale "squash merge" line in `CONTEXT.md` overrode a correct "merge commit" memory and a production PR was squash-merged against the rule.
+
+`scripts/check-convention-drift.sh` is a **read-only** lint that flags this. It infers the working folder + auto-memory from `$PWD`, scans `CONTEXT.md`'s *Working Rules* (and `workspace-CONTEXT.md`'s *Cross-repo notes*) for a convention that contradicts the `feedback_*` memory owning it, and exits non-zero on a conflict. It is installed by `install-scripts.sh` and runs automatically as **Step 5 of `/session-verify`** — no wiring needed for the interactive path.
+
+**Optional: gate commits/pushes with it.** If you want the check enforced outside `/session-verify`, add a `pre-commit` or `pre-push` git hook in the repos where your working folder is reachable from `$PWD`:
+
+```bash
+# .git/hooks/pre-push  (chmod +x)
+#!/usr/bin/env bash
+~/.claude/scripts/check-convention-drift.sh || {
+  echo "Convention drift between CONTEXT.md and auto-memory — fix before pushing (or bypass with --no-verify)." >&2
+  exit 1
+}
+```
+
+Unlike the commit-format and branch-first hooks, this one is **not** a Claude Code `PreToolUse` hook — it's a plain git hook (or a manual `/session-verify` run), because the comparison needs the working folder + auto-memory on disk, not a single tool-call payload. Keep it advisory: a heuristic keyword match can false-positive, so prefer it as a warning surface, not a hard block on shared infrastructure.
+
+---
+
 ## Manual alternative
 
 If you can't run `bootstrap.sh` (no Bash available, restricted environment, or you just want to see what it does) **or** you'd rather fill the templates by hand instead of running the seed prompt, perform the same work manually.
