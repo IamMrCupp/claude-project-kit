@@ -6,6 +6,26 @@ See [Upgrading an existing project](SETUP.md#upgrading-an-existing-project) for 
 
 ---
 
+## [1.6.0](https://github.com/IamMrCupp/claude-project-kit/compare/v1.5.1...v1.6.0) (2026-08-18)
+
+
+### Features
+
+* **commands:** run the convention-drift lint as /session-verify Step 5 ([#258](https://github.com/IamMrCupp/claude-project-kit/issues/258)) ([e107dbe](https://github.com/IamMrCupp/claude-project-kit/commit/e107dbec9c80788ddadd65629ee992ef93cf4687))
+* **scripts:** add check-convention-drift.sh lint for CONTEXT vs memory ([#258](https://github.com/IamMrCupp/claude-project-kit/issues/258)) ([6618ceb](https://github.com/IamMrCupp/claude-project-kit/commit/6618ceb5f358597a62aa33173907c9a3d0b9738f))
+* **scripts:** convention-drift lint for CONTEXT.md vs auto-memory ([#258](https://github.com/IamMrCupp/claude-project-kit/issues/258)) ([a08cd30](https://github.com/IamMrCupp/claude-project-kit/commit/a08cd3005f92f013b259a8305f99e057d6fd2656))
+
+
+### Documentation
+
+* **context:** single-source mutable conventions in auto-memory ([#258](https://github.com/IamMrCupp/claude-project-kit/issues/258)) ([31e3cd9](https://github.com/IamMrCupp/claude-project-kit/commit/31e3cd9fec18d974e0b5b2f265351fa3269ab06b))
+* **context:** single-source mutable conventions in auto-memory ([#258](https://github.com/IamMrCupp/claude-project-kit/issues/258)) ([9358323](https://github.com/IamMrCupp/claude-project-kit/commit/93583231778f7ecad3e69d2711ce7ac21756322e))
+* **conventions:** require branching from an up-to-date default branch ([ce2f6e2](https://github.com/IamMrCupp/claude-project-kit/commit/ce2f6e2cfea019f034361800953f6fa49b6ea57d))
+* **conventions:** require branching from an up-to-date default branch ([83f9818](https://github.com/IamMrCupp/claude-project-kit/commit/83f98187508fb0bc4f6373a6495c4aa7e9b0d355))
+* **setup:** document the convention-drift check and optional git hook ([#258](https://github.com/IamMrCupp/claude-project-kit/issues/258)) ([e8fdb25](https://github.com/IamMrCupp/claude-project-kit/commit/e8fdb2503769f5bb64eeed9f974071fa87ec002d))
+* trigger SESSION-LOG entry on PR merge, not session end ([fb7f824](https://github.com/IamMrCupp/claude-project-kit/commit/fb7f824b9bf409817ab6c4272b8265c4c93fbc02))
+* trigger SESSION-LOG entry on PR merge, not session end ([#263](https://github.com/IamMrCupp/claude-project-kit/issues/263)) ([8f0700a](https://github.com/IamMrCupp/claude-project-kit/commit/8f0700a61409a49fe6ba3cccb7cbf9557697c7bb))
+
 ## [1.5.1](https://github.com/IamMrCupp/claude-project-kit/compare/v1.5.0...v1.5.1) (2026-05-29)
 
 
