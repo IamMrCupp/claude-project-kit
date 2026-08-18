@@ -68,6 +68,29 @@ If `<working-folder>/../workspace-CONTEXT.md` exists, also report:
 
 Skip this step entirely if not in workspace mode.
 
+## Step 5 — convention drift (CONTEXT.md vs auto-memory)
+
+Mutable conventions (merge strategy, branch naming, commit style) are owned by
+auto-memory `feedback_*.md` — `CONTEXT.md` should only *point* at them, never
+restate them. A stale restated rule in `CONTEXT.md` can silently override the
+live memory an agent already loaded (#258). Run the read-only lint:
+
+```bash
+~/.claude/scripts/check-convention-drift.sh 2>&1; echo "exit=$?"
+```
+
+- `exit=0` + "no convention drift … (N convention(s) compared)" → clean, and
+  `N` tells you how much was actually checked.
+- `exit=1` → at least one **CONFLICT** block printed; quote it in the verdict.
+- `exit=2` or "command not found" → the helper isn't installed; note it and
+  point at `scripts/install-scripts.sh --global`. Don't treat as a drift hit.
+- "nothing to check" (exit 0) → no working folder or no auto-memory at all;
+  benign.
+- **"nothing to compare" (exit 0) → the lint ran but was blind.** Either
+  `CONTEXT.md` has no `## Working Rules` section, or no `feedback_*.md` memory
+  asserted a pole it recognizes. Report it verbatim — it is *not* a clean
+  result, and reading it as one is the failure the message exists to prevent.
+
 ## Hand back
 
 A single markdown table — one row per resource:
@@ -76,8 +99,9 @@ A single markdown table — one row per resource:
 
 Followed by a one-line verdict on the next line:
 
-- **OK** — disk MEMORY.md matches runtime auto-memory, all expected files present.
+- **OK** — disk MEMORY.md matches runtime auto-memory, all expected files present, no convention drift.
 - **MISMATCH** — disk MEMORY.md and runtime auto-memory differ; quote the specific signal (e.g. "disk has 22 entries, runtime has 4").
 - **MISSING** — one or more expected files not found at their resolved paths.
+- **DRIFT** — Step 5 found a CONTEXT.md convention contradicting its owning `feedback_*` memory; quote the CONFLICT block. Auto-memory is the source of truth (#258).
 
-Don't propose fixes. If MISMATCH or MISSING fires, tell me which one and let me decide next steps.
+Don't propose fixes. If MISMATCH, MISSING, or DRIFT fires, tell me which one and let me decide next steps.

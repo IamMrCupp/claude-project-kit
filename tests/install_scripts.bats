@@ -76,6 +76,19 @@ teardown() {
   [ -x "$TEST_PROJECT/.claude/scripts/$SHIPPED_SCRIPT" ]
 }
 
+@test "install-scripts.sh installs check-convention-drift.sh plus its lib/infer.sh (#258)" {
+  run "$INSTALL" --global
+  [ "$status" -eq 0 ]
+  [ -f "$TEST_HOME/.claude/scripts/check-convention-drift.sh" ]
+  [ -x "$TEST_HOME/.claude/scripts/check-convention-drift.sh" ]
+  # The script sources lib/infer.sh from a stable relative path — the lib
+  # must land in the target's lib/ subdir, or the script breaks at runtime.
+  [ -f "$TEST_HOME/.claude/scripts/lib/infer.sh" ]
+  # Installed script can actually source its lib and run (graceful no-op here).
+  run "$TEST_HOME/.claude/scripts/check-convention-drift.sh" "$TEST_TMP/nope"
+  [ "$status" -eq 0 ]
+}
+
 @test "install-scripts.sh --global is write-once by default — does not overwrite local edits" {
   run "$INSTALL" --global
   [ "$status" -eq 0 ]
