@@ -23,6 +23,7 @@ Do not treat these as canonical without reading them first — they encode one o
 - [Branch from an up-to-date default branch](feedback_branch_base.md) — `git checkout main && git pull` *before* `checkout -b`; never stack on a branch whose PR is still open
 - [Prefer automated tests over manual smoke](feedback_automated_tests_preferred.md) — default to bats / expect / integration runners; don't ship manual procedures as steady state
 - [Tracker authority decides the default](feedback_no_tracker_creation.md) — issue-first when you own the tracker; read/reference only for externally-owned trackers
+- [Spawned task chips use the kit](feedback_chips_use_the_kit.md) — every `spawn_task` chip prompt opens with `/session-start`, the memory rules it'll hit, issue-first if the tracker is yours, `/session-end`; say nothing if the kit is absent
 - [Don't manually tag when release automation is configured](feedback_release_per_pr.md) — release-please etc. handle tagging; do nothing release-wise after a normal PR merge
 - [Keep planning docs in sync](feedback_docs_in_sync.md) — update plan / checklist / implementation as work lands
 - [Current project context](project_current.md) — what's being built, why, timeline

@@ -19,3 +19,4 @@
 - `feedback_watch_ci_in_background.md` — spawn `gh run watch` in background after push
 - `feedback_docs_in_sync.md` — update plan / checklist / implementation as work lands
 - `feedback_no_ai_coauthor.md` — commits attributed to the human committer only
+- `feedback_chips_use_the_kit.md` — spawned task chips open with `/session-start`, the memory rules, issue-first, `/session-end`
