@@ -11,12 +11,17 @@
 ## Ships as-is from `memory-templates/`
 
 - `user_role.md` — who you're collaborating with, how to calibrate explanations
-- `feedback_commit_format.md` — Conventional Commits, single line, signed off
+- `feedback_commit_format.md` — `git commit -s -m "type(scope): subject"`, single line, no `Co-Authored-By` trailer
+- `feedback_no_ai_coauthor.md` — commits attributed to the human committer only
 - `feedback_merge_strategy.md` — always merge commits; never squash or rebase
 - `feedback_push_branches.md` — `git push -u origin <branch>` after commit without asking
-- `feedback_pr_test_plans.md` — detailed numbered manual-test steps with expected logs
-- `feedback_pr_check_off_on_pass.md` — edit PR body with evidence + ✅ after testing
 - `feedback_watch_ci_in_background.md` — spawn `gh run watch` in background after push
+- `feedback_no_push_after_merge.md` — once a PR merges the branch is closed; branch off new `main` for follow-up work
+- `feedback_no_work_on_main.md` — propose a `<type>/<slug>` branch before editing tracked files
+- `feedback_branch_naming.md` — rename auto-generated worktree branches to `<type>/<slug>` before pushing
+- `feedback_branch_base.md` — `git checkout main && git pull` before `checkout -b`; never stack on an open PR's branch
+- `feedback_automated_tests_preferred.md` — default to bats / expect / integration runners over manual smoke procedures
+- `feedback_no_tracker_creation.md` — issue-first when you own the tracker; read/reference only when you don't
+- `feedback_release_per_pr.md` — release automation handles tagging; nothing release-wise by hand after a merge
 - `feedback_docs_in_sync.md` — update plan / checklist / implementation as work lands
-- `feedback_no_ai_coauthor.md` — commits attributed to the human committer only
 - `feedback_chips_use_the_kit.md` — spawned task chips open with `/session-start`, the memory rules, issue-first, `/session-end`
