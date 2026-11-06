@@ -89,6 +89,15 @@ teardown() {
   [ "$status" -eq 0 ]
 }
 
+@test "install-scripts.sh installs the SessionStart grounding hook (#266)" {
+  run "$INSTALL" --global
+  [ "$status" -eq 0 ]
+  [ -f "$TEST_HOME/.claude/scripts/kit-session-start.sh" ]
+  [ -x "$TEST_HOME/.claude/scripts/kit-session-start.sh" ]
+  # Byte-identical to the kit's source-of-truth copy.
+  cmp -s "$KIT_ROOT/scripts/kit-session-start.sh" "$TEST_HOME/.claude/scripts/kit-session-start.sh"
+}
+
 @test "install-scripts.sh --global is write-once by default — does not overwrite local edits" {
   run "$INSTALL" --global
   [ "$status" -eq 0 ]

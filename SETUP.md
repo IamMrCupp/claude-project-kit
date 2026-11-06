@@ -48,7 +48,7 @@ Whatever you pick, the **repo stays the repo; the working folder stays separate*
 > **Two ways to set this:**
 >
 > 1. **Hand-edit** the JSON above, substituting `<you>` with your actual username (run `echo $HOME` if you need to check). Restart Claude Code afterwards.
-> 2. **Let bootstrap do it for you** with the opt-in flag `--trust-kit-paths`, or accept the interactive prompt during `bootstrap.sh` setup. Bootstrap computes the absolute paths from `$HOME` at run time (so no placeholder substitution to mess up), appends both entries idempotently (skips any already present), backs up the existing `~/.claude/settings.json` to `settings.json.bak.<timestamp>` before writing, and prints the diff before applying. Pass `--dry-run` to preview without writing. The kit only mutates `permissions.additionalDirectories` and `permissions.allow`; nothing else in the file is touched.
+> 2. **Let bootstrap do it for you** with the opt-in flag `--trust-kit-paths`, or accept the interactive prompt during `bootstrap.sh` setup. Bootstrap computes the absolute paths from `$HOME` at run time (so no placeholder substitution to mess up), appends the entries idempotently (skips any already present), backs up the existing `~/.claude/settings.json` to `settings.json.bak.<timestamp>` before writing, and prints the diff before applying. Pass `--dry-run` to preview without writing. Alongside the two `permissions` entries above, `--trust-kit-paths` also registers the kit's `SessionStart` auto-grounding hook (`hooks.SessionStart` → `kit-session-start.sh`) so every session in a kit repo is grounded automatically — see [Optional: SessionStart auto-grounding hook](#optional-sessionstart-auto-grounding-hook). The kit only touches those `permissions` fields and its own `SessionStart` entry; nothing else in the file is changed.
 >
 > The older `--trust-working-folder-root` flag is kept as a deprecation alias with the same combined behavior, so existing scripted invocations still work — but new scripts should use `--trust-kit-paths`.
 >
@@ -108,7 +108,7 @@ Flags:
 - `--force` — proceed even if the working folder is already non-empty
 - `--dry-run` — print what would be created (paths, placeholder substitutions, tracker memory, MEMORY.md index line) and exit without writing anything. Safe to re-run.
 - `--workspace` — treat `<working-folder>` as a workspace path (multi-repo mode). Bootstrap creates a per-repo subfolder for the current repo inside the workspace, and on first use also seeds `workspace-CONTEXT.md` and `tickets/`. See [Workspace mode](#workspace-mode-multi-repo-initiatives) below.
-- `--trust-kit-paths` — opt-in: two coordinated writes to `~/.claude/settings.json` that silence per-session permission prompts. (1) Appends the working folder's parent directory to `permissions.additionalDirectories` (stops the prompt on every read of `CONTEXT.md` / `SESSION-LOG.md` / phase checklists). (2) Appends `Bash(<absolute path to kit-print-memory-pointer.sh>)` to `permissions.allow` (stops the prompt every kit slash command's precheck triggers). Both writes are idempotent (skip if already present), back up the existing settings.json before writing, and honor `--dry-run`. In interactive mode, bootstrap asks before doing this — the flag opts in for scripted runs. See §1 above for the manual alternative.
+- `--trust-kit-paths` — opt-in: three coordinated writes to `~/.claude/settings.json` that wire the kit into Claude Code. (1) Appends the working folder's parent directory to `permissions.additionalDirectories` (stops the prompt on every read of `CONTEXT.md` / `SESSION-LOG.md` / phase checklists). (2) Appends `Bash(<absolute path to kit-print-memory-pointer.sh>)` to `permissions.allow` (stops the prompt every kit slash command's precheck triggers). (3) Registers `<absolute path to kit-session-start.sh>` as a `hooks.SessionStart` command hook (auto-grounds every session in a kit repo — a ≤25-line floor; `KIT_SESSION_FULL=1` for the full load; see [Optional: SessionStart auto-grounding hook](#optional-sessionstart-auto-grounding-hook)). A command hook is not run through the Bash tool, so it needs no `permissions.allow` entry. All three writes are idempotent (skip if already present), back up the existing settings.json before writing, and honor `--dry-run`. In interactive mode, bootstrap asks before doing this — the flag opts in for scripted runs. See §1 above for the manual alternative.
 - `--trust-working-folder-root` — deprecated alias for `--trust-kit-paths`. Same combined behavior; prints a one-line deprecation note. Update scripted invocations.
 - `-h` / `--help` — show usage
 
@@ -308,6 +308,49 @@ The kit's "branch first, never start work on main" rule (`feedback_no_work_on_ma
              {
                "type": "command",
                "command": "/Users/<you>/.claude/scripts/block-edit-on-protected-branch.sh"
+             }
+           ]
+         }
+       ]
+     }
+   }
+   ```
+
+## Optional: SessionStart auto-grounding hook
+
+Grounding a session used to be manual — every session opened with someone remembering to run `/session-start`. `scripts/kit-session-start.sh` runs as a Claude Code `SessionStart` hook and injects a grounding block automatically at the start of every session in a kit-bootstrapped repo, so you don't have to.
+
+**Default output is a ≤25-line floor:** working-folder path, current phase/status, the newest `SESSION-LOG.md` entry, each installed `check-*` lint's verdict, and an open-PR summary — then a pointer to `/session-start` for the full load. `CONTEXT.md` is never inlined (it runs ~32KB; this is a context tax paid by every session). It reuses `kit-print-memory-pointer.sh` for worktree-aware detection and is **fail-open and silent** — a non-kit repo prints nothing, and a `resume` session is skipped (its context is already present).
+
+**Want the full context every session?** Set `KIT_SESSION_FULL=1` in the environment Claude Code runs under — the hook then injects the full `/session-start`-equivalent load (workspace files, all of `CONTEXT.md`, the `SESSION-LOG.md` tail, and a listing of the rest of the working folder) instead of the floor.
+
+**The easy path:** `bootstrap.sh --trust-kit-paths` (or the interactive prompt during setup) installs the script *and* registers the hook for you — no hand-editing. See [§1](#1-pick-a-working-folder-location) and the `--trust-kit-paths` flag reference below.
+
+**Wire it by hand, on this machine** (a `SessionStart` *command* hook is **not** run through the Bash tool, so it needs **no** `permissions.allow` entry):
+
+1. Install the script (idempotent; skipped if already present):
+
+   ```bash
+   <kit-dir>/scripts/install-scripts.sh --global
+   ```
+
+2. Add a `SessionStart` hook entry to `~/.claude/settings.json` (back up first, then merge — don't replace existing `hooks` blocks):
+
+   ```bash
+   cp ~/.claude/settings.json ~/.claude/settings.json.bak.$(date +%Y%m%d-%H%M%S)
+   ```
+
+   Snippet to merge into the file (combine with existing top-level keys):
+
+   ```json
+   {
+     "hooks": {
+       "SessionStart": [
+         {
+           "hooks": [
+             {
+               "type": "command",
+               "command": "/Users/<you>/.claude/scripts/kit-session-start.sh"
              }
            ]
          }

@@ -35,6 +35,13 @@ precheck_allow_entry() {
   echo "Bash($(precheck_script_path))"
 }
 
+# Echo the absolute path of the SessionStart hook command that --trust-kit-paths
+# registers in hooks.SessionStart. Mirrors session_start_hook_absolute_path()
+# in bootstrap.sh.
+session_start_hook_path() {
+  echo "$TEST_HOME/.claude/scripts/kit-session-start.sh"
+}
+
 @test "--trust-kit-paths creates settings.json if absent with both entries" {
   [ ! -f "$TEST_HOME/.claude/settings.json" ]
   run "$BOOTSTRAP" "$TEST_WF" --skip-memory --skip-scripts --trust-kit-paths
@@ -105,17 +112,21 @@ assert d['theme'] == 'dark', d
   cat > "$TEST_HOME/.claude/settings.json" <<'EOF'
 { "permissions": { "additionalDirectories": ["/x"] } }
 EOF
+  ORIG="$(cat "$TEST_HOME/.claude/settings.json")"
 
   run "$BOOTSTRAP" "$TEST_WF" --skip-memory --skip-scripts --trust-kit-paths
   [ "$status" -eq 0 ]
 
-  # At least one backup file exists.
+  # At least one backup file exists...
   ls "$TEST_HOME/.claude/settings.json.bak."* >/dev/null
-  # Backup contents match the original (no new entries).
-  BACKUP="$(ls "$TEST_HOME/.claude/settings.json.bak."* | head -1)"
-  grep -q '"/x"' "$BACKUP"
-  ! grep -q "$(trusted_root)" "$BACKUP"
-  ! grep -q "kit-print-memory-pointer.sh" "$BACKUP"
+  # ...and one of them is byte-identical to the ORIGINAL, proving the copy is
+  # taken before any mutation (the run makes three coordinated writes, each
+  # backing up first; the original must remain recoverable from a backup).
+  found=0
+  for b in "$TEST_HOME/.claude/settings.json.bak."*; do
+    [ "$(cat "$b")" = "$ORIG" ] && found=1
+  done
+  [ "$found" -eq 1 ]
 }
 
 @test "--trust-kit-paths + --dry-run writes nothing" {
@@ -168,6 +179,77 @@ assert ENTRY in d['permissions']['allow'], d
   [[ "$output" == *"--trust-kit-paths"* ]]
   [[ "$output" == *"additionalDirectories"* ]]
   [[ "$output" == *"permissions.allow"* ]]
+  [[ "$output" == *"hooks.SessionStart"* ]]
+}
+
+# ─── SessionStart grounding hook registration (#266) ─────────────────────
+
+@test "--trust-kit-paths registers the SessionStart grounding hook" {
+  run "$BOOTSTRAP" "$TEST_WF" --skip-memory --skip-scripts --trust-kit-paths
+  [ "$status" -eq 0 ]
+  python3 -c "
+import json, sys
+d = json.load(open(sys.argv[1]))
+CMD = sys.argv[2]
+ss = d['hooks']['SessionStart']
+assert any(e.get('command') == CMD for g in ss for e in g.get('hooks', [])), d
+" "$TEST_HOME/.claude/settings.json" "$(session_start_hook_path)"
+}
+
+@test "--trust-kit-paths does not duplicate the SessionStart hook on re-run" {
+  run "$BOOTSTRAP" "$TEST_WF" --skip-memory --skip-scripts --trust-kit-paths
+  [ "$status" -eq 0 ]
+
+  # Second working folder under the same parent — same hook command path.
+  TEST_WF2="$(dirname "$TEST_WF")/wf2"
+  run "$BOOTSTRAP" "$TEST_WF2" --skip-memory --skip-scripts --trust-kit-paths
+  [ "$status" -eq 0 ]
+  [[ "$output" == *"already registered"* ]]
+
+  # Exactly one SessionStart entry for the kit hook.
+  python3 -c "
+import json, sys
+d = json.load(open(sys.argv[1]))
+CMD = sys.argv[2]
+ss = d['hooks']['SessionStart']
+n = sum(1 for g in ss for e in g.get('hooks', []) if e.get('command') == CMD)
+assert n == 1, (n, d)
+" "$TEST_HOME/.claude/settings.json" "$(session_start_hook_path)"
+}
+
+@test "--trust-kit-paths registers the hook without clobbering existing hooks" {
+  mkdir -p "$TEST_HOME/.claude"
+  cat > "$TEST_HOME/.claude/settings.json" <<'EOF'
+{
+  "hooks": {
+    "PreToolUse": [
+      { "matcher": "Bash", "hooks": [ { "type": "command", "command": "/x/pre.sh" } ] }
+    ]
+  },
+  "theme": "dark"
+}
+EOF
+
+  run "$BOOTSTRAP" "$TEST_WF" --skip-memory --skip-scripts --trust-kit-paths
+  [ "$status" -eq 0 ]
+
+  python3 -c "
+import json, sys
+d = json.load(open(sys.argv[1]))
+CMD = sys.argv[2]
+assert d['theme'] == 'dark', d
+assert d['hooks']['PreToolUse'][0]['hooks'][0]['command'] == '/x/pre.sh', d
+ss = d['hooks']['SessionStart']
+assert any(e.get('command') == CMD for g in ss for e in g.get('hooks', [])), d
+" "$TEST_HOME/.claude/settings.json" "$(session_start_hook_path)"
+}
+
+@test "--trust-kit-paths + --dry-run previews the SessionStart hook and writes nothing" {
+  run "$BOOTSTRAP" --dry-run "$TEST_WF" --skip-memory --skip-scripts --trust-kit-paths
+  [ "$status" -eq 0 ]
+  [ ! -f "$TEST_HOME/.claude/settings.json" ]
+  [[ "$output" == *"hooks.SessionStart"* ]]
+  [[ "$output" == *"kit-session-start.sh"* ]]
 }
 
 # ─── Deprecation alias: --trust-working-folder-root ──────────────────────
