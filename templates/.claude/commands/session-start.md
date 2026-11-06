@@ -2,6 +2,16 @@
 description: Load the working folder's CONTEXT.md, SESSION-LOG.md, and current phase checklist into the session, then hand back a grounding summary. Same flow as Prompt 1 in PROMPTS.md, packaged as a slash command.
 ---
 
+> **Auto-grounding:** in a kit-bootstrapped repo with the `SessionStart` hook
+> installed (`scripts/kit-session-start.sh`, registered by `bootstrap.sh
+> --trust-kit-paths`), a grounding floor is injected automatically at the start
+> of every session, so you usually don't need to run this command. The hook's
+> default is a ≤25-line summary (working folder, phase/status, newest
+> SESSION-LOG entry, lint verdicts, open-PR flags); set `KIT_SESSION_FULL=1` to
+> have the hook load the full context every session. Run `/session-start`
+> anytime for the full load on demand, to re-ground mid-session, or when the
+> hook isn't installed.
+
 ## Precheck — is this a kit project?
 
 Before doing anything else:
