@@ -24,6 +24,15 @@
 #     convention (e.g. merge strategy) contradicts the auto-memory feedback_*
 #     that owns it. Invoked by /session-verify; optional pre-commit/pre-push
 #     hook documented in SETUP.md (closes #258, fix 3).
+#   - kit-session-start.sh — SessionStart hook that auto-grounds a
+#     kit-bootstrapped repo at session start (so nobody has to remember to run
+#     /session-start). Default output is a <=25-line grounding floor; a full
+#     /session-start-equivalent load is opt-in via KIT_SESSION_FULL=1. Reuses
+#     kit-print-memory-pointer.sh for worktree-aware detection; fail-open and
+#     silent in non-kit repos. Installing the script is half the work; the
+#     other half is registering it as a hooks.SessionStart entry in
+#     ~/.claude/settings.json — bootstrap.sh does that under --trust-kit-paths
+#     (closes #266).
 #   - lib/infer.sh — shared inference helpers sourced by check-convention-
 #     drift.sh (and any future helper). Installed into <target>/lib/ so the
 #     script can source it from a stable relative path.
@@ -54,6 +63,7 @@ SHIPPED_SCRIPTS=(
   block-forbidden-commit-patterns.sh
   block-edit-on-protected-branch.sh
   check-convention-drift.sh
+  kit-session-start.sh
   lib/infer.sh
 )
 

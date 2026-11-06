@@ -122,8 +122,9 @@ Options:
                      substitutions, tracker memory, MEMORY.md index
                      line) and exit without writing anything. Safe to
                      run repeatedly to preview config before committing.
-  --trust-kit-paths  Two opt-in writes to ~/.claude/settings.json that
-                     silence per-session permission prompts:
+  --trust-kit-paths  Three opt-in writes to ~/.claude/settings.json that
+                     wire the kit into Claude Code (silence per-session
+                     permission prompts + auto-grounding):
                        1. Append the working folder's parent directory
                           to permissions.additionalDirectories (stops
                           prompts on every read of CONTEXT.md /
@@ -134,6 +135,13 @@ Options:
                           prompt the slash-command precheck triggers;
                           absolute path is required — see
                           anthropics/claude-code #16800).
+                       3. Register <absolute path to kit-session-start.sh>
+                          as a hooks.SessionStart command hook, so every
+                          session in a kit repo is auto-grounded (a
+                          <=25-line floor; set KIT_SESSION_FULL=1 for the
+                          full /session-start-equivalent load). A command
+                          hook is not run through the Bash tool, so it
+                          needs no permissions.allow entry.
                      Backs up the existing settings.json before writing;
                      idempotent (skip if already present); honors
                      --dry-run. In interactive mode, bootstrap asks
@@ -572,7 +580,7 @@ PY
   # Back up if the file exists, then write.
   local backup=""
   if [ -f "$settings_file" ]; then
-    backup="$settings_file.bak.$(date +%Y%m%d-%H%M%S)"
+    backup="$settings_file.bak.$(date +%Y%m%d-%H%M%S).$RANDOM"
     cp "$settings_file" "$backup"
   fi
 
@@ -712,7 +720,7 @@ PY
 
   local backup=""
   if [ -f "$settings_file" ]; then
-    backup="$settings_file.bak.$(date +%Y%m%d-%H%M%S)"
+    backup="$settings_file.bak.$(date +%Y%m%d-%H%M%S).$RANDOM"
     cp "$settings_file" "$backup"
   fi
 
@@ -732,6 +740,162 @@ perms = data.setdefault("permissions", {})
 allow = perms.setdefault("allow", [])
 if bash_entry not in allow:
     allow.append(bash_entry)
+
+with open(settings_file, "w") as f:
+    json.dump(data, f, indent=2)
+    f.write("\n")
+PY
+  then
+    echo "  ! settings.json update failed; restoring backup" >&2
+    [ -n "$backup" ] && [ -f "$backup" ] && cp "$backup" "$settings_file"
+    return 1
+  fi
+
+  if [ -n "$backup" ]; then
+    echo "    ✓ updated $settings_file (backup: $backup)"
+  else
+    echo "    ✓ created $settings_file"
+  fi
+  return 0
+}
+
+session_start_hook_absolute_path() {
+  # Echo the absolute path the kit's SessionStart hook command must point at.
+  # Claude Code does not expand ~ or $HOME in a hook command, so it is written
+  # as an absolute path (same reasoning as the precheck allowlist entry — see
+  # anthropics/claude-code #16800). Computed once from $HOME here so callers
+  # don't drift.
+  echo "$HOME/.claude/scripts/kit-session-start.sh"
+}
+
+add_session_start_hook_to_settings() {
+  # Register the kit's SessionStart grounding hook in ~/.claude/settings.json
+  # as a hooks.SessionStart[] entry with a `command` hook pointing at the
+  # installed kit-session-start.sh. Idempotent — keyed on the command string,
+  # so a re-run never duplicates the entry (settings.json is strict JSON; the
+  # managed-block marker trick used for .gitignore does not transfer). Creates
+  # the file if absent. Backs up to settings.json.bak.<timestamp> before any
+  # write. Honors $DRY_RUN. Non-kit `hooks` entries survive untouched.
+  #
+  # NOTE: a SessionStart *command* hook is NOT run through the Bash tool, so it
+  # needs no permissions.allow entry — only the hooks registration here.
+  #
+  # returns: 0 on success or no-op, 1 on Python failure / unwritable target.
+  local cmd
+  cmd="$(session_start_hook_absolute_path)"
+  local settings_dir="$HOME/.claude"
+  local settings_file="$settings_dir/settings.json"
+  local mode_label=""
+  local result=""
+
+  if ! command -v python3 >/dev/null 2>&1; then
+    echo "  ! python3 not found — skipping ~/.claude/settings.json update." >&2
+    echo "    Register a hooks.SessionStart command hook for \"$cmd\" by hand." >&2
+    return 1
+  fi
+
+  result="$(python3 - "$cmd" "$settings_file" <<'PY' 2>&1
+import json, os, sys
+
+cmd = sys.argv[1]
+settings_file = sys.argv[2]
+
+if os.path.exists(settings_file):
+    try:
+        with open(settings_file) as f:
+            data = json.load(f)
+        if not isinstance(data, dict):
+            print(f"ERROR existing {settings_file} is not a JSON object", file=sys.stderr)
+            sys.exit(2)
+    except json.JSONDecodeError as e:
+        print(f"ERROR could not parse {settings_file}: {e}", file=sys.stderr)
+        sys.exit(2)
+else:
+    data = None
+
+if data is None:
+    print("WOULD_CREATE")
+    print(f"  + create {settings_file} with:")
+    print(f'      hooks.SessionStart: [{{ "hooks": [{{ "type": "command", "command": "{cmd}" }}] }}]')
+    sys.exit(0)
+
+hooks = data.get("hooks") or {}
+session_start = hooks.get("SessionStart") or []
+if not isinstance(session_start, list):
+    print(f"ERROR hooks.SessionStart in {settings_file} is not a list", file=sys.stderr)
+    sys.exit(2)
+
+present = False
+for group in session_start:
+    if not isinstance(group, dict):
+        continue
+    for entry in group.get("hooks") or []:
+        if isinstance(entry, dict) and entry.get("command") == cmd:
+            present = True
+
+if present:
+    print("ALREADY_PRESENT")
+    print(f"  ✓ SessionStart hook for {cmd} already registered")
+    sys.exit(0)
+
+print("WOULD_APPEND")
+print(f"  + append to hooks.SessionStart in {settings_file}:")
+print(f'      {{ "hooks": [{{ "type": "command", "command": "{cmd}" }}] }}')
+PY
+  )" || { echo "  ! settings.json inspection failed:" >&2; echo "$result" >&2; return 1; }
+
+  mode_label="$(printf '%s' "$result" | head -1)"
+
+  case "$mode_label" in
+    ALREADY_PRESENT)
+      printf '%s\n' "$result" | tail -n +2
+      return 0
+      ;;
+    WOULD_CREATE|WOULD_APPEND)
+      printf '%s\n' "$result" | tail -n +2
+      ;;
+    *)
+      echo "  ! unexpected output from settings.json inspector:" >&2
+      echo "$result" >&2
+      return 1
+      ;;
+  esac
+
+  if [ "$DRY_RUN" -eq 1 ]; then
+    echo "    (dry-run — no changes written)"
+    return 0
+  fi
+
+  mkdir -p "$settings_dir"
+
+  local backup=""
+  if [ -f "$settings_file" ]; then
+    backup="$settings_file.bak.$(date +%Y%m%d-%H%M%S).$RANDOM"
+    cp "$settings_file" "$backup"
+  fi
+
+  if ! python3 - "$cmd" "$settings_file" <<'PY'
+import json, os, sys
+
+cmd = sys.argv[1]
+settings_file = sys.argv[2]
+
+if os.path.exists(settings_file):
+    with open(settings_file) as f:
+        data = json.load(f)
+else:
+    data = {}
+
+hooks = data.setdefault("hooks", {})
+session_start = hooks.setdefault("SessionStart", [])
+
+present = any(
+    isinstance(entry, dict) and entry.get("command") == cmd
+    for group in session_start if isinstance(group, dict)
+    for entry in (group.get("hooks") or [])
+)
+if not present:
+    session_start.append({"hooks": [{"type": "command", "command": cmd}]})
 
 with open(settings_file, "w") as f:
     json.dump(data, f, indent=2)
@@ -1148,9 +1312,10 @@ if [ "$INTERACTIVE" -eq 1 ]; then
   if [ "$TRUST_KIT_PATHS" -eq 0 ]; then
     INTERACTIVE_TRUSTED_ROOT="$(trusted_root_for_working_folder)"
     INTERACTIVE_PRECHECK_ENTRY="Bash($(precheck_script_absolute_path))"
+    INTERACTIVE_HOOK_CMD="$(session_start_hook_absolute_path)"
     echo
-    echo "Edit ~/.claude/settings.json to silence per-session permission prompts?"
-    echo "Two additions, both idempotent and backed up before write:"
+    echo "Wire the kit into ~/.claude/settings.json (silence prompts + auto-grounding)?"
+    echo "Three additions, all idempotent and backed up before write:"
     echo "  1. Append $INTERACTIVE_TRUSTED_ROOT"
     echo "     to permissions.additionalDirectories (stops prompts on every"
     echo "     read of CONTEXT.md / SESSION-LOG.md / phase checklists)."
@@ -1158,11 +1323,15 @@ if [ "$INTERACTIVE" -eq 1 ]; then
     echo "     to permissions.allow (stops the per-session prompt the slash"
     echo "     command precheck triggers; absolute path required —"
     echo "     anthropics/claude-code #16800)."
+    echo "  3. Register $INTERACTIVE_HOOK_CMD"
+    echo "     as a hooks.SessionStart command hook (auto-grounds every session"
+    echo "     in this kit's repos; <=25-line floor, KIT_SESSION_FULL=1 for the"
+    echo "     full load)."
     read -r -p "[y/N]: " INPUT
     case "$(printf '%s' "$INPUT" | tr '[:upper:]' '[:lower:]')" in
       y|yes) TRUST_KIT_PATHS=1 ;;
     esac
-    unset INTERACTIVE_TRUSTED_ROOT INTERACTIVE_PRECHECK_ENTRY
+    unset INTERACTIVE_TRUSTED_ROOT INTERACTIVE_PRECHECK_ENTRY INTERACTIVE_HOOK_CMD
   fi
 fi
 
@@ -1313,6 +1482,7 @@ if [ "$DRY_RUN" -eq 1 ]; then
     echo "Would update ~/.claude/settings.json (--trust-kit-paths):"
     echo "  + permissions.additionalDirectories ← $(trusted_root_for_working_folder)"
     echo "  + permissions.allow ← \"Bash($(precheck_script_absolute_path))\""
+    echo "  + hooks.SessionStart ← command hook \"$(session_start_hook_absolute_path)\""
     echo "  (idempotent — skipped if entries already present; backed up before write)"
     echo
   fi
@@ -1477,6 +1647,9 @@ if [ "$TRUST_KIT_PATHS" -eq 1 ]; then
   echo
   echo "  Updating ~/.claude/settings.json (precheck-script allowlist entry):"
   add_precheck_script_to_allowlist || true
+  echo
+  echo "  Updating ~/.claude/settings.json (SessionStart grounding hook):"
+  add_session_start_hook_to_settings || true
   unset TRUSTED_ROOT_PATH
 fi
 
