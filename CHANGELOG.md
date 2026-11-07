@@ -6,6 +6,28 @@ See [Upgrading an existing project](SETUP.md#upgrading-an-existing-project) for 
 
 ---
 
+## [1.7.0](https://github.com/IamMrCupp/claude-project-kit/compare/v1.6.0...v1.7.0) (2026-11-07)
+
+
+### Features
+
+* **hooks:** add SessionStart auto-grounding hook with capped floor and opt-in full load ([#266](https://github.com/IamMrCupp/claude-project-kit/issues/266)) ([38f5f0e](https://github.com/IamMrCupp/claude-project-kit/commit/38f5f0ea8805164aa802ce3534da37e899238694))
+* **hooks:** SessionStart auto-grounding hook for kit-bootstrapped repos ([bc5e56c](https://github.com/IamMrCupp/claude-project-kit/commit/bc5e56c2f3ad61e8cbd88a00fb370eb0d6a51b0d))
+* **memory-templates:** add feedback_chips_use_the_kit starter ([9d28ac2](https://github.com/IamMrCupp/claude-project-kit/commit/9d28ac2a6fd2012e7e727355d541a7cf5823990e))
+* **memory-templates:** add feedback_chips_use_the_kit starter ([#276](https://github.com/IamMrCupp/claude-project-kit/issues/276)) ([9d1845d](https://github.com/IamMrCupp/claude-project-kit/commit/9d1845dae8513b2d931a5a0eaac95443c18125e2))
+
+
+### Documentation
+
+* **hooks:** document the SessionStart auto-grounding hook and --trust-kit-paths hook registration ([#266](https://github.com/IamMrCupp/claude-project-kit/issues/266)) ([f463d2c](https://github.com/IamMrCupp/claude-project-kit/commit/f463d2c2e0473f4c8a4f1455f5b0c38c9a5d7a4b))
+* sync memory example and tests README with what ships ([51cc815](https://github.com/IamMrCupp/claude-project-kit/commit/51cc815c646016d6b58aefbcf7dee6b9b24e0d45))
+* sync memory example and tests README with what ships ([#278](https://github.com/IamMrCupp/claude-project-kit/issues/278)) ([13f906a](https://github.com/IamMrCupp/claude-project-kit/commit/13f906a2499612e1bd7af03bc6f81330eb58addd))
+
+
+### Tests
+
+* **hooks:** cover the SessionStart hook, its install, and idempotent bootstrap registration ([#266](https://github.com/IamMrCupp/claude-project-kit/issues/266)) ([ee13e86](https://github.com/IamMrCupp/claude-project-kit/commit/ee13e862c4d7f49849979c273ec4c1b4f1b7e1bc))
+
 ## [1.6.0](https://github.com/IamMrCupp/claude-project-kit/compare/v1.5.1...v1.6.0) (2026-08-18)
 
 
