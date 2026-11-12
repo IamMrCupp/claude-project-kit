@@ -6,6 +6,14 @@ See [Upgrading an existing project](SETUP.md#upgrading-an-existing-project) for 
 
 ---
 
+## [1.7.1](https://github.com/IamMrCupp/claude-project-kit/compare/v1.7.0...v1.7.1) (2026-11-12)
+
+
+### CI
+
+* **bats:** run the suite on every path the tests read ([04f544c](https://github.com/IamMrCupp/claude-project-kit/commit/04f544c792ae8c6930ac45aa1630a2be5c9f40f7))
+* **bats:** run the suite on every path the tests read ([#282](https://github.com/IamMrCupp/claude-project-kit/issues/282)) ([a152492](https://github.com/IamMrCupp/claude-project-kit/commit/a1524927be791644a951f7a9732f19fc2fe1bf71))
+
 ## [1.7.0](https://github.com/IamMrCupp/claude-project-kit/compare/v1.6.0...v1.7.0) (2026-11-07)
 
 
