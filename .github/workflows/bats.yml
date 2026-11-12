@@ -4,11 +4,24 @@ on:
   push:
     branches: [main]
   pull_request:
+    # Every top-level path the suite reads. tests/ci_path_filter.bats derives
+    # the list from $KIT_ROOT/<x> references in tests/ and fails if one is
+    # missing here — add the path, don't widen the pattern.
     paths:
       - 'bootstrap.sh'
+      - 'pull-ticket.sh'
+      - 'archive-ticket.sh'
+      - 'scripts/**'
       - 'memory-templates/**'
       - 'templates/**'
+      - 'examples/**'
+      - 'docs/**'
+      - '.claude/**'
       - 'tests/**'
+      - 'CONVENTIONS.md'
+      - 'FEATURES.md'
+      - 'PROMPTS.md'
+      - 'SETUP.md'
       - '.github/workflows/bats.yml'
 
 permissions:

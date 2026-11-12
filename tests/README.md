@@ -90,6 +90,7 @@ Every `.bats` file under `tests/` and every `.exp` under `tests/interactive/` ap
 |---|---|
 | `block_edit_on_protected_branch.bats` | `block-edit-on-protected-branch.sh` — PreToolUse Edit/Write hook (branch-first) |
 | `commit_format_hook.bats` | `block-forbidden-commit-patterns.sh` — PreToolUse Bash hook (forbidden commit patterns) |
+| `kit_session_start.bats` | `kit-session-start.sh` — SessionStart hook: capped grounding floor, zero output for non-kit repos and `resume`, lint verdict, `KIT_SESSION_FULL=1` opt-in |
 
 ### Slash commands + agents
 
@@ -111,6 +112,7 @@ Every `.bats` file under `tests/` and every `.exp` under `tests/interactive/` ap
 | `memory_templates_overrides.bats` | `MEMORY.md` index lines flag harness-default overrides |
 | `memory_template_chips.bats` | `feedback_chips_use_the_kit.md` starter; every shipped memory template is indexed |
 | `memory_example_in_sync.bats` | the widget-tracker memory example and this table match what the kit ships |
+| `ci_path_filter.bats` | `bats.yml`'s `pull_request` path filter covers every path the suite reads |
 
 ### Interactive (expect)
 
@@ -172,4 +174,4 @@ For bats, see `tests/helpers.bash`. For expect, see `tests/interactive/run.sh` (
    ```
 3. Run `tests/interactive/run.sh 06-skip-memory.exp` to verify.
 
-CI runs both suites on PRs that touch `bootstrap.sh`, `memory-templates/`, `templates/`, or `tests/`.
+CI runs both suites on PRs that touch any path the suite reads — `bootstrap.sh`, `pull-ticket.sh`, `archive-ticket.sh`, `scripts/`, `memory-templates/`, `templates/`, `examples/`, `docs/`, `.claude/`, `tests/`, and the four top-level docs the tests grep (`CONVENTIONS.md`, `FEATURES.md`, `PROMPTS.md`, `SETUP.md`). The list lives in `.github/workflows/bats.yml`; `ci_path_filter.bats` fails if a test reads a path that isn't on it.
